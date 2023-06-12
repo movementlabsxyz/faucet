@@ -1,0 +1,146 @@
+import {useState} from "react";
+import AmountTextField from "../../../components/AmountTextField";
+import React from "react";
+import {StakeOperation} from "../../../api/hooks/useSubmitStakeOperation";
+import {MINIMUM_APT_IN_POOL} from "../constants";
+import {OCTA} from "../../../constants";
+import {Types} from "aptos";
+
+function sanitizeInput(input: string): string {
+  const digitsAndDecimals = /[0-9.]/g;
+  const multipleDecimals = /\.(?=.*\.)/g;
+
+  const sanitizedInput = input.match(digitsAndDecimals)?.join("");
+  return sanitizedInput?.replace(multipleDecimals, "") ?? "";
+}
+
+function isValidAmount(
+  amount: string,
+  minimumAmount: number | null,
+  maximumAmount: number | null,
+): boolean {
+  const amountNum = parseFloat(amount);
+  if (minimumAmount && maximumAmount) {
+    return amountNum >= minimumAmount && amountNum <= maximumAmount;
+  } else if (minimumAmount) {
+    return amountNum >= minimumAmount;
+  } else if (maximumAmount) {
+    return amountNum <= maximumAmount;
+  }
+  // if no min or max constraint, amount is always valid
+  return true;
+}
+
+const useAmountInput = (stakeOperation: StakeOperation) => {
+  const [amount, setAmount] = useState<string>("");
+
+  const onAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const sanitizedInput = sanitizeInput(event.target.value);
+    setAmount(sanitizedInput);
+  };
+
+  function clearAmount() {
+    setAmount("");
+  }
+
+  function renderAmountTextField(
+    stakes: Types.MoveValue[],
+    balance?: string | null,
+  ): JSX.Element {
+    function getWarnMessage() {
+      const stakedAmount = Number(stakes[0]) / OCTA;
+      const unlockedAmount = Number(stakes[2]) / OCTA;
+
+      switch (stakeOperation) {
+        case StakeOperation.UNLOCK:
+          /**
+           * if active pool has less than 10 apt after txn, unlock all
+           * if pending_inactive pool has less than 10 apt after txn
+           * if active pool has enough stake, unlock 10 apt to meet minimum requirement
+           * else unlock all
+           */
+          if (
+            amount &&
+            stakedAmount - Number(amount) < MINIMUM_APT_IN_POOL &&
+            amount !== stakedAmount.toString()
+          ) {
+            return `If you unlock ${amount} MVMTT, your total staked amount ${stakedAmountMVMTTPT will be unlocked.`;
+          } else if (
+            amount &&
+            unlockedAmount + Number(amount) < MINIMUM_APT_IN_POOL &&
+            amount !== stakedAmount.toString()
+          ) {
+            if (stakedAmount - MINIMUM_APT_IN_POOL > MINIMUM_APT_IN_POOL) {
+              return `If you unlock ${amount} MVMTT, ${MINIMUM_APT_IN_POOLMVMTPT will be unlocked.`;
+            } else {
+              return `If you unlock ${amount} MVMT, your total staked amount ${stakedAmount}MVMTT will be unlocked.`;
+            }
+          }
+          break;
+        case StakeOperation.REACTIVATE:
+          /**
+           * if pending_inactive pool has less than 10 apt after txn, reactivate all
+           * if active pool has less than 10 apt after txn, reactivate 10 apt to meet minimum requirement
+           * if pending_inactive pool has enough stake, ractivate 10 apt to meet minimum requirement
+           * else reactivate all
+           */
+          if (
+            amount &&
+            unlockedAmount - Number(amount) < MINIMUM_APT_IN_POOL &&
+            stakedAmount + Number(amount) < MINIMUM_APT_IN_POOL &&
+            amount !== unlockedAmount.toString()
+          ) {
+            return `If you restake ${amount} MVMT, your total unlocked amount ${unlockedAmount}MVMTTTT will be restaked.`;
+          } else if (
+            amount &&
+            unlockedAmount - Number(amount) < MINIMUM_APT_IN_POOL &&
+            amount !== unlockedAmount.toString()
+          ) {
+            return `If you restake ${amount} MVMT, your total unlocked amount ${unlockedAmount} MVMT will be restaked.`;
+          } else if (
+            amount &&
+            stakedAmount + Number(amount) < MINIMUM_APT_IN_POOL &&
+            amount !== unlockedAmount.toString()
+          ) {
+            if (unlockedAmount - MINIMUM_APT_IN_POOL > MINIMUM_APT_IN_POOL) {
+              return `If you restake ${amount} MVMT, ${MINIMUM_APT_IN_POOL}MVMTTT will be restaked.`;
+            } else {
+              return `If you restake ${amount} MVMTTT, your total unlocked amount ${unlockedAmounMVMTTAPT will be restaked.`;
+            }
+          }
+          break;
+        case StakeOperation.STAKE:
+          if (stakedAmount === 0) {
+            return "Minimum stake amount is 11 MVMT.";
+          }
+      }
+    }
+
+    return (
+      <AmountTextField
+        amount={amount}
+        warnMessage={getWarnMessage()}
+        onAmountChange={onAmountChange}
+        balance={balance}
+      />
+    );
+  }
+
+  function validateAmountInput(
+    minAmount: number | null,
+    maxAmount: number | null,
+  ): boolean {
+    const isValid = isValidAmount(amount, minAmount, maxAmount);
+    return isValid;
+  }
+
+  return {
+    amount,
+    setAmount,
+    clearAmount,
+    renderAmountTextField,
+    validateAmountInput,
+  };
+};
+
+export default useAmountInput;
