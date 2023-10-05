@@ -8,7 +8,8 @@ export const networks = {
   mainnet: "https://fullnode.mainnet.aptoslabs.com/",
   testnet: "https://fullnode.testnet.aptoslabs.com",
   devnet: devnetUrl,
-  local: "https://submove-fuji.bbd.sh/v1",
+  local: "https://seed-node1.movementlabs.xyz",
+  // local: "https://submove-fuji.bbd.sh/v1",
   previewnet: "https://fullnode-0.previewnet.gcp.aptosdev.com/v1",
 };
 

@@ -39,7 +39,7 @@ export default function TransactionsPreview() {
             component={RRD.Link}
             to="/transactions"
             variant="primary"
-            sx={{margin: "0 auto", mt: 6}}
+            sx={{margin: "0 auto", mt: 6,borderRadius:0,color:'white',backgroundColor:'#1737FF','&:hover':{backgroundColor:'rgb(16, 38, 178)'}}}
           >
             View all Transactions
           </Button>

@@ -94,6 +94,8 @@ export default function AccountTabs({
   tabValues = TAB_VALUES,
 }: AccountTabsProps): JSX.Element {
   const {tab, modulesTab} = useParams();
+
+  
   const navigate = useNavigate();
   let effectiveTab: TabValue;
   if (modulesTab) {

@@ -5,8 +5,8 @@ import Container from "@mui/material/Container";
 import NetworkSelect from "./NetworkSelect";
 import {useColorMode} from "../../context";
 import {useMediaQuery, useTheme} from "@mui/material";
-import {ReactComponent as LogoIconW} from "../../assets/svg/logow.svg";
-import {ReactComponent as LogoIconB} from "../../assets/svg/logob.svg";
+import {ReactComponent as LogoIconW} from "../../assets/svg/logo_txt_w.svg";
+import {ReactComponent as LogoIconB} from "../../assets/svg/logo_txt_b.svg";
 import {ReactComponent as IconLight} from "../../assets/svg/icon_light.svg";
 import {ReactComponent as IconDark} from "../../assets/svg/icon_dark.svg";
 import Button from "@mui/material/Button";
@@ -125,24 +125,24 @@ export default function Header() {
               {
                 isDark?
                 <LogoIconW style={{
-                      width: '100%',
-                      height: '100%',
-                      border: '1px solid white',
-                      borderRadius: '50%',
+                      width: 'auto',
+                      height: '26',
+                      // border: '1px solid white',
+                      // borderRadius: '50%',
                       // width: '221px',
                       // height: '35px',
                 }} />
                 :
                 <LogoIconB style={{
-                      width: '100%',
-                      height: '100%',
-                      border: '1px solid white',
-                      borderRadius: '50%',
+                  width: 'auto',
+                  height: '26',
+                      // border: '1px solid white',
+                      // borderRadius: '50%',
                       // width: '221px',
                       // height: '35px',
                 }} />
               }
-              <Box component={'span'} sx={{ml:'8px',fontWeight:'bold'}}>Movement</Box>
+              {/* <Box component={'span'} sx={{ml:'8px',fontWeight:'bold'}}>Movement</Box> */}
             </Link>
 
             <Nav />
@@ -150,6 +150,7 @@ export default function Header() {
             <Button
               onClick={toggleColorMode}
               sx={{
+                
                 width: "30px",
                 height: "30px",
                 display: "flex",
@@ -166,7 +167,15 @@ export default function Header() {
             </Button>
             <NavMobile />
             {!isOnMobile && (
-              <Box sx={{marginLeft: "1rem"}}>
+              <Box sx={{
+                marginLeft: "1rem",
+                '& button':{
+                  borderRadius:'0 !important',
+                  color:'white !important',
+                  backgroundColor:'#1737FF',
+                  '&:hover':{backgroundColor:'rgb(16, 38, 178)'}
+                }
+                }}>
                 <WalletConnector
                   networkSupport={state.network_name}
                   handleNavigate={() =>
