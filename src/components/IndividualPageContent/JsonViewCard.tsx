@@ -4,8 +4,11 @@ import ReactJson from "react-json-view";
 import {codeBlockColor} from "../../themes/colors/aptosColorPalette";
 import EmptyValue from "./ContentValue/EmptyValue";
 
-const TEXT_COLOR_LIGHT = "#49D6CE";
-const TEXT_COLOR_DARK = "#83CCED";
+// const TEXT_COLOR_LIGHT = "#49D6CE";
+// const TEXT_COLOR_DARK = "#83CCED";
+
+const TEXT_COLOR_LIGHT = "#FFD016";
+const TEXT_COLOR_DARK = "#FFD016";
 const SECONDARY_TEXT_COLOR = "rgba(14,165,233,0.3)";
 const TRANSPARENT = "rgba(0,0,0,0)";
 

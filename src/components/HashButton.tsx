@@ -119,12 +119,13 @@ function AccountHashButtonInner({
           "&:hover": {
             backgroundColor: codeBlockColorClickableOnHover,
           },
-          color: theme.palette.mode === "dark" ? "#83CCED" : "#49D6CE",
+          color: "#FFD016",
+          // color: theme.palette.mode === "dark" ? "#83CCED" : "#49D6CE",
           padding: "0.15rem 0.35rem 0.15rem 1rem",
           overflow: "hidden",
           whiteSpace: "nowrap",
           textOverflow: "ellipsis",
-          borderRadius: 50,
+          borderRadius: 0,
           textDecoration: "none",
         }}
       >
@@ -202,7 +203,7 @@ function HashButtonInner({
             theme.palette.mode === "dark" ? grey[600] : grey[200]
           }`,
           display: "flex",
-          borderRadius: 1,
+          borderRadius: 0,
           color: "inherit",
           padding: "0.15rem 0.5rem 0.15rem 1rem",
           "&:hover": {

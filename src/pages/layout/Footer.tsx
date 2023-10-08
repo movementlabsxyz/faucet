@@ -11,7 +11,11 @@ import {ReactComponent as LinkedInLogo} from "../../assets/linkedin.svg";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import SvgIcon from "@mui/material/SvgIcon";
 
-import {ReactComponent as LogoFull} from "../../assets/svg/aptos_logo_icon.svg";
+// import {ReactComponent as LogoFullB} from "../../assets/svg/logob.svg";
+// import {ReactComponent as LogoFullW} from "../../assets/svg/logow.svg";
+
+import logob from "../../assets/svg/logob.svg";
+import logow from "../../assets/svg/logow.svg";
 import {Link} from "../../routing";
 
 const socialLinks = [
@@ -32,6 +36,7 @@ const socialLinks = [
 
 export default function Footer() {
   const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
 
   return (
     <Box
@@ -51,12 +56,19 @@ export default function Footer() {
         >
           <Grid xs="auto" container justifyContent="start">
             <Link
-              color="inherit"
-              to="https://aptoslabs.com/"
+              // color="inherit"
+              to=""
               target="_blank"
               sx={{width: "3rem", mb: {xs: 2, md: 0}, mr: {md: 2}}}
             >
-              <LogoFull style={{width:'100%',height:'100%'}} />
+              {
+                !isDark?
+                <img src={logob} style={{width:'100%',height:'100%'}} />:
+
+                <img src={logow} style={{width:'100%',height:'100%'}} />
+
+              }
+              
             </Link>
           </Grid>
           <Grid

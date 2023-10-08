@@ -11,7 +11,7 @@ export default function LandingPage() {
       <Typography variant="h3" component="h3" marginBottom={4}>
         Movement Explorer
       </Typography>
-      <NetworkInfo isOnHomePage />
+      {/* <NetworkInfo isOnHomePage /> */}
       <HeaderSearch />
       <UserTransactionsPreview />
     </Box>
