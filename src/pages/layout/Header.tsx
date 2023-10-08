@@ -145,7 +145,7 @@ export default function Header() {
               {/* <Box component={'span'} sx={{ml:'8px',fontWeight:'bold'}}>Movement</Box> */}
             </Link>
 
-            <Nav />
+            {/*<Nav />*/}
             {/* <NetworkSelect /> */}
             <Button
               onClick={toggleColorMode}
@@ -165,7 +165,7 @@ export default function Header() {
             >
               {theme.palette.mode === "light" ? <IconLight /> : <IconDark />}
             </Button>
-            <NavMobile />
+            {/*<NavMobile />*/}
             {!isOnMobile && (
               <Box sx={{
                 marginLeft: "1rem",
@@ -173,15 +173,15 @@ export default function Header() {
                   borderRadius:'0 !important',
                   color:'white !important',
                   backgroundColor:'#1737FF',
-                  '&:hover':{backgroundColor:'rgb(16, 38, 178)'}
+                  '&:hover':{backgroundColor:'rgb(16, 38, 178)'},
                 }
                 }}>
-                <WalletConnector
+                {/*<WalletConnector
                   networkSupport={state.network_name}
                   handleNavigate={() =>
                     navigate(`/account/${account?.address}`)
                   }
-                />
+                />*/}
               </Box>
             )}
           </Toolbar>

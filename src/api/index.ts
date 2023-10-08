@@ -1,8 +1,9 @@
-import {AptosClient, Types} from "aptos";
+import {AptosClient, FaucetClient, Types} from "aptos";
 import {OCTA} from "../constants";
 import {isNumeric} from "../pages/utils";
 import {sortTransactions} from "../utils";
 import {withResponseError} from "./client";
+import axios from "axios";
 
 export async function getTransactions(
   requestParameters: {start?: number; limit?: number},
@@ -292,4 +293,32 @@ export async function getValidatorState(
     arguments: [validatorAddress],
   };
   return withResponseError(client.view(payload));
+}
+
+export async function requestFaucet(
+  aptosClient : AptosClient,
+  faucetClient : FaucetClient,
+  faucetUrl : string, 
+  address: string,
+): Promise<any> {
+  
+
+  console.log("Requesting funds from faucet...");
+  const url = `${faucetUrl}/v1/mint?&pub_key=${address}`;
+  let txns = [];
+  try {
+    const response = await axios.post(url, {});
+    if (response.status === 200) {
+      console.log(response);
+      txns = response.data;
+    } else {
+      throw new Error(`Faucet issue: ${response.status}`);
+    }
+  } catch (error) {
+    console.error("Failed to fund account with faucet:", error);
+    throw error;
+  }
+
+  return Promise.all(txns.map((txn : string) => aptosClient.waitForTransaction(txn)))
+
 }

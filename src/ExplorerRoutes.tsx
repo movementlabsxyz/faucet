@@ -18,7 +18,7 @@ export default function ExplorerRoutes() {
     <ExplorerLayout>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/transactions" element={<TransactionsPage />} />
+        {/*<Route path="/transactions" element={<TransactionsPage />} />*/}
         {/* <Route path="/validators" element={<ValidatorsPage />}>
           <Route path=":tab" element={<ValidatorsPage />} />
         </Route>
@@ -26,7 +26,7 @@ export default function ExplorerRoutes() {
           <Route path=":address" element={<ValidatorPage />} />
         </Route>
          */}
-        <Route path="/txn">
+        {/*<Route path="/txn">
           <Route path=":txnHashOrVersion" element={<TransactionPage />} />
           <Route path=":txnHashOrVersion/:tab" element={<TransactionPage />} />
         </Route>
@@ -53,7 +53,7 @@ export default function ExplorerRoutes() {
             path=":tokenId/:propertyVersion/:tab"
             element={<TokenPage />}
           />
-        </Route>
+        </Route>*/}
         {/* <Route path="/analytics" element={<AnalyticsPage />} /> */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

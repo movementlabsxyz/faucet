@@ -29,7 +29,14 @@ export default function ExplorerLayout({children}: LayoutProps) {
             }}
           >
             <Header />
-            <Container maxWidth="xl" sx={{flexGrow: 4, paddingTop: "2rem"}}>
+            <Container maxWidth="xl" 
+            sx={{
+              flexGrow: 4, 
+              paddingTop: "2rem",
+              display: "flex",       // Make the Container a flex container
+              flexDirection: "column",
+              justifyContent: "center" // Center the content vertically
+            }}>
               {children}
             </Container>
             <Footer />
