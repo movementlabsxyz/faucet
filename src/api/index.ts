@@ -1,4 +1,4 @@
-import {AptosClient, FaucetClient, Types} from "aptos";
+import {AptosAccount, AptosClient, FaucetClient, Types, CoinClient} from "aptos";
 import {OCTA} from "../constants";
 import {isNumeric} from "../pages/utils";
 import {sortTransactions} from "../utils";
@@ -299,17 +299,14 @@ export async function requestFaucet(
   aptosClient : AptosClient,
   faucetClient : FaucetClient,
   faucetUrl : string, 
-  address: string,
+  pubkey: string,
 ): Promise<any> {
   
-
-  console.log("Requesting funds from faucet...");
-  const url = `${faucetUrl}/v1/mint?&pub_key=${address}`;
+  const url = `${faucetUrl}/v1/mint?&pub_key=${pubkey}`;
   let txns = [];
   try {
     const response = await axios.post(url, {});
     if (response.status === 200) {
-      console.log(response);
       txns = response.data;
     } else {
       throw new Error(`Faucet issue: ${response.status}`);
@@ -320,5 +317,48 @@ export async function requestFaucet(
   }
 
   return Promise.all(txns.map((txn : string) => aptosClient.waitForTransaction(txn)))
+
+}
+
+// NOTE: this is a private key for the faucet account, do not use it for anything else
+const PRIVATE_KEY = "0xb6003d3fe766b8b98700a1f6ba71258043f9b9a39052631341ca5bd2e336473b";
+const PUBLIC_KEY = "0xbf37798ec90ed4b98e146ee0250510debc69fa4a7a3c69811c503bb44c6a059f";
+// const encoder = new TextEncoder(); // This is a built-in JavaScript API for encoding text
+
+export const GLOBAL_SIGNER = AptosAccount.fromAptosAccountObject({
+  privateKeyHex : PRIVATE_KEY,
+  publicKeyHex : PUBLIC_KEY,
+  address : "0x348116b94c9b734068cd07635c969fd724e5aa08fb63fd2ea52fd7d7e35b0fde"
+})
+export async function requestFaucetWithGlobalSigner(
+  aptosClient : AptosClient,
+  faucetClient : FaucetClient,
+  coinClient : CoinClient,
+  faucetUrl : string, 
+  address : string,
+) : Promise<any> {
+
+  // double up the coins
+  Promise.all([
+    await requestFaucet(
+      aptosClient, 
+      faucetClient,
+      faucetUrl,
+      PUBLIC_KEY,
+    ),
+    await requestFaucet(
+      aptosClient, 
+      faucetClient,
+      faucetUrl,
+      PUBLIC_KEY,
+    )
+  ]);
+
+  return await coinClient.transfer(
+    GLOBAL_SIGNER,
+    address,
+    1000000000
+  );
+
 
 }

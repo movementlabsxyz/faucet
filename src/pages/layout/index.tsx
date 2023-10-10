@@ -7,6 +7,7 @@ import Footer from "./Footer";
 import {GlobalStateProvider} from "../../global-config/GlobalConfig";
 import {ProvideColorMode} from "../../context";
 import {GraphqlClientProvider} from "../../api/hooks/useGraphqlClient";
+import { useWallet, Wallet } from "@aptos-labs/wallet-adapter-react";
 
 interface LayoutProps {
   children: React.ReactNode;

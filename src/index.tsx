@@ -6,6 +6,7 @@ import {BrowserRouter} from "react-router-dom";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import ExplorerRoutes from "./ExplorerRoutes";
 import {
+  Wallet,
   AptosWalletAdapterProvider,
   NetworkName,
 } from "@aptos-labs/wallet-adapter-react";

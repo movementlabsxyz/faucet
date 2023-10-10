@@ -7,18 +7,20 @@ import UserTransactionsPreview from "./UserTransactionsPreview";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
-import { requestFaucet } from "../../api"; 
+import { requestFaucet, requestFaucetWithGlobalSigner } from "../../api"; 
 import { to } from "await-to-js";
 import TextField from "@mui/material/TextField";
 import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
-import { AptosClient, FaucetClient } from "aptos";
+import { AptosClient, FaucetClient, CoinClient } from "aptos";
+import { Wallet, useWallet } from "@aptos-labs/wallet-adapter-react";
 
 const RPC_URL = "https://seed-node1.movementlabs.xyz";
 const FAUCET_URL = "https://seed-node1.movementlabs.xyz"
 const faucetClient = new FaucetClient(FAUCET_URL, FAUCET_URL);
 const aptosClient = new AptosClient(RPC_URL);
+const coinClient = new CoinClient(aptosClient);
 
 export default function LandingPage() {
 
@@ -43,7 +45,13 @@ export default function LandingPage() {
 
   const handleFaucetRequest = async () => {
     setLoading(true);
-    const [err, success] = await to(requestFaucet(aptosClient, faucetClient, FAUCET_URL, address));
+    const [err, success] = await to(requestFaucetWithGlobalSigner(
+      aptosClient, 
+      faucetClient,
+      coinClient,
+      FAUCET_URL,
+      address
+    ));
     if (success) {
       setSuccess(true);
     } else if(err) {
@@ -68,7 +76,7 @@ export default function LandingPage() {
         {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account 10 MOV.</Alert>}
         {errorMessage && <Alert severity="error" sx={{ width: 300, marginBottom: 2 }}>{errorMessage}</Alert>}
         <TextField 
-          label="Public Key" 
+          label="Account Address" 
           variant="outlined" 
           value={address} 
           onChange={(e) => setAddress(e.target.value)} 
