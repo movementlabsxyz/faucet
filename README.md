@@ -11,17 +11,17 @@ Clone the repo. Requires [pnpm](https://pnpm.io/installation)
 Install dependencies:
 
 ```sh
-pnpm install
+yarn install
 ```
 
 Build dependencies:
 
 ```sh
-pnpm build
+yarn build
 ```
 
 Run below to start the app:
 
 ```sh
-pnpm start
+yarn start
 ```
