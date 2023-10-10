@@ -6,8 +6,6 @@
 
 ## How to use
 
-Clone the repo. Requires [pnpm](https://pnpm.io/installation)
-
 Install dependencies:
 
 ```sh
