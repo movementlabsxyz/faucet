@@ -61,6 +61,16 @@ export default function LandingPage() {
     setLoading(false);
   };
 
+  const handleFormSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    handleFaucetRequest();
+  };
+
+  const isValidHex = (str: string) => {
+    const regex = /^0x[a-fA-F0-9]{64}$/;
+    return regex.test(str);
+  };
+
   return (
     <Container>
       <Box 
@@ -75,29 +85,34 @@ export default function LandingPage() {
         {loading && <CircularProgress sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />}
         {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account 10 MOV.</Alert>}
         {errorMessage && <Alert severity="error" sx={{ width: 300, marginBottom: 2 }}>{errorMessage}</Alert>}
-        <TextField 
-          label="Account Address" 
-          variant="outlined" 
-          value={address} 
-          onChange={(e) => setAddress(e.target.value)} 
-          sx={{ width: 300, marginBottom: 2 }}
-          disabled={loading}
-        />
-        <Button
-          onClick={handleFaucetRequest}
-          variant="contained"
-          sx={{
-            width: 300,
-            borderRadius: 0,
-            color: 'white',
-            backgroundColor: '#1737FF',
-            '&:hover': {backgroundColor: 'rgb(16, 38, 178)'}
-          }}
-          disabled={loading}
-        >
-          <WaterDropIcon sx={{mr:1}} />
-          Get MOV
-        </Button>
+        <form onSubmit={handleFormSubmit}>
+          <TextField 
+            label="Account Address" 
+            variant="outlined" 
+            value={address} 
+            onChange={(e) => setAddress(e.target.value)} 
+            sx={{ width: 300, marginBottom: 2 }}
+            disabled={loading}
+            error={!isValidHex(address) && address !== ""}
+            helperText={!isValidHex(address) && address !== "" ? `Invalid address. Should be of the form: 0xab12... and be 32 bytes in length` : ""}
+          />
+          <br/>
+          <Button
+            onClick={handleFaucetRequest}
+            variant="contained"
+            sx={{
+              width: 300,
+              borderRadius: 0,
+              color: 'white',
+              backgroundColor: '#1737FF',
+              '&:hover': {backgroundColor: 'rgb(16, 38, 178)'}
+            }}
+            disabled={loading}
+          >
+            <WaterDropIcon sx={{mr:1}} />
+            Get MOV
+          </Button>
+        </form>
       </Box>
     </Container>
   );
