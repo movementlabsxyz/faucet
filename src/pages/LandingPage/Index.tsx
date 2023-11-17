@@ -7,7 +7,7 @@ import UserTransactionsPreview from "./UserTransactionsPreview";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
-import { requestFaucet, requestFaucetWithGlobalSigner } from "../../api"; 
+import { requestFaucet, requestFaucetWithGlobalSigner, mevmRequestFaucet } from "../../api"; 
 import { to } from "await-to-js";
 import TextField from "@mui/material/TextField";
 import Container from "@mui/material/Container";
@@ -15,15 +15,19 @@ import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
 import { AptosClient, FaucetClient, CoinClient } from "aptos";
 import { Wallet, useWallet } from "@aptos-labs/wallet-adapter-react";
+import { Switch } from "@mui/material";
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 const RPC_URL = "https://seed-node1.movementlabs.xyz";
-const FAUCET_URL = "https://seed-node1.movementlabs.xyz"
+const FAUCET_URL = "https://seed-node1.movementlabs.xyz";
+const MEVM_URL = "https://mevm.movementlabs.xyz/v1";
 const faucetClient = new FaucetClient(FAUCET_URL, FAUCET_URL);
 const aptosClient = new AptosClient(RPC_URL);
 const coinClient = new CoinClient(aptosClient);
 
 export default function LandingPage() {
 
+  const [mevm, setMevm] = useState(false); 
   const [success, setSuccess] = useState(false);
   const [address, setAddress] = useState("");
   const [errorMessage, setErrorMessage] = useState<string|null>(null);
@@ -61,13 +65,34 @@ export default function LandingPage() {
     setLoading(false);
   };
 
+  const handleMevmFaucetRequest = async () => {
+    setLoading(true);
+    const [err, success] = await to(mevmRequestFaucet(
+      MEVM_URL,
+      address
+    ));
+    if (success) {
+      setSuccess(true);
+    } else if(err) {
+      console.log(err);
+      setErrorMessage(err.message || "Failed to fund account.");
+    }
+    setLoading(false);
+  };
+
+  const handleRequest = async () => {
+    if (mevm) await handleMevmFaucetRequest();
+    else await handleFaucetRequest();
+    
+  };
+
   const handleFormSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    handleFaucetRequest();
+    handleRequest(); // Use the wrapper method
   };
 
   const isValidHex = (str: string) => {
-    const regex = /^0x[a-fA-F0-9]{64}$/;
+    const regex = mevm ? /^0x[a-fA-F0-9]{40}$/  : /^0x[a-fA-F0-9]{64}$/;
     return regex.test(str);
   };
 
@@ -83,7 +108,7 @@ export default function LandingPage() {
         }}
       >
         {loading && <CircularProgress sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />}
-        {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account 10 MOV.</Alert>}
+        {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account {mevm ? 1 : 10} MOV.</Alert>}
         {errorMessage && <Alert severity="error" sx={{ width: 300, marginBottom: 2 }}>{errorMessage}</Alert>}
         <form onSubmit={handleFormSubmit}>
           <TextField 
@@ -94,11 +119,17 @@ export default function LandingPage() {
             sx={{ width: 300, marginBottom: 2 }}
             disabled={loading}
             error={!isValidHex(address) && address !== ""}
-            helperText={!isValidHex(address) && address !== "" ? `Invalid address. Should be of the form: 0xab12... and be 32 bytes in length` : ""}
+            helperText={!isValidHex(address) && address !== "" ? `Invalid address. Should be of the form: 0xab12... and be ${mevm ? '20' : '32'} bytes in length` : ""}
+          />
+          <br/>
+          <FormControlLabel
+            control={<Switch checked={mevm} onChange={() => setMevm(!mevm)} />}
+            label="MEVM account."
+            sx={{ marginBottom: 2 }}
           />
           <br/>
           <Button
-            onClick={handleFaucetRequest}
+            onClick={handleRequest}
             variant="contained"
             sx={{
               width: 300,

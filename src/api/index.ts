@@ -329,7 +329,8 @@ export const GLOBAL_SIGNER = AptosAccount.fromAptosAccountObject({
   privateKeyHex : PRIVATE_KEY,
   publicKeyHex : PUBLIC_KEY,
   address : "0x348116b94c9b734068cd07635c969fd724e5aa08fb63fd2ea52fd7d7e35b0fde"
-})
+});
+
 export async function requestFaucetWithGlobalSigner(
   aptosClient : AptosClient,
   faucetClient : FaucetClient,
@@ -360,5 +361,32 @@ export async function requestFaucetWithGlobalSigner(
     1000000000
   );
 
+}
+
+export async function mevmRequestFaucet(
+  mevmUrl : string,
+  address : string,
+) : Promise<any> {
+
+  const requestData = {
+    jsonrpc: "2.0",
+    id: 1,
+    method: "eth_faucet",
+    params: [
+      address
+    ]
+  };
+
+  const res = await axios.post(mevmUrl, requestData, {
+    headers : {
+      "Content-Type" : "application/json"
+    }
+  });
+
+  if(res.status !== 200) throw new Error(
+    res.data.error.message
+  );
+  
+  return res.data;
 
 }
