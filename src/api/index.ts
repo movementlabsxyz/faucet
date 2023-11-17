@@ -390,3 +390,31 @@ export async function mevmRequestFaucet(
   return res.data;
 
 }
+
+export async function m2RequestFaucet(
+  m2Url : string,
+  address : string,
+) : Promise<any> {
+
+  const requestData = {
+    jsonrpc: "2.0",
+    id: 1,
+    method: "eth_faucet",
+    params: [
+      address
+    ]
+  };
+
+  const res = await axios.post(m2Url, requestData, {
+    headers : {
+      "Content-Type" : "application/json"
+    }
+  });
+
+  if(res.status !== 200) throw new Error(
+    res.data.error.message
+  );
+  
+  return res.data;
+
+}
