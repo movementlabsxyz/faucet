@@ -125,21 +125,21 @@ export default function Header() {
               {
                 isDark?
                 <LogoIconW style={{
-                      width: 'auto',
-                      height: '26',
+                      // width: 'auto',
+                      // height: '26',
                       // border: '1px solid white',
                       // borderRadius: '50%',
-                      // width: '221px',
-                      // height: '35px',
+                      width: '221px',
+                      height: '35px',
                 }} />
                 :
                 <LogoIconB style={{
-                  width: 'auto',
-                  height: '26',
+                      // width: 'auto',
+                      // height: '26',
                       // border: '1px solid white',
                       // borderRadius: '50%',
-                      // width: '221px',
-                      // height: '35px',
+                      width: '221px',
+                      height: '35px',
                 }} />
               }
               {/* <Box component={'span'} sx={{ml:'8px',fontWeight:'bold'}}>Movement</Box> */}
