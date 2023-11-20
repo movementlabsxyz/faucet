@@ -399,8 +399,8 @@ export async function m2RequestFaucet(
   const requestData = {
     jsonrpc: "2.0",
     id: 1,
-    method: "eth_faucet",
-    params: [
+    method: "FixedAmountRequest",
+    recipient: [
       address
     ]
   };

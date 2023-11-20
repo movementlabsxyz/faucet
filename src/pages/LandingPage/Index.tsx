@@ -21,7 +21,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 const RPC_URL = "https://seed-node1.movementlabs.xyz";
 const FAUCET_URL = "https://seed-node1.movementlabs.xyz";
 const MEVM_URL = "https://mevm.movementlabs.xyz/v1";
-const M2_URL = "";
+const M2_URL = "https://sui.movementlabs.xyz";
 const faucetClient = new FaucetClient(FAUCET_URL, FAUCET_URL);
 const aptosClient = new AptosClient(RPC_URL);
 const coinClient = new CoinClient(aptosClient);
