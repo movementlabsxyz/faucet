@@ -5,6 +5,7 @@ import {sortTransactions} from "../utils";
 import {withResponseError} from "./client";
 import axios from "axios";
 
+
 export async function getTransactions(
   requestParameters: {start?: number; limit?: number},
   nodeUrl: string,
@@ -400,15 +401,18 @@ export async function m2RequestFaucet(
     jsonrpc: "2.0",
     id: 1,
     method: "FixedAmountRequest",
-    recipient: [
-      address
+    params: [
+        {
+            recipient: address
+        }
     ]
-  };
+};
 
   const res = await axios.post(m2Url, requestData, {
     headers : {
       "Content-Type" : "application/json"
-    }
+    },
+    timeout: 50000,
   });
 
   if(res.status !== 200) throw new Error(

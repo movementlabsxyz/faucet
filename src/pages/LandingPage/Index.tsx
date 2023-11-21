@@ -21,7 +21,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 const RPC_URL = "https://seed-node1.movementlabs.xyz";
 const FAUCET_URL = "https://seed-node1.movementlabs.xyz";
 const MEVM_URL = "https://mevm.movementlabs.xyz/v1";
-const M2_URL = "https://sui.movementlabs.xyz";
+const M2_URL = "http://18.117.233.105:5000";
 const faucetClient = new FaucetClient(FAUCET_URL, FAUCET_URL);
 const aptosClient = new AptosClient(RPC_URL);
 const coinClient = new CoinClient(aptosClient);
@@ -31,6 +31,7 @@ export default function LandingPage() {
   const [mevm, setMevm] = useState(false);
   const [success, setSuccess] = useState(false);
   const [address, setAddress] = useState("");
+  const [addressM2, setAddressM2] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -110,8 +111,8 @@ export default function LandingPage() {
     handleRequest(); // Use the wrapper method
   };
 
-  const isValidHex = (str: string) => {
-    const regex = mevm ? /^0x[a-fA-F0-9]{40}$/ : /^0x[a-fA-F0-9]{64}$/;
+  const isValidHex = (str: string, fractal : boolean = false) => {
+    const regex = mevm ? fractal ? /^0x[a-fA-F0-9]{40}$/ : /^0x[a-fA-F0-9]{64}$/ : /^0x[a-fA-F0-9]{64}$/;
     return regex.test(str);
   };
 
@@ -142,8 +143,8 @@ export default function LandingPage() {
             onChange={(e) => setAddress(e.target.value)}
             sx={{ width: 300, marginBottom: 2 }}
             disabled={loading}
-            error={!isValidHex(address) && address !== ""}
-            helperText={!isValidHex(address) && address !== "" ? `Invalid address. Should be of the form: 0xab12... and be ${mevm ? '20' : '32'} bytes in length` : ""}
+            error={!isValidHex(address, true) && address !== ""}
+            helperText={!isValidHex(address, true) && address !== "" ? `Invalid address. Should be of the form: 0xab12... and be ${mevm ? '20' : '32'} bytes in length` : ""}
           />
           <br />
           <FormControlLabel
@@ -177,12 +178,12 @@ export default function LandingPage() {
           <TextField
             label="Account Address"
             variant="outlined"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            value={addressM2}
+            onChange={(e) => setAddressM2(e.target.value)}
             sx={{ width: 300, marginBottom: 2 }}
             disabled={loading}
-            error={!isValidHex(address) && address !== ""}
-            helperText={!isValidHex(address) && address !== "" ? `Invalid address. Should be of the form: 0xab12... and be ${mevm ? '20' : '32'} bytes in length` : ""}
+            error={!isValidHex(addressM2) && addressM2 !== ""}
+            helperText={!isValidHex(addressM2) && addressM2 !== "" ? `Invalid address. Should be of the form: 0xab12... and be 32 bytes in length` : ""}
           />
           <br />
           
