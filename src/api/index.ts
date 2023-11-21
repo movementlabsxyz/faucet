@@ -398,27 +398,20 @@ export async function m2RequestFaucet(
 ) : Promise<any> {
 
   const requestData = {
-    jsonrpc: "2.0",
-    id: 1,
-    method: "FixedAmountRequest",
-    params: [
-        {
-            recipient: address
-        }
-    ]
-};
+    FixedAmountRequest: {
+        recipient: address
+    }
+  };
 
   const res = await axios.post(m2Url, requestData, {
     headers : {
       "Content-Type" : "application/json"
     },
-    timeout: 50000,
   });
 
   if(res.status !== 200) throw new Error(
     res.data.error.message
   );
-  
+  console.log(res.data);
   return res.data;
-
 }

@@ -21,7 +21,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 const RPC_URL = "https://seed-node1.movementlabs.xyz";
 const FAUCET_URL = "https://seed-node1.movementlabs.xyz";
 const MEVM_URL = "https://mevm.movementlabs.xyz/v1";
-const M2_URL = "http://18.117.233.105:5000";
+const M2_URL = "https://sui.movementlabs.xyz/faucet";
 const faucetClient = new FaucetClient(FAUCET_URL, FAUCET_URL);
 const aptosClient = new AptosClient(RPC_URL);
 const coinClient = new CoinClient(aptosClient);
@@ -71,7 +71,7 @@ export default function LandingPage() {
     setLoading(true);
     const [err, success] = await to(m2RequestFaucet(
       M2_URL,
-      address
+      addressM2
     ));
     if (success) {
       setSuccess(true);
@@ -111,7 +111,7 @@ export default function LandingPage() {
     handleRequest(); // Use the wrapper method
   };
 
-  const isValidHex = (str: string, fractal : boolean = false) => {
+  const isValidHex = (str: string, fractal: boolean = false) => {
     const regex = mevm ? fractal ? /^0x[a-fA-F0-9]{40}$/ : /^0x[a-fA-F0-9]{64}$/ : /^0x[a-fA-F0-9]{64}$/;
     return regex.test(str);
   };
@@ -131,8 +131,8 @@ export default function LandingPage() {
         {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account {mevm ? 1 : 10} MOV.</Alert>}
         {errorMessage && <Alert severity="error" sx={{ width: 300, marginBottom: 2 }}>{errorMessage}</Alert>}
 
-        <div style={{ width: "300px"}}>
-        <h1 style={{ textAlign: "left" }}>M1</h1>
+        <div style={{ width: "300px" }}>
+          <h1 style={{ textAlign: "left" }}>M1</h1>
         </div>
 
         <form onSubmit={handleFormSubmit}>
@@ -170,8 +170,8 @@ export default function LandingPage() {
           </Button>
         </form>
 
-        <div style={{ width: "300px"}}>
-        <h1 style={{ textAlign: "left" }}>M2</h1>
+        <div style={{ width: "300px" }}>
+          <h1 style={{ textAlign: "left" }}>M2</h1>
         </div>
 
         <form onSubmit={handleFormSubmit}>
@@ -186,7 +186,7 @@ export default function LandingPage() {
             helperText={!isValidHex(addressM2) && addressM2 !== "" ? `Invalid address. Should be of the form: 0xab12... and be 32 bytes in length` : ""}
           />
           <br />
-          
+
           <Button
             onClick={handleM2Request}
             variant="contained"
