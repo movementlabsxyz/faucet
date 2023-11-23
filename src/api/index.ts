@@ -409,9 +409,8 @@ export async function m2RequestFaucet(
     },
   });
 
-  if(res.status !== 200) throw new Error(
+  if(res.status !== 201) throw new Error(
     res.data.error
   );
-  console.log(res.data);
   return res.data;
 }
