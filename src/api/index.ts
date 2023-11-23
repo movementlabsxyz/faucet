@@ -410,7 +410,7 @@ export async function m2RequestFaucet(
   });
 
   if(res.status !== 200) throw new Error(
-    res.data.error.message
+    res.data.error
   );
   console.log(res.data);
   return res.data;

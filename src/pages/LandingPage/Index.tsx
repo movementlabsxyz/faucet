@@ -33,7 +33,8 @@ export default function LandingPage() {
   const [address, setAddress] = useState("");
   const [addressM2, setAddressM2] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loadingM1, setLoadingM1] = useState(false);
+  const [loadingM2, setLoadingM2] = useState(false);
 
   // decay the success state
   useEffect(() => {
@@ -50,7 +51,7 @@ export default function LandingPage() {
   }, [success, errorMessage]);
 
   const handleFaucetRequest = async () => {
-    setLoading(true);
+    setLoadingM1(true);
     const [err, success] = await to(requestFaucetWithGlobalSigner(
       aptosClient,
       faucetClient,
@@ -64,11 +65,11 @@ export default function LandingPage() {
       console.log(err);
       setErrorMessage(err.message || "Failed to fund account.");
     }
-    setLoading(false);
+    setLoadingM1(false);
   };
 
   const handleM2FaucetRequest = async () => {
-    setLoading(true);
+    setLoadingM2(true);
     const [err, success] = await to(m2RequestFaucet(
       M2_URL,
       addressM2
@@ -79,11 +80,11 @@ export default function LandingPage() {
       console.log(err);
       setErrorMessage(err.message || "Failed to fund account.");
     }
-    setLoading(false);
+    setLoadingM2(false);
   };
 
   const handleMevmFaucetRequest = async () => {
-    setLoading(true);
+    setLoadingM1(true);
     const [err, success] = await to(mevmRequestFaucet(
       MEVM_URL,
       address
@@ -94,7 +95,7 @@ export default function LandingPage() {
       console.log(err);
       setErrorMessage(err.message || "Failed to fund account.");
     }
-    setLoading(false);
+    setLoadingM1(false);
   };
 
   const handleRequest = async () => {
@@ -127,7 +128,8 @@ export default function LandingPage() {
           height: "100%"
         }}
       >
-        {loading && <CircularProgress sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />}
+        {loadingM1 && <CircularProgress sx={{ position: 'absolute', top: '40%', left: '50%', transform: 'translate(-50%, -50%)' }} />}
+        {loadingM2 && <CircularProgress sx={{ position: 'absolute', top: '60%', left: '50%', transform: 'translate(-50%, -50%)' }} />}
         {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account {mevm ? 1 : 10} MOV.</Alert>}
         {errorMessage && <Alert severity="error" sx={{ width: 300, marginBottom: 2 }}>{errorMessage}</Alert>}
 
@@ -142,7 +144,7 @@ export default function LandingPage() {
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             sx={{ width: 300, marginBottom: 2 }}
-            disabled={loading}
+            disabled={loadingM1}
             error={!isValidHex(address, true) && address !== ""}
             helperText={!isValidHex(address, true) && address !== "" ? `Invalid address. Should be of the form: 0xab12... and be ${mevm ? '20' : '32'} bytes in length` : ""}
           />
@@ -163,7 +165,7 @@ export default function LandingPage() {
               backgroundColor: '#1737FF',
               '&:hover': { backgroundColor: 'rgb(16, 38, 178)' }
             }}
-            disabled={loading}
+            disabled={loadingM1}
           >
             <WaterDropIcon sx={{ mr: 1 }} />
             Get MOV
@@ -181,7 +183,7 @@ export default function LandingPage() {
             value={addressM2}
             onChange={(e) => setAddressM2(e.target.value)}
             sx={{ width: 300, marginBottom: 2 }}
-            disabled={loading}
+            disabled={loadingM2}
             error={!isValidHex(addressM2) && addressM2 !== ""}
             helperText={!isValidHex(addressM2) && addressM2 !== "" ? `Invalid address. Should be of the form: 0xab12... and be 32 bytes in length` : ""}
           />
@@ -197,7 +199,7 @@ export default function LandingPage() {
               backgroundColor: '#1737FF',
               '&:hover': { backgroundColor: 'rgb(16, 38, 178)' }
             }}
-            disabled={loading}
+            disabled={loadingM2}
           >
             <WaterDropIcon sx={{ mr: 1 }} />
             Get MOV
