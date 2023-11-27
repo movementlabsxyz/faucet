@@ -29,6 +29,7 @@ const coinClient = new CoinClient(aptosClient);
 export default function LandingPage() {
 
   const [mevm, setMevm] = useState(false);
+  const [m2, setM2] = useState(false);
   const [success, setSuccess] = useState(false);
   const [address, setAddress] = useState("");
   const [addressM2, setAddressM2] = useState("");
@@ -42,6 +43,7 @@ export default function LandingPage() {
     const timeout = setTimeout(() => {
       setSuccess(false);
       setErrorMessage(null);
+      setM2(false);
     }, 3000);
 
     return () => {
@@ -70,6 +72,7 @@ export default function LandingPage() {
 
   const handleM2FaucetRequest = async () => {
     setLoadingM2(true);
+    setM2(true);
     const [err, success] = await to(m2RequestFaucet(
       M2_URL,
       addressM2
@@ -118,19 +121,18 @@ export default function LandingPage() {
   };
 
   return (
-    <Container>
+    <Container sx={{ position: 'relative'}}>
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          height: "100%"
+          height: "100%",
+          poisition: 'relative'
         }}
       >
-        {loadingM1 && <CircularProgress sx={{ position: 'absolute', top: '40%', left: '50%', transform: 'translate(-50%, -50%)' }} />}
-        {loadingM2 && <CircularProgress sx={{ position: 'absolute', top: '60%', left: '50%', transform: 'translate(-50%, -50%)' }} />}
-        {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account {mevm ? 1 : 10} MOV.</Alert>}
+        {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account {m2 ? 1000 : 10} MOV.</Alert>}
         {errorMessage && <Alert severity="error" sx={{ width: 300, marginBottom: 2 }}>{errorMessage}</Alert>}
 
         <div style={{ width: "300px" }}>
@@ -155,6 +157,9 @@ export default function LandingPage() {
             sx={{ marginBottom: 2 }}
           />
           <br />
+
+        {loadingM1 && <CircularProgress sx={{ position: 'absolute',  left: '50%' }} />}
+
           <Button
             onClick={handleRequest}
             variant="contained"
@@ -188,6 +193,7 @@ export default function LandingPage() {
             helperText={!isValidHex(addressM2) && addressM2 !== "" ? `Invalid address. Should be of the form: 0xab12... and be 32 bytes in length` : ""}
           />
           <br />
+          {loadingM2 && <CircularProgress sx={{ position: 'absolute',  left: '50%' }} />}
 
           <Button
             onClick={handleM2Request}
