@@ -5,6 +5,7 @@ import {sortTransactions} from "../utils";
 import {withResponseError} from "./client";
 import axios from "axios";
 
+
 export async function getTransactions(
   requestParameters: {start?: number; limit?: number},
   nodeUrl: string,
@@ -389,4 +390,27 @@ export async function mevmRequestFaucet(
   
   return res.data;
 
+}
+
+export async function m2RequestFaucet(
+  m2Url : string,
+  address : string,
+) : Promise<any> {
+
+  const requestData = {
+    FixedAmountRequest: {
+        recipient: address
+    }
+  };
+
+  const res = await axios.post(m2Url, requestData, {
+    headers : {
+      "Content-Type" : "application/json"
+    },
+  });
+
+  if(res.status !== 201) throw new Error(
+    res.data.error
+  );
+  return res.data;
 }

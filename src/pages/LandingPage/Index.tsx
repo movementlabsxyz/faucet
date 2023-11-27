@@ -1,150 +1,47 @@
 import React, { useEffect } from "react";
-import Typography from "@mui/material/Typography";
-import HeaderSearch from "../layout/Search/Index";
-import Box from "@mui/material/Box";
-import NetworkInfo from "../Analytics/NetworkInfo/NetworkInfo";
-import UserTransactionsPreview from "./UserTransactionsPreview";
-import Button from "@mui/material/Button";
-import { useState } from "react";
-import WaterDropIcon from '@mui/icons-material/WaterDrop';
-import { requestFaucet, requestFaucetWithGlobalSigner, mevmRequestFaucet } from "../../api"; 
-import { to } from "await-to-js";
-import TextField from "@mui/material/TextField";
-import Container from "@mui/material/Container";
-import Alert from "@mui/material/Alert";
-import CircularProgress from "@mui/material/CircularProgress";
+import { requestFaucetWithGlobalSigner, mevmRequestFaucet, m2RequestFaucet } from "../../api";
 import { AptosClient, FaucetClient, CoinClient } from "aptos";
-import { Wallet, useWallet } from "@aptos-labs/wallet-adapter-react";
-import { Switch } from "@mui/material";
-import FormControlLabel from '@mui/material/FormControlLabel';
+import Chain from "../../components/Chain";
 
 const RPC_URL = "https://seed-node1.movementlabs.xyz";
 const FAUCET_URL = "https://seed-node1.movementlabs.xyz";
 const MEVM_URL = "https://mevm.movementlabs.xyz/v1";
+const M2_URL = "https://sui.movementlabs.xyz/faucet";
 const faucetClient = new FaucetClient(FAUCET_URL, FAUCET_URL);
 const aptosClient = new AptosClient(RPC_URL);
 const coinClient = new CoinClient(aptosClient);
 
 export default function LandingPage() {
 
-  const [mevm, setMevm] = useState(false); 
-  const [success, setSuccess] = useState(false);
-  const [address, setAddress] = useState("");
-  const [errorMessage, setErrorMessage] = useState<string|null>(null);
-  const [loading, setLoading] = useState(false);
 
-  // decay the success state
-  useEffect(() => {
-
-    const timeout = setTimeout(() => {
-      setSuccess(false);
-      setErrorMessage(null);
-    }, 3000);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-
-  }, [success, errorMessage]);
-
-  const handleFaucetRequest = async () => {
-    setLoading(true);
-    const [err, success] = await to(requestFaucetWithGlobalSigner(
-      aptosClient, 
+  const m1FaucetRequest = async (address : string) => {
+    return requestFaucetWithGlobalSigner(
+      aptosClient,
       faucetClient,
       coinClient,
       FAUCET_URL,
       address
-    ));
-    if (success) {
-      setSuccess(true);
-    } else if(err) {
-      console.log(err);
-      setErrorMessage(err.message || "Failed to fund account.");
-    }
-    setLoading(false);
+    );
   };
 
-  const handleMevmFaucetRequest = async () => {
-    setLoading(true);
-    const [err, success] = await to(mevmRequestFaucet(
+  const m2FaucetRequest = async (address : string) => {
+    return m2RequestFaucet(
+      M2_URL,
+      address
+    )
+  };
+
+  const handleM1evmFaucetRequest = async (address : string) => {
+    return mevmRequestFaucet(
       MEVM_URL,
       address
-    ));
-    if (success) {
-      setSuccess(true);
-    } else if(err) {
-      console.log(err);
-      setErrorMessage(err.message || "Failed to fund account.");
-    }
-    setLoading(false);
-  };
-
-  const handleRequest = async () => {
-    if (mevm) await handleMevmFaucetRequest();
-    else await handleFaucetRequest();
-    
-  };
-
-  const handleFormSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    handleRequest(); // Use the wrapper method
-  };
-
-  const isValidHex = (str: string) => {
-    const regex = mevm ? /^0x[a-fA-F0-9]{40}$/  : /^0x[a-fA-F0-9]{64}$/;
-    return regex.test(str);
+    )
   };
 
   return (
-    <Container>
-      <Box 
-        sx={{
-          display: "flex", 
-          flexDirection: "column", 
-          alignItems: "center", 
-          justifyContent: "center", 
-          height: "100%"
-        }}
-      >
-        {loading && <CircularProgress sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />}
-        {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account {mevm ? 1 : 10} MOV.</Alert>}
-        {errorMessage && <Alert severity="error" sx={{ width: 300, marginBottom: 2 }}>{errorMessage}</Alert>}
-        <form onSubmit={handleFormSubmit}>
-          <TextField 
-            label="Account Address" 
-            variant="outlined" 
-            value={address} 
-            onChange={(e) => setAddress(e.target.value)} 
-            sx={{ width: 300, marginBottom: 2 }}
-            disabled={loading}
-            error={!isValidHex(address) && address !== ""}
-            helperText={!isValidHex(address) && address !== "" ? `Invalid address. Should be of the form: 0xab12... and be ${mevm ? '20' : '32'} bytes in length` : ""}
-          />
-          <br/>
-          <FormControlLabel
-            control={<Switch checked={mevm} onChange={() => setMevm(!mevm)} />}
-            label="MEVM account."
-            sx={{ marginBottom: 2 }}
-          />
-          <br/>
-          <Button
-            onClick={handleRequest}
-            variant="contained"
-            sx={{
-              width: 300,
-              borderRadius: 0,
-              color: 'white',
-              backgroundColor: '#1737FF',
-              '&:hover': {backgroundColor: 'rgb(16, 38, 178)'}
-            }}
-            disabled={loading}
-          >
-            <WaterDropIcon sx={{mr:1}} />
-            Get MOV
-          </Button>
-        </form>
-      </Box>
-    </Container>
+    <>
+   <Chain name="M1" amount={10} hasEvm={true} faucetRequest={m1FaucetRequest} evmRequest={handleM1evmFaucetRequest} />
+   <Chain name="M2" amount={1000} hasEvm={false} faucetRequest={m2FaucetRequest} evmRequest={handleM1evmFaucetRequest} />
+   </>
   );
 }
