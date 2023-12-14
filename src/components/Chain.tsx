@@ -13,15 +13,7 @@ import { AptosClient, FaucetClient, CoinClient } from "aptos";
 import { Switch } from "@mui/material";
 import FormControlLabel from '@mui/material/FormControlLabel';
 
-const RPC_URL = "https://seed-node1.movementlabs.xyz";
-const FAUCET_URL = "https://seed-node1.movementlabs.xyz";
-const MEVM_URL = "https://mevm.movementlabs.xyz/v1";
-const M2_URL = "https://sui.movementlabs.xyz/faucet";
-const faucetClient = new FaucetClient(FAUCET_URL, FAUCET_URL);
-const aptosClient = new AptosClient(RPC_URL);
-const coinClient = new CoinClient(aptosClient);
-
-export default function LandingPage({name, amount, hasEvm, faucetRequest, evmRequest} : any) {
+export default function LandingPage({ name, amount, hasEvm, faucetRequest, evmRequest }: any) {
 
     const [mevm, setMevm] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -46,13 +38,13 @@ export default function LandingPage({name, amount, hasEvm, faucetRequest, evmReq
 
     const handleRequest = async () => {
         setLoading(true);
-        const [err, success] = mevm ? await to(faucetRequest(address)) : await to(evmRequest(address));
+        const [err, success] = mevm ? await to(evmRequest(address)) : await to(faucetRequest(address));
         if (success) {
             setSuccess(true);
-          } else if (err) {
+        } else if (err) {
             console.log(err);
             setErrorMessage(err.message || "Failed to fund account.");
-          }
+        }
         setLoading(false);
     };
 
@@ -119,7 +111,7 @@ export default function LandingPage({name, amount, hasEvm, faucetRequest, evmReq
                         Get MOV
                     </Button>
                     {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account {amount} MOV</Alert>}
-                {errorMessage && <Alert severity="error" sx={{ width: 300, marginBottom: 2 }}>{errorMessage}</Alert>}
+                    {errorMessage && <Alert severity="error" sx={{ width: 300, marginBottom: 2 }}>{errorMessage}</Alert>}
                 </form>
             </Box>
         </Container>
