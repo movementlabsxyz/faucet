@@ -58,6 +58,8 @@ export default function LandingPage({ name, amount, hasEvm, faucetRequest, evmRe
         return regex.test(str);
     };
 
+    const _amount = mevm ? 1 : amount;
+
     return (
         <Container sx={{ position: 'relative' }}>
             <Box
@@ -110,7 +112,7 @@ export default function LandingPage({ name, amount, hasEvm, faucetRequest, evmRe
                         <WaterDropIcon sx={{ mr: 1 }} />
                         Get MOV
                     </Button>
-                    {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account {amount} MOV</Alert>}
+                    {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account {_amount} MOV</Alert>}
                     {errorMessage && <Alert severity="error" sx={{ width: 300, marginBottom: 2 }}>{errorMessage}</Alert>}
                 </form>
             </Box>
