@@ -298,12 +298,12 @@ export async function getValidatorState(
 
 export async function requestFaucet(
   aptosClient: AptosClient,
-  faucetClient: FaucetClient,
   faucetUrl: string,
   pubkey: string,
 ): Promise<any> {
 
-  const url = `${faucetUrl}/mint?&address=${pubkey}`;
+  const url = `${faucetUrl}/mint?address=${pubkey}`;
+  console.log(url);
   let txns = [];
   try {
     const response = await axios.post(url, {});
@@ -344,13 +344,11 @@ export async function requestFaucetWithGlobalSigner(
   Promise.all([
     await requestFaucet(
       aptosClient,
-      faucetClient,
       faucetUrl,
       PUBLIC_KEY,
     ),
     await requestFaucet(
       aptosClient,
-      faucetClient,
       faucetUrl,
       PUBLIC_KEY,
     )

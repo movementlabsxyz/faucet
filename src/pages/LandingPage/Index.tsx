@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { requestFaucetWithGlobalSigner, mevmRequestFaucet, m2RequestFaucet } from "../../api";
+import { requestFaucet, mevmRequestFaucet, m2RequestFaucet } from "../../api";
 import { AptosClient, FaucetClient, CoinClient } from "aptos";
 import Chain from "../../components/Chain";
 
@@ -15,10 +15,8 @@ export default function LandingPage() {
 
 
   const m1FaucetRequest = async (address: string) => {
-    return requestFaucetWithGlobalSigner(
+    return requestFaucet(
       aptosClient,
-      faucetClient,
-      coinClient,
       M1_FAUCET_URL,
       address
     );
