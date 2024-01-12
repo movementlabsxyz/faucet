@@ -3,13 +3,11 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
-import { requestFaucetWithGlobalSigner, mevmRequestFaucet, m2RequestFaucet } from "../api";
 import { to } from "await-to-js";
 import TextField from "@mui/material/TextField";
 import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
-import { AptosClient, FaucetClient, CoinClient } from "aptos";
 import { Switch } from "@mui/material";
 import FormControlLabel from '@mui/material/FormControlLabel';
 
@@ -108,9 +106,9 @@ export default function LandingPage({ name, amount, hasEvm, faucetRequest, evmRe
                         disabled={loading}
                     >
                         <WaterDropIcon sx={{ mr: 1 }} />
-                        Get MOV
+                        Get MOVE
                     </Button>
-                    {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account {amount} MOV</Alert>}
+                    {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account {amount} MOVE</Alert>}
                     {errorMessage && <Alert severity="error" sx={{ width: 300, marginBottom: 2 }}>{errorMessage}</Alert>}
                 </form>
             </Box>

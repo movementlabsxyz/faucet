@@ -297,11 +297,10 @@ export async function getValidatorState(
 }
 
 export async function requestFaucet(
-  aptosClient: AptosClient,
   faucetUrl: string,
   pubkey: string,
 ): Promise<any> {
-
+  const aptosClient = new AptosClient(faucetUrl);
   const url = `${faucetUrl}/mint?address=${pubkey}`;
   console.log(url);
   let txns = [];
@@ -321,48 +320,48 @@ export async function requestFaucet(
 
 }
 
-// NOTE: this is a private key for the faucet account, do not use it for anything else
-const PRIVATE_KEY = "0xb6003d3fe766b8b98700a1f6ba71258043f9b9a39052631341ca5bd2e336473b";
-const PUBLIC_KEY = "0xbf37798ec90ed4b98e146ee0250510debc69fa4a7a3c69811c503bb44c6a059f";
-// const encoder = new TextEncoder(); // This is a built-in JavaScript API for encoding text
+// // NOTE: this is a private key for the faucet account, do not use it for anything else
+// const PRIVATE_KEY = "0xb6003d3fe766b8b98700a1f6ba71258043f9b9a39052631341ca5bd2e336473b";
+// const PUBLIC_KEY = "0xbf37798ec90ed4b98e146ee0250510debc69fa4a7a3c69811c503bb44c6a059f";
+// // const encoder = new TextEncoder(); // This is a built-in JavaScript API for encoding text
 
-export const GLOBAL_SIGNER = AptosAccount.fromAptosAccountObject({
-  privateKeyHex: PRIVATE_KEY,
-  publicKeyHex: PUBLIC_KEY,
-  address: "0x348116b94c9b734068cd07635c969fd724e5aa08fb63fd2ea52fd7d7e35b0fde"
-});
+// export const GLOBAL_SIGNER = AptosAccount.fromAptosAccountObject({
+//   privateKeyHex: PRIVATE_KEY,
+//   publicKeyHex: PUBLIC_KEY,
+//   address: "0x348116b94c9b734068cd07635c969fd724e5aa08fb63fd2ea52fd7d7e35b0fde"
+// });
 
-export async function requestFaucetWithGlobalSigner(
-  aptosClient: AptosClient,
-  faucetClient: FaucetClient,
-  coinClient: CoinClient,
-  faucetUrl: string,
-  address: string,
-): Promise<any> {
+// export async function requestFaucetWithGlobalSigner(
+//   aptosClient: AptosClient,
+//   faucetClient: FaucetClient,
+//   coinClient: CoinClient,
+//   faucetUrl: string,
+//   address: string,
+// ): Promise<any> {
 
-  // double up the coins
-  Promise.all([
-    await requestFaucet(
-      aptosClient,
-      faucetUrl,
-      PUBLIC_KEY,
-    ),
-    await requestFaucet(
-      aptosClient,
-      faucetUrl,
-      PUBLIC_KEY,
-    )
-  ]);
+//   // double up the coins
+//   Promise.all([
+//     await requestFaucet(
+//       aptosClient,
+//       faucetUrl,
+//       PUBLIC_KEY,
+//     ),
+//     await requestFaucet(
+//       aptosClient,
+//       faucetUrl,
+//       PUBLIC_KEY,
+//     )
+//   ]);
 
-  const tx = await coinClient.transfer(
-    GLOBAL_SIGNER,
-    address,
-    1000000000
-  );
-  console.log(tx);
-  return tx;
+//   const tx = await coinClient.transfer(
+//     GLOBAL_SIGNER,
+//     address,
+//     1000000000
+//   );
+//   console.log(tx);
+//   return tx;
 
-}
+// }
 
 export async function mevmRequestFaucet(
   mevmUrl: string,
