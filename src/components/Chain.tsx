@@ -3,7 +3,6 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
-import { requestFaucetWithGlobalSigner, mevmRequestFaucet, m2RequestFaucet } from "../api";
 import { to } from "await-to-js";
 import TextField from "@mui/material/TextField";
 import Container from "@mui/material/Container";
@@ -76,9 +75,9 @@ export default function LandingPage({ name, amount, hasEvm, faucetRequest, evmRe
                     <h1 style={{ textAlign: "left" }}>{name}</h1>
                 </div>
 
-                <form onSubmit={handleFormSubmit}>
+                <form name={name} onSubmit={handleFormSubmit}>
                     <TextField
-                        label="Account Address"
+                        label={name + " Account Address"}
                         variant="outlined"
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
@@ -110,9 +109,9 @@ export default function LandingPage({ name, amount, hasEvm, faucetRequest, evmRe
                         disabled={loading}
                     >
                         <WaterDropIcon sx={{ mr: 1 }} />
-                        Get MOV
+                        Get MOVE
                     </Button>
-                    {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account {_amount} MOV</Alert>}
+                    {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account {_amount} MOVE</Alert>}
                     {errorMessage && <Alert severity="error" sx={{ width: 300, marginBottom: 2 }}>{errorMessage}</Alert>}
                 </form>
             </Box>
