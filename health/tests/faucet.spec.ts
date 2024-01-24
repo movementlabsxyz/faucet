@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const root = "http://localhost:3000"
+const root = "https://faucet.movementlabs.xyz/"
 const pageTitle = "Movement Faucet"
 const moveAddress = "0x8833c82387999a6547528e3f6c9c2089bada583e264a253fe49c66161f0ed542";
 const ethAddress = "0xC7A876aCC9198ca2C05a805b06AdAec68585d30c";
