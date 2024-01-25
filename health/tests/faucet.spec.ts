@@ -18,7 +18,7 @@ function health_log({
 }) {
 
   console.log(
-    `health_check="${health_check}" status="${status}" group="${group}" reason="${reason}""`
+    `{"health_check": "${health_check}", "status": "${status}", "group": "${group}", "reason": "${reason}"}`
   )
 
 }
