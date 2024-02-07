@@ -160,3 +160,9 @@ export function getPublicFunctionLineNumber(
 
   return 0;
 }
+
+
+export enum Network {
+  Testnet = 'testnet',
+  Devnet = 'devnet',
+}

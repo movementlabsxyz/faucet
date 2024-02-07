@@ -11,8 +11,9 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { AptosClient, FaucetClient, CoinClient } from "aptos";
 import { Switch } from "@mui/material";
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { Network } from "../utils";
 
-export default function LandingPage({ name, amount, hasEvm, faucetRequest, evmRequest }: any) {
+export default function LandingPage({ name, amount, hasEvm, faucetRequest, evmRequest, network, hasTestnet, toggleNetwork }: any) {
 
     const [mevm, setMevm] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -87,6 +88,11 @@ export default function LandingPage({ name, amount, hasEvm, faucetRequest, evmRe
                         helperText={!isValidHex(address, true) && address !== "" ? `Invalid address. Should be of the form: 0xab12... and be ${mevm ? '20' : '32'} bytes in length` : ""}
                     />
                     <br />
+                    {hasTestnet && <FormControlLabel
+                        control={<Switch checked={network == Network.Testnet} onChange={() => toggleNetwork()} />}
+                        label={"Testnet"}
+                        sx={{ marginBottom: 2 }}
+                    />}
                     {hasEvm && <FormControlLabel
                         control={<Switch checked={mevm} onChange={() => setMevm(!mevm)} />}
                         label="MEVM account"
