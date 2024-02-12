@@ -388,6 +388,10 @@ export async function mevmRequestFaucet(
     res.data.error.message
   );
 
+  if (res.data.error.message.code === -32000) throw new Error(
+    res.data.error.message
+  );
+
   console.log(res.data);
 
   return res.data;
