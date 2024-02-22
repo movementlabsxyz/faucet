@@ -3,23 +3,20 @@ import { useSearchParams, useNavigate } from 'react-router-dom'; // Assuming you
 import { requestFaucet, mevmRequestFaucet, m2RequestFaucet } from '../../api';
 import { AptosClient, FaucetClient, CoinClient } from 'aptos';
 import Chain from '../../components/Chain';
-import { FormControlLabel } from '@mui/material';
-import { Switch } from '@mui/material';
-import { Container } from '@mui/system';
 import { Network } from '../../utils';
 
 const NETWORK_URLS = {
   testnet: {
-    M1_URL: 'https://testnet.m1.movementlabs.xyz/v1',
-    M1_FAUCET_URL: 'https://testnet.m1.movementlabs.xyz/v1',
-    MEVM_M1_URL: 'https://mevm.testnet.m1.movementlabs.xyz/v1',
-    M2_URL: 'https://devnet.m2.movementlabs.xyz/faucet',
+    M1_URL: 'https://testnet.m1.movementlabs.xyz',
+    M1_FAUCET_URL: 'https://testnet.m1.movementlabs.xyz',
+    MEVM_M1_URL: 'https://mevm.testnet.m1.movementlabs.xyz',
+    M2_URL: 'https://sui.devnet.m2.movementlabs.xyz/faucet',
   },
   devnet: {
-    M1_URL: 'https://devnet.m1.movementlabs.xyz/v1',
-    M1_FAUCET_URL: 'https://devnet.m1.movementlabs.xyz/v1',
-    MEVM_M1_URL: 'https://mevm.devnet.m1.movementlabs.xyz/v1',
-    M2_URL: 'https://devnet.m2.movementlabs.xyz/faucet',
+    M1_URL: 'https://aptos.devnet.m1.movementlabs.xyz',
+    M1_FAUCET_URL: 'https://aptos.devnet.m1.movementlabs.xyz',
+    MEVM_M1_URL: 'https://mevm.devnet.m1.movementlabs.xyz',
+    M2_URL: 'https://sui.devnet.m2.movementlabs.xyz/faucet',
   },
 };
 
