@@ -16,8 +16,8 @@ const NETWORK_URLS = {
     M2_URL: 'https://sui.devnet.m2.movementlabs.xyz/faucet',
   },
   devnet: {
-    M1_URL: 'https://devnet.m1.movementlabs.xyz/v1',
-    M1_FAUCET_URL: 'https://devnet.m1.movementlabs.xyz/v1',
+    M1_URL: 'https://aptos.devnet.m1.movementlabs.xyz',
+    M1_FAUCET_URL: 'https://aptos.devnet.m1.movementlabs.xyz',
     MEVM_M1_URL: 'https://mevm.devnet.m1.movementlabs.xyz',
     M2_URL: 'https://sui.devnet.m2.movementlabs.xyz/faucet',
   },

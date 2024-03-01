@@ -306,7 +306,7 @@ export async function requestFaucet(
   console.log(url);
   let txns = [];
   try {
-    const response = await axios.post(url, {});
+    const response = await axios.get(url);
     if (response.status === 200) {
       txns = response.data;
     } else {
@@ -341,24 +341,12 @@ export async function requestFaucetWithGlobalSigner(
 ): Promise<any> {
 
   // double up the coins
-  Promise.all([
-    await requestFaucet(
-      aptosClient,
-      faucetUrl,
-      PUBLIC_KEY,
-    ),
+  const tx =
     await requestFaucet(
       aptosClient,
       faucetUrl,
       PUBLIC_KEY,
     )
-  ]);
-
-  const tx = await coinClient.transfer(
-    GLOBAL_SIGNER,
-    address,
-    1000000000
-  );
   console.log(tx);
   return tx;
 
