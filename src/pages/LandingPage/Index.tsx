@@ -36,12 +36,12 @@ export default function LandingPage() {
   const aptosClient = new AptosClient(M1_URL);
   const coinClient = new CoinClient(aptosClient);
 
-  useEffect(() => {
-    // Update state based on the URL parameter
-    if (network && Object.values(Network).includes(network as Network)) {
-      setCurrentNetwork(network as Network);
-    }
-  }, [network]);
+  // useEffect(() => {
+  //   // Update state based on the URL parameter
+  //   if (network && Object.values(Network).includes(network as Network)) {
+  //     setCurrentNetwork(network as Network);
+  //   }
+  // }, [network]);
 
   const toggleNetwork = () => {
     const newNetwork = currentNetwork === Network.Devnet ? Network.Testnet : Network.Devnet;
@@ -74,7 +74,7 @@ export default function LandingPage() {
 
   return (
     <>
-      <Chain name="M1" amount={10} hasEvm={true} hasTestnet={true} network={currentNetwork} toggleNetwork={toggleNetwork} set faucetRequest={m1FaucetRequest} evmRequest={handleM1evmFaucetRequest} />
+      <Chain name="M1" amount={10} hasEvm={true} hasTestnet={false} network={currentNetwork} toggleNetwork={toggleNetwork} set faucetRequest={m1FaucetRequest} evmRequest={handleM1evmFaucetRequest} />
       <Chain name="M2" amount={1000} hasEvm={false} faucetRequest={m2FaucetRequest} evmRequest={handleM1evmFaucetRequest} />
     </>
   );
