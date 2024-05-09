@@ -39,6 +39,7 @@ export default function LandingPage({ name, amount, hasEvm, faucetRequest, evmRe
     const handleRequest = async () => {
         setLoading(true);
         const [err, success] = mevm ? await to(evmRequest(address)) : await to(faucetRequest(address));
+        console.log(err, success);
         if (success) {
             setSuccess(true);
         } else if (err) {
