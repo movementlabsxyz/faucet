@@ -349,7 +349,6 @@ export async function requestFaucetWithGlobalSigner(
     )
   console.log(tx);
   return tx;
-
 }
 
 export async function mevmRequestFaucet(
@@ -379,7 +378,6 @@ export async function mevmRequestFaucet(
   console.log(res.data);
 
   return res.data;
-
 }
 
 export async function m2RequestFaucet(
@@ -393,16 +391,21 @@ export async function m2RequestFaucet(
     }
   };
 
+  console.log(requestData)
+
   const res = await axios.post(m2Url, requestData, {
     headers: {
       "Content-Type": "application/json"
     },
   });
 
-  if (res.status !== 201) throw new Error(
+  if (res.data.message == "Limit reached") {
+    throw new Error("Limit reached");
+  }
+
+  if (res.data.error !== null) throw new Error(
     res.data.error
   );
 
-  console.log(res.data);
   return res.data;
 }
