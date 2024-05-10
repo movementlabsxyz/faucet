@@ -1,4 +1,4 @@
-import {Stack} from "@mui/material";
+import { Stack } from "@mui/material";
 import {
   FormControl,
   OutlinedInput,
@@ -6,7 +6,7 @@ import {
   FormHelperText,
 } from "@mui/material";
 import React from "react";
-import {getFormattedBalanceStr} from "./IndividualPageContent/ContentValue/CurrencyValue";
+import { getFormattedBalanceStr } from "./IndividualPageContent/ContentValue/CurrencyValue";
 
 interface AmountTextFieldProps {
   amount: string;
@@ -24,13 +24,13 @@ export default function AmountTextField({
   return (
     <FormControl fullWidth>
       <Stack direction="row" justifyContent="space-between">
-        <FormHelperText sx={{fontSize: "1rem"}}>Enter Amount</FormHelperText>
+        <FormHelperText sx={{ fontSize: "1rem" }}>Enter Amount</FormHelperText>
       </Stack>
       <OutlinedInput
         notched
         value={amount}
         onChange={onAmountChange}
-        endAdornment={<InputAdornment position="end">MVMT</InputAdornment>}
+        endAdornment={<InputAdornment position="end">MOVE</InputAdornment>}
         placeholder={
           balance
             ? `Your balance: ${getFormattedBalanceStr(balance, undefined, 1)}`

@@ -7,10 +7,10 @@ import {
   Typography,
   Box,
 } from "@mui/material";
-import React, {useContext, useEffect, useState} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
-import {grey} from "../../themes/colors/aptosColorPalette";
-import {getStakeOperationAPTRequirement} from "./utils";
+import { grey } from "../../themes/colors/aptosColorPalette";
+import { getStakeOperationAPTRequirement } from "./utils";
 import StyledDialog from "../../components/StyledDialog";
 import StyledTooltip, {
   StyledLearnMoreTooltip,
@@ -28,15 +28,15 @@ import TransactionSucceededDialog from "./TransactionSucceededDialog";
 import useSubmitStakeOperation, {
   StakeOperation,
 } from "../../api/hooks/useSubmitStakeOperation";
-import {OCTA} from "../../constants";
-import {useGetDelegationState} from "../../api/hooks/useGetDelegationState";
-import {DelegationStateContext} from "./context/DelegationContext";
-import {AptosClient, Types} from "aptos";
-import {getAddStakeFee} from "../../api";
-import {Statsig} from "statsig-react";
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {useGlobalState} from "../../global-config/GlobalConfig";
-import {MINIMUM_APT_IN_POOL} from "./constants";
+import { OCTA } from "../../constants";
+import { useGetDelegationState } from "../../api/hooks/useGetDelegationState";
+import { DelegationStateContext } from "./context/DelegationContext";
+import { AptosClient, Types } from "aptos";
+import { getAddStakeFee } from "../../api";
+import { Statsig } from "statsig-react";
+import { useWallet } from "@aptos-labs/wallet-adapter-react";
+import { useGlobalState } from "../../global-config/GlobalConfig";
+import { MINIMUM_APT_IN_POOL } from "./constants";
 
 type StakeOperationDialogProps = {
   handleDialogClose: () => void;
@@ -55,18 +55,18 @@ export default function StakeOperationDialog({
   canWithdrawPendingInactive,
   stakes,
 }: StakeOperationDialogProps) {
-  const {accountResource, validator} = useContext(DelegationStateContext);
+  const { accountResource, validator } = useContext(DelegationStateContext);
 
   if (!validator || !accountResource) {
     return null;
   }
 
-  const {balance, lockedUntilSecs, rewardsRateYearly} = useGetDelegationState(
+  const { balance, lockedUntilSecs, rewardsRateYearly } = useGetDelegationState(
     accountResource,
     validator,
   );
   const percentageSelection = [0.1, 0.25, 0.5, 1]; // 0.1 === 10%
-  const {account, wallet} = useWallet();
+  const { account, wallet } = useWallet();
 
   const {
     submitStakeOperation,
@@ -94,7 +94,7 @@ export default function StakeOperationDialog({
     stakeOperation,
     Number(balance),
   );
-  const {suggestedMax, min, max} = minMax;
+  const { suggestedMax, min, max } = minMax;
 
   const onSubmitClick = async () => {
     Statsig.logEvent("submit_transaction_button_clicked", stakeOperation, {
@@ -255,7 +255,7 @@ export default function StakeOperationDialog({
           <ContentBoxSpaceBetween>
             <ContentRowSpaceBetween
               title={"Staking Fee"}
-              value={Number(addStakeFee) / OCTA + " MVMT"}
+              value={Number(addStakeFee) / OCTA + " MOVE"}
               tooltip={
                 <StyledLearnMoreTooltip
                   text={
@@ -291,9 +291,8 @@ export default function StakeOperationDialog({
       </DialogContent>
       <DialogActions>
         <StyledTooltip
-          title={`Minimum stake amount is ${min} MVMT and maximum stake amount is ${
-            Number(balance) / OCTA
-          } MVMT`}
+          title={`Minimum stake amount is ${min} MOVE and maximum stake amount is ${Number(balance) / OCTA
+            } MOVE`}
           disableHoverListener={isAmountValid}
           placement="top"
         >
@@ -303,14 +302,14 @@ export default function StakeOperationDialog({
               variant="primary"
               fullWidth
               disabled={!isAmountValid}
-              sx={{marginX: 2}}
+              sx={{ marginX: 2 }}
             >
               Deposit
             </Button>
           </Box>
         </StyledTooltip>
       </DialogActions>
-      <DialogContent sx={{textAlign: "center"}}>
+      <DialogContent sx={{ textAlign: "center" }}>
         <Typography variant="caption" color={grey[450]}>
           <div>
             Please do your own research. Aptos Labs is not responsible for the
@@ -366,12 +365,12 @@ export default function StakeOperationDialog({
           variant="primary"
           fullWidth
           disabled={amount === ""}
-          sx={{marginX: 2}}
+          sx={{ marginX: 2 }}
         >
           {stakeOperation === StakeOperation.UNLOCK ? "UNSTAKE" : "RESTAKE"}
         </Button>
       </DialogActions>
-      <DialogContent sx={{textAlign: "center"}}>
+      <DialogContent sx={{ textAlign: "center" }}>
         <Typography variant="caption" color={grey[450]}>
           <div>
             Please do your own research. Aptos Labs is not responsible for the
@@ -418,12 +417,12 @@ export default function StakeOperationDialog({
           variant="primary"
           fullWidth
           disabled={amount === ""}
-          sx={{marginX: 2}}
+          sx={{ marginX: 2 }}
         >
           WITHDRAW
         </Button>
       </DialogActions>
-      <DialogContent sx={{textAlign: "center"}}>
+      <DialogContent sx={{ textAlign: "center" }}>
         <Typography variant="caption" color={grey[450]}>
           <div>
             Please do your own research. Aptos Labs is not responsible for the

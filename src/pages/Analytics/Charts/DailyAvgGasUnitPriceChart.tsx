@@ -1,11 +1,11 @@
 import * as React from "react";
-import {DailyAvgGasData} from "../../../api/hooks/useGetAnalyticsData";
+import { DailyAvgGasData } from "../../../api/hooks/useGetAnalyticsData";
 import LineChart from "../Components/LineChart";
-import {getLabels} from "../utils";
-import {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
-import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import { getLabels } from "../utils";
+import { ChartRangeDays } from "../Components/ChartRangeDaysSelect";
+import { getFormattedBalanceStr } from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import ChartTitle from "../Components/ChartTitle";
-import {CardOutline} from "../../../components/Card";
+import { CardOutline } from "../../../components/Card";
 
 export function getDataset(data: DailyAvgGasData[], days: number): number[] {
   return data
@@ -38,7 +38,7 @@ export default function DailyAvgGasUnitPriceChart({
         tooltipsLabelFunc={(context: any) => {
           const priceInteger = Math.round(context.parsed.y).toString();
           const priceInAPT = getFormattedBalanceStr(priceInteger, 8);
-          return `${priceInAPT} MVMT`;
+          return `${priceInAPT} MOVE`;
         }}
       />
     </CardOutline>

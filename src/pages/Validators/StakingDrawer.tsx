@@ -8,9 +8,9 @@ import {
 } from "@mui/material";
 import * as React from "react";
 import SideDrawer from "../../components/SideDrawer";
-import {grey} from "../../themes/colors/aptosColorPalette";
-import {REWARDS_LEARN_MORE_LINK} from "./Components/Staking";
-import {Link} from "../../routing";
+import { grey } from "../../themes/colors/aptosColorPalette";
+import { REWARDS_LEARN_MORE_LINK } from "./Components/Staking";
+import { Link } from "../../routing";
 
 type StakingDrawerProps = {
   open: boolean;
@@ -21,8 +21,8 @@ const faqStakingData = [
     question: "What is delegated staking?",
     answer: (
       <React.Fragment>
-        As an MVMT holder, you can 'delegate' your MVMT to a delegation pool. The
-        total delegation pool is an aggregation of staked MVMT from various token
+        As an MOVE holder, you can 'delegate' your MOVE to a delegation pool. The
+        total delegation pool is an aggregation of staked MOVE from various token
         owners, and collectively staked. Aptos is a proof-of-stake network,
         which means that tokens are staked to{" "}
         <Link to={"#validators-section"}>validators</Link> in order to keep the
@@ -38,43 +38,43 @@ const faqStakingData = [
     ),
   },
   {
-    question: "Can anyone stake MVMT?",
-    answer: "Yes, anyone can stake MVMT.",
+    question: "Can anyone stake MOVE?",
+    answer: "Yes, anyone can stake MOVE.",
   },
   {
     question: "Is there a minimum stake?",
     answer:
-      "11 MVMT is the required minimum amount to stake. A refundable stake fee is deducted from the stake amount and returned at the end of the epoch.",
+      "11 MOVE is the required minimum amount to stake. A refundable stake fee is deducted from the stake amount and returned at the end of the epoch.",
   },
   {
-    question: "How can I stake MVMT?",
+    question: "How can I stake MOVE?",
     answer: (
       <React.Fragment>
-        You can stake MVMT directly by going to the{" "}
+        You can stake MOVE directly by going to the{" "}
         <Link to={"/validators/delegation"}>Explorer</Link> page and connecting
         your wallet. If you are using the Petra wallet, you should see the
         following flow:
         <br />
         <br />
-        <ol style={{marginLeft: "1em"}}>
+        <ol style={{ marginLeft: "1em" }}>
           <li>
             Visit Explorer’s validators page and select the delegations node
             that you’d like to stake your APTs to.
           </li>
           <li>
-            In the validator detail page, click “Stake” to starting staking MVMT
+            In the validator detail page, click “Stake” to starting staking MOVE
             with this validator.
           </li>
           <li>
             If you haven’t connected the wallet, you will be prompted to connect
             your Petra wallet first. Once you connect your wallet, you may start
-            staking your MVMT through the stake dialog and approve transactions
+            staking your MOVE through the stake dialog and approve transactions
             in your wallet.
           </li>
         </ol>
         <br />
-        Congratulations! You have successfully staked MVMT on Explorer! You can
-        also stake MVMT directly to a validator node through the{" "}
+        Congratulations! You have successfully staked MOVE on Explorer! You can
+        also stake MOVE directly to a validator node through the{" "}
         <Link
           to="https://aptos.dev/nodes/validator-node/operator/delegation-pool-operations/#perform-delegation-pool-operations"
           target="_blank"
@@ -86,9 +86,9 @@ const faqStakingData = [
     ),
   },
   {
-    question: "Can I unstake my MVMT anytime?",
+    question: "Can I unstake my MOVE anytime?",
     answer:
-      "You can unstake your MVMT at any time, but the funds will not be available until the next validator unlock date. The validator unlock period is 30 days, but the timing follows from when the delegation pool is initiated. Depending on when in the cycle you choose to unstake your MVMT, it could be as little as a few hours, or up to 30 days from whence you can withdraw your tokens. I.e. if you unstake 10 days into the 30 day cycle, you have to wait 20 days. If you unstake 18 days into the 30 day cycle, you have to wait 12 days. If you unstaked your tokens, and the the unlock date has passed, you will be able to withdraw the tokens.",
+      "You can unstake your MOVE at any time, but the funds will not be available until the next validator unlock date. The validator unlock period is 30 days, but the timing follows from when the delegation pool is initiated. Depending on when in the cycle you choose to unstake your MOVE, it could be as little as a few hours, or up to 30 days from whence you can withdraw your tokens. I.e. if you unstake 10 days into the 30 day cycle, you have to wait 20 days. If you unstake 18 days into the 30 day cycle, you have to wait 12 days. If you unstaked your tokens, and the the unlock date has passed, you will be able to withdraw the tokens.",
   },
   {
     question: "When can I withdraw funds?",
@@ -97,8 +97,8 @@ const faqStakingData = [
         There are two actions that you need to take: unstake and withdraw.{" "}
         <br />
         <br />
-        You can withdraw unstaked MVMT at any time as long as it is unlocked. If
-        you have staked MVMT, you will have to unstake first and wait for the
+        You can withdraw unstaked MOVE at any time as long as it is unlocked. If
+        you have staked MOVE, you will have to unstake first and wait for the
         funds to become unlocked. At that point in time, you can then withdraw
         it.
         <br />
@@ -116,14 +116,14 @@ const faqStakingData = [
         be withdrawn until you have completed unstaking.
         <br />
         <br />
-        <span style={{fontWeight: "bold"}}>Withdraw Pending</span> means you
+        <span style={{ fontWeight: "bold" }}>Withdraw Pending</span> means you
         have initiated unstaking those tokens, but they are still locked up and
         you have to wait for the next unlock date. These funds cannot be
         withdrawn until then. You can check the unlock date for your node by
         clicking on the node’s detailed page.
         <br />
         <br />
-        <span style={{fontWeight: "bold"}}>Withdraw Ready</span> means you can
+        <span style={{ fontWeight: "bold" }}>Withdraw Ready</span> means you can
         withdraw funds. When you unstake, all previously Withdraw Pending funds
         will be withdrawn.
       </React.Fragment>
@@ -138,9 +138,9 @@ const faqStakingData = [
 
 const faqRewardsData = [
   {
-    question: "How can I earn rewards by staking MVMT?",
+    question: "How can I earn rewards by staking MOVE?",
     answer:
-      "You can earn rewards based on the amount of MVMT you have staked. Your node operator takes a commission, so the rewards you accrue will be net of that.",
+      "You can earn rewards based on the amount of MOVE you have staked. Your node operator takes a commission, so the rewards you accrue will be net of that.",
   },
   {
     question: "Can the operator change their commission rate?",
@@ -149,7 +149,7 @@ const faqRewardsData = [
   {
     question: "How much can I expect to earn?",
     answer:
-      "The rewards you earn are calculated based on the amount of MVMT you have staked multiplied by the current annual rewards rate and the validator rewards performance minus the operator’s commission rate.",
+      "The rewards you earn are calculated based on the amount of MOVE you have staked multiplied by the current annual rewards rate and the validator rewards performance minus the operator’s commission rate.",
   },
   {
     question: "When do I start earning rewards?",
@@ -191,7 +191,7 @@ const faqValidatorData = [
         <br />
         <br />
         Validators start earning rewards when the delegation pool has at least
-        1M MVMT. Only active validators will earn rewards.
+        1M MOVE. Only active validators will earn rewards.
         <br />
         <br />
         However, please do your own research, Aptos labs is not responsible for
@@ -208,18 +208,18 @@ const faqValidatorData = [
 ];
 
 const faqData = [
-  {title: "Staking", data: faqStakingData},
-  {title: "Rewards", data: faqRewardsData},
-  {title: "Validators", data: faqValidatorData},
+  { title: "Staking", data: faqStakingData },
+  { title: "Rewards", data: faqRewardsData },
+  { title: "Validators", data: faqValidatorData },
 ];
 
-export function StakingDrawer({open, handleClick}: StakingDrawerProps) {
+export function StakingDrawer({ open, handleClick }: StakingDrawerProps) {
   const theme = useTheme();
 
   return (
     <SideDrawer open={open} toggleSideDrawer={handleClick}>
-      <List sx={{alignItems: "flex-start", margin: 3}}>
-        <Typography variant="h4" sx={{margin: 1, marginBottom: 3}}>
+      <List sx={{ alignItems: "flex-start", margin: 3 }}>
+        <Typography variant="h4" sx={{ margin: 1, marginBottom: 3 }}>
           Delegated Staking FAQ
         </Typography>
         {faqData.map((faqData, index) => {
@@ -230,8 +230,8 @@ export function StakingDrawer({open, handleClick}: StakingDrawerProps) {
                 index === 0
                   ? "staking-section"
                   : index === 1
-                  ? "rewards-section"
-                  : "validators-section"
+                    ? "rewards-section"
+                    : "validators-section"
               }
               sx={{
                 flexDirection: "column",
@@ -243,7 +243,7 @@ export function StakingDrawer({open, handleClick}: StakingDrawerProps) {
               <Typography variant="h5" paragraph>
                 {"I".repeat(index + 1) + ". " + faqData.title}
               </Typography>
-              {faqData.data.map(({question, answer}) => (
+              {faqData.data.map(({ question, answer }) => (
                 <ListItem
                   key={question}
                   sx={{
@@ -265,7 +265,7 @@ export function StakingDrawer({open, handleClick}: StakingDrawerProps) {
                   >
                     {answer}
                   </Typography>
-                  <Divider flexItem sx={{marginY: 1}} />
+                  <Divider flexItem sx={{ marginY: 1 }} />
                 </ListItem>
               ))}
             </ListItem>
@@ -273,7 +273,7 @@ export function StakingDrawer({open, handleClick}: StakingDrawerProps) {
         })}
         <Button
           variant="outlined"
-          sx={{margin: 1, marginTop: 2}}
+          sx={{ margin: 1, marginTop: 2 }}
           href={REWARDS_LEARN_MORE_LINK}
           target="_blank"
         >

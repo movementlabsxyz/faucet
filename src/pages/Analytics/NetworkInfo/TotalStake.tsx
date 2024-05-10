@@ -1,10 +1,10 @@
 import React from "react";
-import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
-import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import { useGetValidatorSet } from "../../../api/hooks/useGetValidatorSet";
+import { getFormattedBalanceStr } from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import MetricCard from "./MetricCard";
 
 export default function TotalStake() {
-  const {totalVotingPower} = useGetValidatorSet();
+  const { totalVotingPower } = useGetValidatorSet();
 
   return (
     <MetricCard
@@ -14,7 +14,7 @@ export default function TotalStake() {
           : "-"
       }
       label="Actively Staked"
-      tooltip="Amount of MVMT tokens currently held in staking pools."
+      tooltip="Amount of MOVE tokens currently held in staking pools."
     />
   );
 }

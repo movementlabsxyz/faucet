@@ -2,14 +2,14 @@ import React from "react";
 import MetricSection from "./MetricSection";
 import Subtitle from "./Text/Subtitle";
 import Body from "./Text/Body";
-import {Skeleton, Stack} from "@mui/material";
-import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
-import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import {useGetStakingRewardsRate} from "../../../api/hooks/useGetStakingRewardsRate";
-import {StyledLearnMoreTooltip} from "../../../components/StyledTooltip";
+import { Skeleton, Stack } from "@mui/material";
+import { useGetValidatorSet } from "../../../api/hooks/useGetValidatorSet";
+import { getFormattedBalanceStr } from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import { useGetStakingRewardsRate } from "../../../api/hooks/useGetStakingRewardsRate";
+import { StyledLearnMoreTooltip } from "../../../components/StyledTooltip";
 
 export const REWARDS_TOOLTIP_TEXT =
-  "Represents the Annual Percentage Rate (APR) that accrue on staked MVMT. Rewards are paid out by the network after each Epoch. APR is subject to change based on validator performance or in accordance with network specifications. There is no guarantee that the current APR will continue to apply in future periods.";
+  "Represents the Annual Percentage Rate (APR) that accrue on staked MOVE. Rewards are paid out by the network after each Epoch. APR is subject to change based on validator performance or in accordance with network specifications. There is no guarantee that the current APR will continue to apply in future periods.";
 export const REWARDS_LEARN_MORE_LINK =
   "https://aptos.dev/concepts/staking#rewards";
 
@@ -17,9 +17,9 @@ type StakingProps = {
   isSkeletonLoading: boolean;
 };
 
-export default function Staking({isSkeletonLoading}: StakingProps) {
-  const {totalVotingPower} = useGetValidatorSet();
-  const {rewardsRateYearly} = useGetStakingRewardsRate();
+export default function Staking({ isSkeletonLoading }: StakingProps) {
+  const { totalVotingPower } = useGetValidatorSet();
+  const { rewardsRateYearly } = useGetStakingRewardsRate();
 
   return !isSkeletonLoading ? (
     <MetricSection>
@@ -29,7 +29,7 @@ export default function Staking({isSkeletonLoading}: StakingProps) {
             ? getFormattedBalanceStr(totalVotingPower, undefined, 0)
             : "-"}
         </Subtitle>
-        <Body color="inherit">MVMT Staked</Body>
+        <Body color="inherit">MOVE Staked</Body>
       </Stack>
       <Stack direction="row" spacing={1} alignItems="center">
         <Body>{`${rewardsRateYearly}% APR Reward`}</Body>{" "}

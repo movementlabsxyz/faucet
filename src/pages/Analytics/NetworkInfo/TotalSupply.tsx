@@ -1,6 +1,6 @@
 import React from "react";
-import {useGetCoinSupplyLimit} from "../../../api/hooks/useGetCoinSupplyLimit";
-import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import { useGetCoinSupplyLimit } from "../../../api/hooks/useGetCoinSupplyLimit";
+import { getFormattedBalanceStr } from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import MetricCard from "./MetricCard";
 
 export default function TotalSupply() {
@@ -14,7 +14,7 @@ export default function TotalSupply() {
           : "-"
       }
       label="Total Supply"
-      tooltip="Amount of MVMT tokens flowing through the Aptos network."
+      tooltip="Amount of MOVE tokens flowing through the Aptos network."
     />
   );
 }

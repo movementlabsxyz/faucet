@@ -1,10 +1,10 @@
-import {useState} from "react";
+import { useState } from "react";
 import AmountTextField from "../../../components/AmountTextField";
 import React from "react";
-import {StakeOperation} from "../../../api/hooks/useSubmitStakeOperation";
-import {MINIMUM_APT_IN_POOL} from "../constants";
-import {OCTA} from "../../../constants";
-import {Types} from "aptos";
+import { StakeOperation } from "../../../api/hooks/useSubmitStakeOperation";
+import { MINIMUM_APT_IN_POOL } from "../constants";
+import { OCTA } from "../../../constants";
+import { Types } from "aptos";
 
 function sanitizeInput(input: string): string {
   const digitsAndDecimals = /[0-9.]/g;
@@ -64,16 +64,16 @@ const useAmountInput = (stakeOperation: StakeOperation) => {
             stakedAmount - Number(amount) < MINIMUM_APT_IN_POOL &&
             amount !== stakedAmount.toString()
           ) {
-            return `If you unlock ${amount} MVMTT, your total staked amount ${stakedAmountMVMTTPT will be unlocked.`;
+            return `If you unlock ${amount} MOVET, your total staked amount ${stakedAmountMOVETPT will be unlocked.`;
           } else if (
             amount &&
             unlockedAmount + Number(amount) < MINIMUM_APT_IN_POOL &&
             amount !== stakedAmount.toString()
           ) {
             if (stakedAmount - MINIMUM_APT_IN_POOL > MINIMUM_APT_IN_POOL) {
-              return `If you unlock ${amount} MVMTT, ${MINIMUM_APT_IN_POOLMVMTPT will be unlocked.`;
+              return `If you unlock ${ amount } MOVET, ${MINIMUM_APT_IN_POOLMOVEPT will be unlocked.`;
             } else {
-              return `If you unlock ${amount} MVMT, your total staked amount ${stakedAmount}MVMTT will be unlocked.`;
+              return `If you unlock ${ amount } MOVE, your total staked amount ${ stakedAmount }MOVET will be unlocked.`;
             }
           }
           break;
@@ -90,28 +90,28 @@ const useAmountInput = (stakeOperation: StakeOperation) => {
             stakedAmount + Number(amount) < MINIMUM_APT_IN_POOL &&
             amount !== unlockedAmount.toString()
           ) {
-            return `If you restake ${amount} MVMT, your total unlocked amount ${unlockedAmount}MVMTTTT will be restaked.`;
+            return `If you restake ${ amount } MOVE, your total unlocked amount ${ unlockedAmount }MOVETTT will be restaked.`;
           } else if (
             amount &&
             unlockedAmount - Number(amount) < MINIMUM_APT_IN_POOL &&
             amount !== unlockedAmount.toString()
           ) {
-            return `If you restake ${amount} MVMT, your total unlocked amount ${unlockedAmount} MVMT will be restaked.`;
+            return `If you restake ${ amount } MOVE, your total unlocked amount ${ unlockedAmount } MOVE will be restaked.`;
           } else if (
             amount &&
             stakedAmount + Number(amount) < MINIMUM_APT_IN_POOL &&
             amount !== unlockedAmount.toString()
           ) {
             if (unlockedAmount - MINIMUM_APT_IN_POOL > MINIMUM_APT_IN_POOL) {
-              return `If you restake ${amount} MVMT, ${MINIMUM_APT_IN_POOL}MVMTTT will be restaked.`;
+              return `If you restake ${ amount } MOVE, ${ MINIMUM_APT_IN_POOL }MOVETT will be restaked.`;
             } else {
-              return `If you restake ${amount} MVMTTT, your total unlocked amount ${unlockedAmounMVMTTAPT will be restaked.`;
+              return `If you restake ${ amount } MOVETT, your total unlocked amount ${unlockedAmounMOVETAPT will be restaked.`;
             }
           }
           break;
         case StakeOperation.STAKE:
           if (stakedAmount === 0) {
-            return "Minimum stake amount is 11 MVMT.";
+            return "Minimum stake amount is 11 MOVE.";
           }
       }
     }

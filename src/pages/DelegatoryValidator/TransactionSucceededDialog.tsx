@@ -10,13 +10,13 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import StyledDialog from "../../components/StyledDialog";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import {grey} from "../../themes/colors/aptosColorPalette";
-import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
-import {Statsig} from "statsig-react";
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import { grey } from "../../themes/colors/aptosColorPalette";
+import { StakeOperation } from "../../api/hooks/useSubmitStakeOperation";
+import { Statsig } from "statsig-react";
+import { useWallet } from "@aptos-labs/wallet-adapter-react";
 
 type TransactionSucceededDialogProps = {
   handleDialogClose: () => void;
@@ -34,7 +34,7 @@ export default function TransactionSucceededDialog({
   stakeOperation,
 }: TransactionSucceededDialogProps) {
   const theme = useTheme();
-  const {account, wallet} = useWallet();
+  const { account, wallet } = useWallet();
   const [copyTooltipOpen, setCopyTooltipOpen] = useState<boolean>(false);
 
   const copyAddress = async (_: React.MouseEvent<HTMLButtonElement>) => {
@@ -58,20 +58,20 @@ export default function TransactionSucceededDialog({
       case StakeOperation.UNLOCK:
         return (
           <Box>
-            <Typography variant="body2" sx={{fontSize: 12}}>
+            <Typography variant="body2" sx={{ fontSize: 12 }}>
               {"You’ve successfully unlocked "}
-              <span style={{fontWeight: 600}}>{amount}</span>
-              {" MVMT"}
+              <span style={{ fontWeight: 600 }}>{amount}</span>
+              {" MOVE"}
             </Typography>
           </Box>
         );
       case StakeOperation.WITHDRAW:
         return (
           <Box>
-            <Typography variant="body2" sx={{fontSize: 12}}>
+            <Typography variant="body2" sx={{ fontSize: 12 }}>
               {"You’ve successfully withdrawn "}
-              <span style={{fontWeight: 600}}>{amount}</span>
-              {" MVMT"}
+              <span style={{ fontWeight: 600 }}>{amount}</span>
+              {" MOVE"}
             </Typography>
           </Box>
         );
@@ -79,13 +79,13 @@ export default function TransactionSucceededDialog({
       case StakeOperation.STAKE:
         return (
           <Box>
-            <Typography variant="body2" sx={{fontSize: 12}}>
+            <Typography variant="body2" sx={{ fontSize: 12 }}>
               Transaction is in progress.
             </Typography>
-            <Typography variant="body2" sx={{fontSize: 12}}>
+            <Typography variant="body2" sx={{ fontSize: 12 }}>
               {"Soon you will see your deposit of "}
-              <span style={{fontWeight: 600}}>{amount}</span>
-              {" MVMT in the staking pool."}
+              <span style={{ fontWeight: 600 }}>{amount}</span>
+              {" MOVE in the staking pool."}
             </Typography>
           </Box>
         );
@@ -104,9 +104,8 @@ export default function TransactionSucceededDialog({
         <Stack
           direction="row"
           sx={{
-            backgroundColor: `${
-              theme.palette.mode === "dark" ? grey[600] : grey[50]
-            }`,
+            backgroundColor: `${theme.palette.mode === "dark" ? grey[600] : grey[50]
+              }`,
             paddingLeft: "inherit",
             marginX: 1,
             borderRadius: 1,
@@ -115,7 +114,7 @@ export default function TransactionSucceededDialog({
         >
           <Grid item xs zeroMinWidth>
             <Typography variant="caption">Transaction Address</Typography>
-            <Typography variant="body2" style={{overflowWrap: "break-word"}}>
+            <Typography variant="body2" style={{ overflowWrap: "break-word" }}>
               {transactionHash}
             </Typography>
           </Grid>
@@ -124,13 +123,12 @@ export default function TransactionSucceededDialog({
               sx={{
                 color: "inherit",
                 "&:hover": {
-                  backgroundColor: `${
-                    theme.palette.mode === "dark" ? grey[500] : grey[300]
-                  }`,
+                  backgroundColor: `${theme.palette.mode === "dark" ? grey[500] : grey[300]
+                    }`,
                 },
               }}
               onClick={copyAddress}
-              endIcon={<ContentCopyIcon sx={{opacity: "0.75", mr: 1}} />}
+              endIcon={<ContentCopyIcon sx={{ opacity: "0.75", mr: 1 }} />}
             />
           </Tooltip>
         </Stack>
@@ -142,7 +140,7 @@ export default function TransactionSucceededDialog({
           target="_blank"
           variant="primary"
           fullWidth
-          sx={{marginX: 3}}
+          sx={{ marginX: 3 }}
         >
           View Transaction
         </Button>

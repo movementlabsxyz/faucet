@@ -90,8 +90,8 @@ export function APTCurrencyValue({
 
   return (
     <CurrencyValue
-      {...{amount, decimals, fixedDecimalPlaces}}
-      currencyCode="MVMT"
+      {...{ amount, decimals, fixedDecimalPlaces }}
+      currencyCode="MOVE"
     />
   );
 }

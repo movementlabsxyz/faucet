@@ -1,4 +1,4 @@
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import {
   Button,
   Skeleton,
@@ -10,14 +10,14 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import {AptosClient, Types} from "aptos";
-import React, {useContext, useEffect, useState} from "react";
-import {Statsig} from "statsig-react";
-import {getCanWithdrawPendingInactive} from "../../api";
-import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
-import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
-import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
-import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import { AptosClient, Types } from "aptos";
+import React, { useContext, useEffect, useState } from "react";
+import { Statsig } from "statsig-react";
+import { getCanWithdrawPendingInactive } from "../../api";
+import { useGetAccountAPTBalance } from "../../api/hooks/useGetAccountAPTBalance";
+import { useGetDelegatorStakeInfo } from "../../api/hooks/useGetDelegatorStakeInfo";
+import { StakeOperation } from "../../api/hooks/useSubmitStakeOperation";
+import { APTCurrencyValue } from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import StyledTooltip, {
   StyledLearnMoreTooltip,
 } from "../../components/StyledTooltip";
@@ -25,14 +25,14 @@ import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
-import {useGlobalState} from "../../global-config/GlobalConfig";
-import {assertNever} from "../../utils";
+import { useGlobalState } from "../../global-config/GlobalConfig";
+import { assertNever } from "../../utils";
 import MyDepositsStatusTooltip from "./Components/MyDepositsStatusTooltip";
 import StakingStatusIcon, {
   StakingStatus,
   STAKING_STATUS_STEPS,
 } from "./Components/StakingStatusIcon";
-import {DelegationStateContext} from "./context/DelegationContext";
+import { DelegationStateContext } from "./context/DelegationContext";
 import StakeOperationDialog from "./StakeOperationDialog";
 import {
   getStakeOperationAPTRequirement,
@@ -50,7 +50,7 @@ const MyDepositsCells = Object.freeze({
 
 type Column = keyof typeof MyDepositsCells;
 
-function MyDepositsSectionHeaderCell({column}: {column: Column}) {
+function MyDepositsSectionHeaderCell({ column }: { column: Column }) {
   switch (column) {
     case "amount":
       return (
@@ -59,7 +59,7 @@ function MyDepositsSectionHeaderCell({column}: {column: Column}) {
           tooltip={
             <StyledLearnMoreTooltip text="Estimated current total amount including principals and rewards earned" />
           }
-          sx={{paddingLeft: 3}}
+          sx={{ paddingLeft: 3 }}
         />
       );
     case "status":
@@ -86,7 +86,7 @@ function MyDepositsSectionHeaderCell({column}: {column: Column}) {
         <GeneralTableHeaderCell
           textAlignRight={true}
           header="ACTIONS"
-          sx={{paddingRight: 3}}
+          sx={{ paddingRight: 3 }}
         />
       );
     default:
@@ -112,9 +112,9 @@ type MyDepositsSectionCellProps = {
   canWithdrawPendingInactive: Types.MoveValue;
 };
 
-function AmountCell({stake}: MyDepositsSectionCellProps) {
+function AmountCell({ stake }: MyDepositsSectionCellProps) {
   return (
-    <GeneralTableCell sx={{paddingLeft: 3}}>
+    <GeneralTableCell sx={{ paddingLeft: 3 }}>
       <APTCurrencyValue amount={stake.toString()} />
     </GeneralTableCell>
   );
@@ -145,8 +145,8 @@ function RewardEarnedCell({
     status === StakingStatus.STAKED
       ? stakePrincipals?.activePrincipals
       : status === StakingStatus.WITHDRAW_PENDING
-      ? stakePrincipals?.pendingInactivePrincipals
-      : undefined;
+        ? stakePrincipals?.pendingInactivePrincipals
+        : undefined;
 
   const rewardsEarned =
     principalsAmount && Number(stake) > principalsAmount
@@ -154,7 +154,7 @@ function RewardEarnedCell({
       : undefined;
 
   return (
-    <GeneralTableCell sx={{textAlign: "right"}}>
+    <GeneralTableCell sx={{ textAlign: "right" }}>
       {status === StakingStatus.WITHDRAW_READY || canWithdrawPendingInactive ? (
         "N/A"
       ) : rewardsEarned === undefined ? (
@@ -172,7 +172,7 @@ function ActionsCell({
   stakes,
   canWithdrawPendingInactive,
 }: MyDepositsSectionCellProps) {
-  const {account} = useWallet();
+  const { account } = useWallet();
   const balance = useGetAccountAPTBalance(account?.address!);
   const requirement = getStakeOperationAPTRequirement(
     stakes,
@@ -194,9 +194,9 @@ function ActionsCell({
     }
   }
   return (
-    <GeneralTableCell sx={{textAlign: "right", paddingRight: 3}}>
+    <GeneralTableCell sx={{ textAlign: "right", paddingRight: 3 }}>
       <StyledTooltip
-        title={`You can't ${getButtonTextFromStatus().toLocaleLowerCase()} because minimum MVMT requirement is not met`}
+        title={`You can't ${getButtonTextFromStatus().toLocaleLowerCase()} because minimum MOVE requirement is not met`}
         disableHoverListener={!buttonDisabled}
       >
         <span>
@@ -204,7 +204,7 @@ function ActionsCell({
             variant="primary"
             size="small"
             onClick={handleClickOpen}
-            sx={{width: "30px", maxHeight: "40px"}}
+            sx={{ width: "30px", maxHeight: "40px" }}
             disabled={buttonDisabled}
           >
             <Typography>{getButtonTextFromStatus()}</Typography>
@@ -229,7 +229,7 @@ export default function MyDepositsSection({
   setIsMyDepositsSectionSkeletonLoading,
   isSkeletonLoading,
 }: MyDepositsSectionProps) {
-  const {accountResource, validator} = useContext(DelegationStateContext);
+  const { accountResource, validator } = useContext(DelegationStateContext);
 
   if (!validator || !accountResource) {
     return null;
@@ -238,12 +238,12 @@ export default function MyDepositsSection({
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const columns = isOnMobile ? DEFAULT_COLUMNS_MOBILE : DEFAULT_COLUMNS;
-  const {connected, account, wallet} = useWallet();
-  const {stakes} = useGetDelegatorStakeInfo(
+  const { connected, account, wallet } = useWallet();
+  const { stakes } = useGetDelegatorStakeInfo(
     account?.address!,
     validator.owner_address,
   );
-  const {stakePrincipals, isLoading: isStakeActivityLoading} =
+  const { stakePrincipals, isLoading: isStakeActivityLoading } =
     getStakeOperationPrincipals(account?.address!, validator.owner_address);
 
   // sc get_stake returns (active, inactive, pending_inactive), which translates to
@@ -273,7 +273,7 @@ export default function MyDepositsSection({
     fetchData();
   }, [validator.owner_address, state.network_value]);
 
-  function MyDepositRow({stake, status}: MyDepositRowProps) {
+  function MyDepositRow({ stake, status }: MyDepositRowProps) {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const handleClose = () => {
       setDialogOpen(false);
@@ -281,7 +281,7 @@ export default function MyDepositsSection({
     const handleClickOpen = () => {
       Statsig.logEvent(
         getStakeOperationFromStakingStatus(status, canWithdrawPendingInactive) +
-          "_button_clicked",
+        "_button_clicked",
         validator?.owner_address,
         {
           wallet_address: account?.address ?? "",
