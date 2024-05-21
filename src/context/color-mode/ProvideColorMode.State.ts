@@ -2,6 +2,8 @@ import {useMemo, useState, useEffect, useLayoutEffect} from "react";
 import {createTheme, responsiveFontSizes} from "@mui/material";
 import getDesignTokens from "../../themes/theme";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import './fonts.css';
+
 
 export interface ColorModeContext {
   toggleColorMode: () => void;
@@ -57,6 +59,9 @@ const useProvideColorMode = () => {
 
   theme = createTheme(theme, {
     typography: {
+      root: {
+      fontFamily: 'TWKEverett-Medium, Arial, sans-serif',
+      },
       h1: {
         fontSize: "2.5rem",
         [theme.breakpoints.up("sm")]: {
