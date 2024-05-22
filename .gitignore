@@ -9,7 +9,7 @@
 /coverage
 
 # production
-# /build
+/build
 
 # IDEs and editors
 /.idea
@@ -32,4 +32,3 @@ yarn-error.log*
 movement-explorer.txt
 
 yarn.lock
-build

@@ -67,18 +67,18 @@ export default function Chains({ name,eventName, language, amount, isEvm, hasTes
             setErrorMessage(res.error || "Failed to fund account.");
         }
 
-        (window as any).dataLayer.push({'event':eventName,'request_success':status});
+        // (window as any).dataLayer.push({'event':eventName,'request_success':status});
 
-        // (window as any).gtag('event', 'getmove', {
-        //     'gtagIP': (window as any).gtagIP,
-        //     'href': location.href,
-        //     'time': Date.now(),
-        //     'address': address,
-        //     'status': status,
-        //     'token': token,
-        //     'type': name,
-        //     'error': res.error||"none",
-        //   });
+        (window as any).gtag('event', eventName, {
+            'gtagIP': (window as any).gtagIP,
+            'href': location.href,
+            'time': Date.now(),
+            'address': address,
+            'value': status,
+            'token': token,
+            'type': name,
+            'error': res.error||"none",
+          });
         setToken(null);
         setLoading(false);
     };
