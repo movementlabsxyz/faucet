@@ -300,15 +300,21 @@ export async function requestFaucet(
   aptosClient: AptosClient,
   faucetUrl: string,
   pubkey: string,
+  token:string
 ): Promise<any> {
 
-  const url = `${faucetUrl}/mint?address=${pubkey}`;
-  console.log(url);
+  const url = `${faucetUrl}?address=${pubkey}`;
   let txns = [];
+  const headers = {
+    'Token': token,
+  };
   try {
-    const response = await axios.get(url);
+    const response = await axios.get(url,{headers});
     if (response.status === 200) {
-      txns = response.data;
+      if (response.data.error_message) {
+        return {error: response.data.error_message};
+      }
+      return {success:response.data};
     } else {
       throw new Error(`Faucet issue: ${response.status}`);
     }
@@ -316,8 +322,6 @@ export async function requestFaucet(
     console.error("Failed to fund account with faucet:", error);
     throw error;
   }
-
-  return Promise.all(txns.map((txn: string) => aptosClient.waitForTransaction(txn)))
 
 }
 
@@ -346,6 +350,7 @@ export async function requestFaucetWithGlobalSigner(
       aptosClient,
       faucetUrl,
       PUBLIC_KEY,
+      ''
     )
   console.log(tx);
   return tx;
@@ -354,12 +359,13 @@ export async function requestFaucetWithGlobalSigner(
 export async function mevmRequestFaucet(
   mevmUrl: string,
   address: string,
+  token: string,
 ): Promise<any> {
 
   const requestData = {
     jsonrpc: "2.0",
     id: 1,
-    method: "eth_faucet",
+    method: "eth_batch_faucet",
     params: [
       address
     ]
@@ -367,22 +373,26 @@ export async function mevmRequestFaucet(
 
   const res = await axios.post(mevmUrl, requestData, {
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "Token": token
     }
   });
 
-  if (res.status !== 200) throw new Error(
-    res.data.error.message
-  );
-
-  console.log(res.data);
-
-  return res.data;
+  if(res.status !== 200) {
+    return {error: res.data};
+  }else{
+    if(res.data.error){
+      return {error: res.data.error.message};
+    }else{
+      return {success:res.data};
+    }
+  }
 }
 
 export async function m2RequestFaucet(
   m2Url: string,
   address: string,
+  token: string,
 ): Promise<any> {
 
   const requestData = {
@@ -390,22 +400,26 @@ export async function m2RequestFaucet(
       recipient: address
     }
   };
+  const myHeaders = new Headers();
+  myHeaders.append("Token", token);
+  myHeaders.append("Content-Type", "application/json");
+  const requestOptions:any = {
+    method: "POST",
+    headers: myHeaders,
+    body: JSON.stringify(requestData),
+    redirect: "follow"
+  };
 
-  console.log(requestData)
+  try{
+    const res:any = await fetch(m2Url, requestOptions) .then((response) => response.text());
+    const res1 = JSON.parse(res);
 
-  const res = await axios.post(m2Url, requestData, {
-    headers: {
-      "Content-Type": "application/json"
-    },
-  });
-
-  if (res.data.message == "Limit reached") {
-    throw new Error("Limit reached");
+    if (res1.code == 200) {
+      return {success:res1};
+    }else{
+      return {error:res1.message?.message||res1.message};
+    }
+  }catch(e){
+    return {error:'Limit reached'};
   }
-
-  if (res.data.error !== null) throw new Error(
-    res.data.error
-  );
-
-  return res.data;
 }
