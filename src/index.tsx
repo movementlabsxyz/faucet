@@ -6,7 +6,6 @@ import {BrowserRouter} from "react-router-dom";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import ExplorerRoutes from "./ExplorerRoutes";
 import {
-  Wallet,
   AptosWalletAdapterProvider,
   NetworkName,
 } from "@aptos-labs/wallet-adapter-react";
@@ -25,7 +24,7 @@ import {TrustWallet} from "@trustwallet/aptos-wallet-adapter";
 import {WelldoneWallet} from "@welldone-studio/aptos-wallet-adapter";
 
 import * as Sentry from "@sentry/react";
-import {BrowserTracing} from "@sentry/tracing";
+// import {BrowserTracing} from "@sentry/tracing";
 
 import ReactGA from "react-ga4";
 import {initGTM} from "./api/hooks/useGoogleTagManager";
@@ -51,7 +50,7 @@ if (window.location.origin.includes("explorer.devnet.aptos.dev")) {
 
 Sentry.init({
   dsn: "https://531160c88f78483491d129c02be9f774@o1162451.ingest.sentry.io/6249755",
-  integrations: [new BrowserTracing()],
+  // integrations: [new BrowserTracing()],
   environment: process.env.NODE_ENV,
   enabled: process.env.NODE_ENV == "production",
 

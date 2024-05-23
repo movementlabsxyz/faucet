@@ -11,25 +11,22 @@ import {ReactComponent as LinkedInLogo} from "../../assets/linkedin.svg";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import SvgIcon from "@mui/material/SvgIcon";
 
-// import {ReactComponent as LogoFullB} from "../../assets/svg/logob.svg";
-// import {ReactComponent as LogoFullW} from "../../assets/svg/logow.svg";
-
 import logob from "../../assets/svg/logob.svg";
 import logow from "../../assets/svg/logow.svg";
 import {Link} from "../../routing";
 
 const socialLinks = [
-  {title: "Git", url: "https://github.com/aptos-labs", icon: GithubLogo},
+  {title: "Git", url: "https://github.com/movementlabsxyz", icon: GithubLogo},
   {
     title: "Discord",
-    url: "https://discord.com/invite/aptoslabs",
+    url: "https://discord.gg/movementlabsxyz",
     icon: DiscordLogo,
   },
-  {title: "Twitter", url: "https://twitter.com/aptoslabs/", icon: TwitterLogo},
-  {title: "Medium", url: "https://aptoslabs.medium.com/", icon: MediumLogo},
+  {title: "Twitter", url: "https://twitter.com/movementlabsxyz/", icon: TwitterLogo},
+  {title: "Medium", url: "https://medium.com/@movementlabsxyz", icon: MediumLogo},
   {
     title: "LinkedIn",
-    url: "https://www.linkedin.com/company/aptoslabs/",
+    url: "https://www.linkedin.com/company/movementlabsxyz/",
     icon: LinkedInLogo,
   },
 ];
@@ -56,8 +53,8 @@ export default function Footer() {
         >
           <Grid xs="auto" container justifyContent="start">
             <Link
-              // color="inherit"
-              to=""
+              color="inherit"
+              to={"https://movementlabs.xyz/"}
               target="_blank"
               sx={{width: "3rem", mb: {xs: 2, md: 0}, mr: {md: 2}}}
             >
@@ -99,7 +96,7 @@ export default function Footer() {
             >
               {/* <Link
                 color="inherit"
-                to="https://aptoslabs.com/privacy"
+                to="https://movementlabsxyz.xy/privacy"
                 target="_blank"
                 sx={{
                   fontSize: "0.8rem",
@@ -110,7 +107,7 @@ export default function Footer() {
               </Link>
               <Link
                 color="inherit"
-                to="https://aptoslabs.com/terms"
+                to="https://movementlabsxyz.xyz/terms"
                 target="_blank"
                 sx={{
                   fontSize: "0.8rem",
@@ -133,11 +130,11 @@ export default function Footer() {
               spacing={3}
               direction="row"
             >
-              {/* {socialLinks.map((link) => (
+              {socialLinks.map((link) => (
                 <Grid key={link.title}>
                   <Link
                     color="inherit"
-                    to={"link.url"}
+                    to={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     title={link.title}
@@ -147,7 +144,7 @@ export default function Footer() {
                     <SvgIcon component={link.icon} inheritViewBox />
                   </Link>
                 </Grid>
-              ))} */}
+              ))}
             </Grid>
           </Grid>
         </Grid>
