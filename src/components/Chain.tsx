@@ -151,7 +151,7 @@ export default function Chains({ name,eventName, language, amount, isEvm, hasTes
                     {isDark &&
                         <ReCAPTCHA
                             ref={recaptchaRef}
-                            sitekey="6LeNltspAAAAAECHmsdf8w29UFF3ZiIrvscSkMTi"
+                            sitekey="6Lc9tOUpAAAAAJrG2Ppvf1mJYV-wcn31c22Cn-O1"
                             // size="invisible"
                             hl="en"
                             onChange={onChangeRe}
@@ -160,7 +160,7 @@ export default function Chains({ name,eventName, language, amount, isEvm, hasTes
                         {!isDark &&
                             <ReCAPTCHA
                                 ref={recaptchaRef}
-                                sitekey="6LeNltspAAAAAECHmsdf8w29UFF3ZiIrvscSkMTi"
+                                sitekey="6Lc9tOUpAAAAAJrG2Ppvf1mJYV-wcn31c22Cn-O1"
                                 // size="invisible"
                                 hl="en"
                                 onChange={onChangeRe}
