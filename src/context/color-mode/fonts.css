@@ -1,6 +1,18 @@
 @font-face {
-    font-family: 'TWKEverett-Medium';
-    src: url('./fonts/TWKEverett-Medium.ttf') format('truetype');
+    font-family: 'TWKEverett-Regular';
+    src: url('./fonts/TWKEverett-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
   }
+@font-face {
+  font-family: 'TWKEverett-Mono';
+  src: url('./fonts/TWKEverett-Mono.ttf') format('truetype');
+  font-weight: normal;
+  font-style: nromal;
+}
+@font-face {
+  font-family: 'TWKEverett-Medium';
+  src: url('./fonts/TWKEverett-Medium.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}

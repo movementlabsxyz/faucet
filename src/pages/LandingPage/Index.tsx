@@ -9,53 +9,29 @@ import Box from "@mui/material/Box";
 import "./hover.css"
 
 
-const NETWORK_URLS = {
-  testnet: {
-    M1_URL: 'https://aptos.testnet.m1.movementlabs.xyz',
-    M1_FAUCET_URL: 'https://aptos.testnet.m1.movementlabs.xyz',
-    MEVM_M1_URL: 'https://mevm.testnet.m1.movementlabs.xyz',
-    M2_URL: 'https://sui.devnet.m2.movementlabs.xyz/faucet/web',
-  },
-  devnet: {
-    M1_URL: 'https://aptos.devnet.m1.movementlabs.xyz',
-    M1_FAUCET_URL: process.env.APTOS_DEVNET_M1_FAUCET_URL || 'https://aptos.devnet.m1.movementlabs.xyz/batch_mint',
-    MEVM_M1_URL: process.env.APTOS_DEVNET_MEVM_M1_URL || 'https://mevm.devnet.m1.movementlabs.xyz',
-    M2_URL: process.env.APTOS_DEVNET_M2_FAUCET_URL || 'https://sui.devnet.m2.movementlabs.xyz/faucet/web',
-  },
+const CHAIN = {
+  movement: {network: 'testnet', url: 'https://aptos.testnet.movementlabs.xyz', language: 'aptos'},
+  m1: {network: 'devnet', url: 'https://aptos.devnet.m1.movementlabs.xyz', language: 'aptos'},
+  mevm: {network: 'devnet', url: 'https://mevm.devnet.m1.movementlabs.xyz', language: 'evm'},
+  m2: {network: 'devnet', url: 'https://sui.devnet.m2.movementlabs.xyz/faucet/web', language: 'sui'}
 };
 
 
 export default function LandingPage() {
-  const [searchParams] = useSearchParams(); // Reads the network param from the URL
-  const network = searchParams.get('network');
-  const navigate = useNavigate();
-  const [currentNetwork, setCurrentNetwork] = useState(Network.Devnet);
-  const [language, setLanguage] = useState('move');
-
-
-
-  const handleLanguage = (event: any, newLanguage: any) => {
-    if (newLanguage !== null) {
-      setLanguage(newLanguage);
+  const [network, setNetwork] = useState('movement');
+  const handleNetwork = (event: any, value: any) => {
+    if (value !== null) {
+      setNetwork(value);
     }
   };
 
-  // URLs based on the current network
-  const { M1_URL, M1_FAUCET_URL, MEVM_M1_URL, M2_URL } = NETWORK_URLS[currentNetwork] || NETWORK_URLS.devnet;
 
-  const aptosClient = new AptosClient(M1_URL);
-  // const coinClient = new CoinClient(aptosClient);
-
-  const toggleNetwork = () => {
-    const newNetwork = currentNetwork === Network.Devnet ? Network.Testnet : Network.Devnet;
-    setCurrentNetwork(newNetwork);
-    navigate(`/?network=${newNetwork}`); // Update the URL to reflect the new network
-  };
 
   const m1FaucetRequest = async (address: string, token: string) => {
+  const aptosClient = new AptosClient(CHAIN.m1.url);
     return requestFaucet(
       aptosClient,
-      M1_FAUCET_URL,
+      CHAIN.m1.url,
       address,
       token
     );
@@ -63,7 +39,7 @@ export default function LandingPage() {
 
   const m2FaucetRequest = async (address: string, token: string) => {
     return m2RequestFaucet(
-      M2_URL,
+      CHAIN.m2.url,
       address,
       token
     )
@@ -71,28 +47,19 @@ export default function LandingPage() {
 
   const handleM1evmFaucetRequest = async (address: string, token: string) => {
     return mevmRequestFaucet(
-      MEVM_M1_URL,
+      CHAIN.mevm.url,
       address,
       token
     )
   };
 
   const style = { width: "100%", height: "5rem", lineHeight: 0.5, fontFamily: "TWKEverett-Medium" }
-  const testnet = { width: "100%", height: "5rem", lineHeight: 0.5, fontFamily: "TWKEverett-Medium" }
   const text = { width: "100px", height: "5rem", lineHeight: 0.5, fontFamily: "TWKEverett-Medium" }
-
-  const hover = {
-    border: "2px",
-    '& :hover': {
-      borderColor: "#FFDA34",
-    }
-
-  };
 
   return (
     <><Box
       sx={{
-        fontFamily: "TWKEverett-Medium",
+        fontFamily: "TWKEverett-Regular",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -104,49 +71,49 @@ export default function LandingPage() {
       <div style={{ width: "300px" }}>
         <h1 style={{ textAlign: "left" }}>Faucets</h1>
       </div>
-      <Chain name="Move" eventName="movement_apt_request" language={language} amount={1} isEvm={false} hasTestnet={false} network={currentNetwork} faucetRequest={m1FaucetRequest} />
-      <Chain name="Aptos" eventName="m1_apt_request" language={language} amount={1} isEvm={false} hasTestnet={false} network={currentNetwork} faucetRequest={m1FaucetRequest} />
-      <Chain name="MEVM" eventName="m1_evm_request" language={language} amount={1} isEvm={true} hasTestnet={false} network={currentNetwork} faucetRequest={handleM1evmFaucetRequest} />
-      <Chain name="Sui" eventName="m2_sui_request" language={language} amount={1} isEvm={false} hasTestnet={false} network={currentNetwork} faucetRequest={m2FaucetRequest} />
+      <Chain name="Movement" eventName="movement_apt_request" language={CHAIN.movement.language} amount={1} isEvm={false} network={network} faucetRequest={m1FaucetRequest} />
+      <Chain name="M1" eventName="m1_apt_request" language={CHAIN.m1.language} amount={1} isEvm={false} network={network} faucetRequest={m1FaucetRequest} />
+      <Chain name="MEVM" eventName="m1_evm_request" language={CHAIN.mevm.language} amount={1} isEvm={true} network={network} faucetRequest={handleM1evmFaucetRequest} />
+      <Chain name="M2" eventName="m2_sui_request" language={CHAIN.m2.language} amount={1} isEvm={false} network={network} faucetRequest={m2FaucetRequest} />
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
         <div>
           <div>
-            <h2 style={{ textAlign: "left" }}>Testnets</h2>
+            <h3 style={{ fontFamily: "TWKEverett-Regular", textAlign: "left" }}>Testnets</h3>
           </div>
           <div className="network">
           <ToggleButtonGroup
             color="primary"
-            value={language}
+            value={network}
             exclusive
-            onChange={handleLanguage}
+            onChange={handleNetwork}
           >
             <ToggleButton
-              sx={style} value="move">
-              <div style={testnet}><h1>Movement</h1>{"{APTOS}"}</div>
+              sx={style} value="movement">
+              <div style={style}><h2>Movement</h2>{"{APTOS}"}</div>
             </ToggleButton>
           </ToggleButtonGroup>
           </div>
         </div>
         <div style={{ margin: "0 2rem" }}>
           <div style={{ width: "250px" }}>
-            <h2 style={{ textAlign: "left" }}>Devnets</h2>
+            <h3 style={{ fontFamily: "TWKEverett-Regular", textAlign: "left"}}>Devnets</h3>
           </div>
           <div
             className="network"
           >
             <ToggleButtonGroup
               color="primary"
-              value={language}
+              value={network}
               exclusive
-              onChange={handleLanguage}
+              onChange={handleNetwork}
             >
-              <ToggleButton sx={{ ...style }} value="aptos">
+              <ToggleButton sx={{ ...style }} value="m1">
                 <div style={text}><h2>M1</h2>{"{APTOS}"}</div>
               </ToggleButton>
               <ToggleButton sx={{ ...style }} value="mevm">
                 <div style={text}><h2>M1</h2>{"{MEVM}"}</div>
               </ToggleButton>
-              <ToggleButton sx={{ ...style }} value="sui">
+              <ToggleButton sx={{ ...style }} value="m2">
                 <div style={text}><h2>M2</h2>{"{SUI}"}</div>
               </ToggleButton>
             </ToggleButtonGroup>

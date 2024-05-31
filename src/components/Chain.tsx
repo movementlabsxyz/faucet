@@ -14,7 +14,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { Network } from "../utils";
 import ReCAPTCHA from "react-google-recaptcha";
 
-export default function Chains({ name,eventName, language, amount, isEvm, hasTestnet, network, faucetRequest }: any) {
+export default function Chains({ name,eventName, language, amount, isEvm, network, faucetRequest }: any) {
 
     const [success, setSuccess] = useState(false);
     const [address, setAddress] = useState("");
@@ -96,10 +96,10 @@ export default function Chains({ name,eventName, language, amount, isEvm, hasTes
     const _amount = amount;
 
     return (
-        name?.toLowerCase() == language?.toLowerCase() && <Container sx={{ position: 'relative' }}>
+        name?.toLowerCase() == network?.toLowerCase() && <Container sx={{ position: 'relative' }}>
             <Box
                 sx={{
-                    fontFamily: "TWKEverett-Medium",
+                    fontFamily: "TWKEverett-Regular",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
@@ -112,11 +112,11 @@ export default function Chains({ name,eventName, language, amount, isEvm, hasTes
 
                 <form name={name} onSubmit={handleFormSubmit}>
                     <TextField
-                        label={name + " Address"}
+                        label={language + " Address"}
                         variant="outlined"
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
-                        sx={{ width: 300, marginBottom: 2, fontFamily: "TWKEverett-Medium" }}
+                        sx={{ width: 300, marginBottom: 2, fontFamily: "TWKEverett-Regular" }}
                         disabled={loading}
                         error={!isValidHex(address, true) && address !== ""}
                         helperText={!isValidHex(address, true) && address !== "" ? `Invalid address. Should be of the form: 0xab12... and be ${isEvm ? '20' : '32'} bytes in length` : ""}
@@ -129,13 +129,13 @@ export default function Chains({ name,eventName, language, amount, isEvm, hasTes
                     />} */}
                     <br />
 
-                    {loading && <CircularProgress sx={{ position: 'absolute', left: '50%', fontFamily: "TWKEverett-Medium" }} />}
+                    {loading && <CircularProgress sx={{ position: 'absolute', left: '50%', fontFamily: "TWKEverett-Regular" }} />}
 
                     <Button
                         onClick={handleRequest}
                         variant="contained"
                         sx={{
-                            fontFamily: "TWKEverett-Medium",
+                            fontFamily: "TWKEverett-Regular",
                             width: 300,
                             borderRadius: 0,
                             color: 'white',
