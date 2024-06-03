@@ -33,7 +33,9 @@ export default function LandingPage() {
   const [currentNetwork, setCurrentNetwork] = useState(Network.Devnet);
   const [language, setLanguage] = useState('aptos');
 
-  
+  useEffect(() => {
+    navigate(`/?network=${currentNetwork}`); 
+  },[]);
 
   const handleLanguage = (event: any, newLanguage: any) => {
     if (newLanguage !== null) {
