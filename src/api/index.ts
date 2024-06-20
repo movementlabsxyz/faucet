@@ -1,4 +1,5 @@
 import { AptosAccount, AptosClient, FaucetClient, Types, CoinClient } from "aptos";
+import { Aptos } from "@aptos-labs/ts-sdk"
 import { OCTA } from "../constants";
 import { isNumeric } from "../pages/utils";
 import { sortTransactions } from "../utils";
@@ -337,8 +338,11 @@ export const GLOBAL_SIGNER = AptosAccount.fromAptosAccountObject({
   address: "0x348116b94c9b734068cd07635c969fd724e5aa08fb63fd2ea52fd7d7e35b0fde"
 });
 
-export async function requestFromFaucet (faucetUrl: FaucetClient, address : string) {
-  const response = await faucetUrl.fundAccount(address, 1000000000);
+export async function requestFromFaucet (faucetClient: FaucetClient, aptos: Aptos, address : string) {
+  const response = await faucetClient.fundAccount(address, 1000000000);
+  // const response = await aptos.fundAccount({accountAddress: address, amount: 1000000000});
+  const tx = await response;
+
   console.log(response)
   return response;
 }

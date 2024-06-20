@@ -5,6 +5,7 @@
   "dependencies": {
     "@apollo/client": "^3.7.10",
     "@aptos-labs/aptos-names-connector": "^0.0.2",
+    "@aptos-labs/ts-sdk": "^1.20.0",
     "@aptos-labs/wallet-adapter-mui-design": "^0.3.2",
     "@aptos-labs/wallet-adapter-react": "^1.0.5",
     "@blocto/aptos-wallet-adapter-plugin": "^0.1.4",

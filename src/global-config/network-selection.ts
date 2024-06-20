@@ -46,16 +46,17 @@ export function useNetworkSelector() {
     network: NetworkName,
     {replace = false}: {replace?: boolean} = {},
   ) {
-    if (!isValidNetworkName(network)) return;
-    setSearchParams(
-      (prev) => {
-        const newParams = new URLSearchParams(prev);
-        newParams.set("network", network);
-        return newParams;
-      },
-      {replace},
-    );
-    writeSelectedNetworkToLocalStorage(network);
+    // TODO: uncomment this when isValidNetworkName is implemented
+    // if (!isValidNetworkName(network)) return;
+    // setSearchParams(
+    //   (prev) => {
+    //     const newParams = new URLSearchParams(prev);
+    //     newParams.set("network", network);
+    //     return newParams;
+    //   },
+    //   {replace},
+    // );
+    // writeSelectedNetworkToLocalStorage(network);
   }
 
   // on init check for existence of network query param, if not present, check local storage for a previously selected network. Then set query param to the network defined in local storage.

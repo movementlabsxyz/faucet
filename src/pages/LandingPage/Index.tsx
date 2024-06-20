@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom'; // Assuming you're using React Router v6
 import { requestFromFaucet, requestFaucet, mevmRequestFaucet, m2RequestFaucet } from '../../api';
 import { AptosClient, FaucetClient, CoinClient } from 'aptos';
+import { Aptos, AptosConfig } from '@aptos-labs/ts-sdk';
 import Chain from '../../components/Chain';
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { Network } from '../../utils';
@@ -10,7 +11,7 @@ import "./hover.css"
 
 
 const CHAIN = {
-  movement: {network: 'testnet', url: 'https://aptos.testnet.suzuka.movementlabs.xyz/v1/', faucetUrl: 'https://faucet.testnet.suzuka.movementlabs.xyz', language: 'aptos'},
+  movement: {network: 'testnet', url: 'https://aptos.testnet.suzuka.movementlabs.xyz/v1', faucetUrl: 'https://faucet.testnet.suzuka.movementlabs.xyz', language: 'aptos'},
   m1: {network: 'devnet', url: 'https://aptos.devnet.m1.movementlabs.xyz', language: 'aptos'},
   mevm: {network: 'devnet', url: 'https://mevm.devnet.m1.movementlabs.xyz', language: 'evm'},
   m2: {network: 'devnet', url: 'https://sui.devnet.m2.movementlabs.xyz/faucet/web', language: 'sui'}
@@ -27,8 +28,10 @@ export default function LandingPage() {
 
   const movementFaucetRequest = async (address: string, token: string) => {
     const faucetClient = new FaucetClient(CHAIN.movement.url, CHAIN.movement.faucetUrl);
+    const aptos = new Aptos(new AptosConfig({fullnode: CHAIN.movement.url, faucet: CHAIN.movement.faucetUrl}));
       return requestFromFaucet(
         faucetClient,
+        aptos,
         address
       );
     };
