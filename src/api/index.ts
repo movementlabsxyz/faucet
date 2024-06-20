@@ -336,25 +336,31 @@ export const GLOBAL_SIGNER = AptosAccount.fromAptosAccountObject({
   address: "0x348116b94c9b734068cd07635c969fd724e5aa08fb63fd2ea52fd7d7e35b0fde"
 });
 
-export async function requestFaucetWithGlobalSigner(
-  aptosClient: AptosClient,
-  faucetClient: FaucetClient,
-  coinClient: CoinClient,
-  faucetUrl: string,
-  address: string,
-): Promise<any> {
+export async function requestFromFaucet (faucetUrl: FaucetClient, address : string) {
 
-  // double up the coins
-  const tx =
-    await requestFaucet(
-      aptosClient,
-      faucetUrl,
-      PUBLIC_KEY,
-      ''
-    )
-  console.log(tx);
+  const tx = await faucetUrl.fundAccount(address, 1000000000, 30);
   return tx;
 }
+
+// export async function requestFaucetWithGlobalSigner(
+//   aptosClient: AptosClient,
+//   faucetClient: FaucetClient,
+//   coinClient: CoinClient,
+//   faucetUrl: string,
+//   address: string,
+// ): Promise<any> {
+
+//   // double up the coins
+//   const tx =
+//     await requestFaucet(
+//       aptosClient,
+//       faucetUrl,
+//       PUBLIC_KEY,
+//       ''
+//     )
+//   console.log(tx);
+//   return tx;
+// }
 
 export async function mevmRequestFaucet(
   mevmUrl: string,

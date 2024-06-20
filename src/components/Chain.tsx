@@ -142,21 +142,22 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
                             backgroundColor: '#1737FF',
                             '&:hover': { backgroundColor: 'rgb(16, 38, 178)' }
                         }}
-                        disabled={loading||token===null||!isValidHex(address, true)}
+                        // disabled={loading||token===null||!isValidHex(address, true)}
                     >
                         <WaterDropIcon sx={{ mr: 1}} />
                         Get MOVE
                     </Button>
                     <div>
-                    {isDark &&
-                        <ReCAPTCHA
-                            ref={recaptchaRef}
-                            sitekey="6Ldjt-UpAAAAANRZMth7DIcfzDBSRWRIsr22XsxQ"
-                            // size="invisible"
-                            hl="en"
-                            onChange={onChangeRe}
-                            theme="dark"
-                        />}
+                    {isDark && true
+                        // <ReCAPTCHA
+                        //     ref={recaptchaRef}
+                        //     sitekey="6Ldjt-UpAAAAANRZMth7DIcfzDBSRWRIsr22XsxQ"
+                        //     // size="invisible"
+                        //     hl="en"
+                        //     onChange={onChangeRe}
+                        //     theme="dark"
+                        // />
+                    }
                         {!isDark &&
                             <ReCAPTCHA
                                 ref={recaptchaRef}

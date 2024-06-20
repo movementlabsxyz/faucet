@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom'; // Assuming you're using React Router v6
-import { requestFaucet, mevmRequestFaucet, m2RequestFaucet } from '../../api';
-import { AptosClient, CoinClient } from 'aptos';
+import { requestFromFaucet, requestFaucet, mevmRequestFaucet, m2RequestFaucet } from '../../api';
+import { AptosClient, FaucetClient, CoinClient } from 'aptos';
 import Chain from '../../components/Chain';
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { Network } from '../../utils';
@@ -10,7 +10,7 @@ import "./hover.css"
 
 
 const CHAIN = {
-  movement: {network: 'testnet', url: 'https://aptos.testnet.movementlabs.xyz', language: 'aptos'},
+  movement: {network: 'testnet', url: 'https://aptos.testnet.suzuka.movementlabs.xyz/v1/', faucetUrl: 'https://faucet.testnet.suzuka.movementlabs.xyz/v1', language: 'aptos'},
   m1: {network: 'devnet', url: 'https://aptos.devnet.m1.movementlabs.xyz', language: 'aptos'},
   mevm: {network: 'devnet', url: 'https://mevm.devnet.m1.movementlabs.xyz', language: 'evm'},
   m2: {network: 'devnet', url: 'https://sui.devnet.m2.movementlabs.xyz/faucet/web', language: 'sui'}
@@ -25,10 +25,17 @@ export default function LandingPage() {
     }
   };
 
+  const movementFaucetRequest = async (address: string, token: string) => {
+    const faucetClient = new FaucetClient(CHAIN.movement.url, CHAIN.movement.faucetUrl);
+      return requestFromFaucet(
+        faucetClient,
+        address
+      );
+    };
 
 
   const m1FaucetRequest = async (address: string, token: string) => {
-  const aptosClient = new AptosClient(CHAIN.m1.url);
+  const aptosClient = new AptosClient(CHAIN.movement.url);
     return requestFaucet(
       aptosClient,
       CHAIN.m1.url,
@@ -71,7 +78,7 @@ export default function LandingPage() {
       <div style={{ width: "300px" }}>
         <h1 style={{ textAlign: "left" }}>Faucets</h1>
       </div>
-      <Chain name="Movement" eventName="movement_apt_request" language={CHAIN.movement.language} amount={1} isEvm={false} network={network} faucetRequest={m1FaucetRequest} />
+      <Chain name="Movement" eventName="movement_apt_request" language={CHAIN.movement.language} amount={1} isEvm={false} network={network} faucetRequest={movementFaucetRequest} />
       <Chain name="M1" eventName="m1_apt_request" language={CHAIN.m1.language} amount={1} isEvm={false} network={network} faucetRequest={m1FaucetRequest} />
       <Chain name="MEVM" eventName="m1_evm_request" language={CHAIN.mevm.language} amount={1} isEvm={true} network={network} faucetRequest={handleM1evmFaucetRequest} />
       <Chain name="M2" eventName="m2_sui_request" language={CHAIN.m2.language} amount={1} isEvm={false} network={network} faucetRequest={m2FaucetRequest} />
@@ -96,7 +103,7 @@ export default function LandingPage() {
         </div>
         <div style={{ margin: "0 2rem" }}>
           <div style={{ width: "250px" }}>
-            <h3 style={{ fontFamily: "TWKEverett-Regular", textAlign: "left"}}>Devnets</h3>
+            <h3 style={{ fontFamily: "TWKEverett-Regular", textAlign: "left"}}>Legacy Devnets</h3>
           </div>
           <div
             className="network"
