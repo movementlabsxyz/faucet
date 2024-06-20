@@ -59,13 +59,17 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
         
         let status = false;
         const res = await faucetRequest(address,token);
-        
-        if (res && res.success) {
-            setSuccess(true);
-            status = true;
-        } else{
+        if (res.error) {
             setErrorMessage(res.error || "Failed to fund account.");
+        } else if (res) {
+            {
+                setSuccess(true);
+                status = true;
+            }
+                
+            
         }
+        
 
         // (window as any).dataLayer.push({'event':eventName,'request_success':status});
 

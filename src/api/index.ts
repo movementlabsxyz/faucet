@@ -338,10 +338,8 @@ export const GLOBAL_SIGNER = AptosAccount.fromAptosAccountObject({
 });
 
 export async function requestFromFaucet (faucetUrl: FaucetClient, address : string) {
-  const tx = `${faucetUrl.faucetUrl}/mint?auth_key=${address}&amount=${1000000000}&return_txns=true`;
-  console.log(tx)
-  const response = await axios.get(tx);
-  // const tx = await faucetUrl.fundAccount(address, 1000000000, 30);
+  const response = await faucetUrl.fundAccount(address, 1000000000);
+  console.log(response)
   return response;
 }
 
