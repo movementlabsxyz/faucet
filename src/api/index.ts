@@ -4,6 +4,7 @@ import { isNumeric } from "../pages/utils";
 import { sortTransactions } from "../utils";
 import { withResponseError } from "./client";
 import axios from "axios";
+import Header from "../pages/layout/Header";
 
 
 export async function getTransactions(
@@ -337,9 +338,11 @@ export const GLOBAL_SIGNER = AptosAccount.fromAptosAccountObject({
 });
 
 export async function requestFromFaucet (faucetUrl: FaucetClient, address : string) {
-
-  const tx = await faucetUrl.fundAccount(address, 1000000000, 30);
-  return tx;
+  const tx = `${faucetUrl.faucetUrl}/mint?auth_key=${address}&amount=${1000000000}&return_txns=true`;
+  console.log(tx)
+  const response = await axios.get(tx);
+  // const tx = await faucetUrl.fundAccount(address, 1000000000, 30);
+  return response;
 }
 
 // export async function requestFaucetWithGlobalSigner(

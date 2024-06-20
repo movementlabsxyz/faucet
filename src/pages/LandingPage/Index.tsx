@@ -10,7 +10,7 @@ import "./hover.css"
 
 
 const CHAIN = {
-  movement: {network: 'testnet', url: 'https://aptos.testnet.suzuka.movementlabs.xyz/v1/', faucetUrl: 'https://faucet.testnet.suzuka.movementlabs.xyz/v1', language: 'aptos'},
+  movement: {network: 'testnet', url: 'https://aptos.testnet.suzuka.movementlabs.xyz/v1/', faucetUrl: 'https://faucet.testnet.suzuka.movementlabs.xyz', language: 'aptos'},
   m1: {network: 'devnet', url: 'https://aptos.devnet.m1.movementlabs.xyz', language: 'aptos'},
   mevm: {network: 'devnet', url: 'https://mevm.devnet.m1.movementlabs.xyz', language: 'evm'},
   m2: {network: 'devnet', url: 'https://sui.devnet.m2.movementlabs.xyz/faucet/web', language: 'sui'}
