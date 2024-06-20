@@ -343,7 +343,7 @@ export async function requestFromFaucet (faucetClient: FaucetClient, aptos: Apto
   // const response = await aptos.fundAccount({accountAddress: address, amount: 1000000000});
   const tx = await response;
 
-  console.log(response)
+  // console.log(response)
   return response;
 }
 
