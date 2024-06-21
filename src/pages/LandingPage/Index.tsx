@@ -81,10 +81,10 @@ export default function LandingPage() {
       <div style={{ width: "300px" }}>
         <h1 style={{ textAlign: "left" }}>Faucets</h1>
       </div>
-      <Chain name="Movement" eventName="movement_apt_request" language={CHAIN.movement.language} amount={1} isEvm={false} network={network} faucetRequest={movementFaucetRequest} />
-      <Chain name="M1" eventName="m1_apt_request" language={CHAIN.m1.language} amount={1} isEvm={false} network={network} faucetRequest={m1FaucetRequest} />
+      <Chain name="Movement" eventName="movement_apt_request" language={CHAIN.movement.language} amount={10} isEvm={false} network={network} faucetRequest={movementFaucetRequest} />
+      {/* <Chain name="M1" eventName="m1_apt_request" language={CHAIN.m1.language} amount={1} isEvm={false} network={network} faucetRequest={m1FaucetRequest} />
       <Chain name="MEVM" eventName="m1_evm_request" language={CHAIN.mevm.language} amount={1} isEvm={true} network={network} faucetRequest={handleM1evmFaucetRequest} />
-      <Chain name="M2" eventName="m2_sui_request" language={CHAIN.m2.language} amount={1} isEvm={false} network={network} faucetRequest={m2FaucetRequest} />
+      <Chain name="M2" eventName="m2_sui_request" language={CHAIN.m2.language} amount={1} isEvm={false} network={network} faucetRequest={m2FaucetRequest} /> */}
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
         <div>
           <div>
@@ -104,7 +104,7 @@ export default function LandingPage() {
           </ToggleButtonGroup>
           </div>
         </div>
-        <div style={{ margin: "0 2rem" }}>
+        {/* <div style={{ margin: "0 2rem" }}>
           <div style={{ width: "250px" }}>
             <h3 style={{ fontFamily: "TWKEverett-Regular", textAlign: "left"}}>Legacy Devnets</h3>
           </div>
@@ -128,7 +128,7 @@ export default function LandingPage() {
               </ToggleButton>
             </ToggleButtonGroup>
           </div>
-        </div>
+        </div> */}
       </div>
     </Box>
     </>
