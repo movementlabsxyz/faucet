@@ -46,7 +46,7 @@ export default function LandingPage() {
       token
     );
   };
-
+  //
   const m2FaucetRequest = async (address: string, token: string) => {
     return m2RequestFaucet(
       CHAIN.m2.url,
