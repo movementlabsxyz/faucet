@@ -11,7 +11,7 @@ import "./hover.css"
 
 
 const CHAIN = {
-  movement: {network: 'testnet', url: 'https://green.aptos.testnet.suzuka.movementlabs.xyz/v1', faucetUrl: 'https://green.faucet.testnet.suzuka.movementlabs.xyz', language: 'aptos'},
+  movement: {network: 'testnet', url: 'https://green.aptos.testnet.suzuka.movementlabs.xyz/v1', faucetUrl: 'https://green.faucet.testnet.suzuka.movementlabs.xyz', language: 'Aptos'},
   m1: {network: 'devnet', url: 'https://aptos.devnet.m1.movementlabs.xyz', language: 'aptos'},
   mevm: {network: 'devnet', url: 'https://mevm.devnet.m1.movementlabs.xyz', language: 'evm'},
   m2: {network: 'devnet', url: 'https://sui.devnet.m2.movementlabs.xyz/faucet/web', language: 'sui'}
@@ -79,7 +79,7 @@ export default function LandingPage() {
 
       }} >
       <div style={{ width: "300px" }}>
-        <h1 style={{ textAlign: "left" }}>Faucets</h1>
+        <h1 style={{ textAlign: "left" }}>Faucet</h1>
       </div>
       <Chain name="Movement" eventName="movement_apt_request" language={CHAIN.movement.language} amount={10} isEvm={false} network={network} faucetRequest={movementFaucetRequest} />
       {/* <Chain name="M1" eventName="m1_apt_request" language={CHAIN.m1.language} amount={1} isEvm={false} network={network} faucetRequest={m1FaucetRequest} />

@@ -151,16 +151,16 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
                         <WaterDropIcon sx={{ mr: 1}} />
                         Get MOVE
                     </Button>
-                    <div>
-                    {isDark && true
-                        // <ReCAPTCHA
-                        //     ref={recaptchaRef}
-                        //     sitekey="6Ldjt-UpAAAAANRZMth7DIcfzDBSRWRIsr22XsxQ"
-                        //     // size="invisible"
-                        //     hl="en"
-                        //     onChange={onChangeRe}
-                        //     theme="dark"
-                        // />
+                    {/* <div>
+                    {isDark &&
+                        <ReCAPTCHA
+                            ref={recaptchaRef}
+                            sitekey="6Ldjt-UpAAAAANRZMth7DIcfzDBSRWRIsr22XsxQ"
+                            // size="invisible"
+                            hl="en"
+                            onChange={onChangeRe}
+                            theme="dark"
+                        />
                     }
                         {!isDark &&
                             <ReCAPTCHA
@@ -172,7 +172,7 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
                                 theme="light"
                             />
                         }
-                    </div>
+                    </div> */}
                     {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account {_amount} MOVE</Alert>}
                     {errorMessage && <Alert severity="error" sx={{ width: 300, marginBottom: 2 }}>{errorMessage}</Alert>}
                 </form>
