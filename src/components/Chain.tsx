@@ -148,6 +148,7 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
                         }}
                         // disabled={loading||token===null||!isValidHex(address, true)}
                     >
+                        {/*  */}
                         <WaterDropIcon sx={{ mr: 1}} />
                         Get MOVE
                     </Button>
