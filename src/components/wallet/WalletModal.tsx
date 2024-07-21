@@ -31,9 +31,23 @@ import {
   LanOutlined as LanOutlinedIcon,
 } from "@mui/icons-material";
 import { useState } from "react";
-import {WalletConnectorProps} from "@aptos-labs/wallet-adapter-mui-design";
 
-
+interface WalletConnectorProps {
+  networkSupport?: string;
+  handleNavigate?: () => void;
+  /**
+   * An optional function for sorting wallets that are currently installed or
+   * loadable in the wallet connector modal.
+   */
+  sortDefaultWallets?: (a: AnyAptosWallet, b: AnyAptosWallet) => number;
+  /**
+   * An optional function for sorting wallets that are NOT currently installed or
+   * loadable in the wallet connector modal.
+   */
+  sortMoreWallets?: (a: AnyAptosWallet, b: AnyAptosWallet) => number;
+  /** The max width of the wallet selector modal. Defaults to `xs`. */
+  modalMaxWidth?: Breakpoint;
+}
 interface WalletsModalProps
   extends Pick<
     WalletConnectorProps,
