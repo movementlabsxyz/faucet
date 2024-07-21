@@ -19,7 +19,6 @@ import FeatureBar from "./FeatureBar";
 import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
 import {Statsig} from "statsig-react";
 import {Link, useNavigate} from "../../routing";
 
@@ -58,14 +57,7 @@ export default function Header() {
       wallet_name: wallet!.name,
       network_type: state.network_name,
     });
-    sendToGTM({
-      dataLayer: {
-        event: "walletConnection",
-        walletAddress: account.address,
-        walletName: wallet?.name,
-        network: network?.name,
-      },
-    });
+    
     walletAddressRef.current = account.address;
   }
 

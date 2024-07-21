@@ -1,20 +1,16 @@
 import React, {useContext} from "react";
 import {Box, BoxProps, useTheme} from "@mui/material";
 import {grey} from "../themes/colors/aptosColorPalette";
-import {StyleContext} from "../pages/Analytics/NetworkInfo/NetworkInfo";
 
 interface CardProps extends BoxProps {
   children: React.ReactNode;
 }
 
 export function CardWithStyle({children, ...props}: CardProps) {
-  const style = useContext(StyleContext);
 
-  return style == "default" ? (
+  return  (
     <Card {...props}>{children}</Card>
-  ) : (
-    <CardOutline {...props}>{children}</CardOutline>
-  );
+  )
 }
 
 export function Card({children, ...props}: CardProps) {

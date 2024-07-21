@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import React, {useState} from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import AptosBannerImage from "../assets/Banner.jpg";
 
 interface BannerProps {
   children: React.ReactNode;
@@ -74,7 +73,7 @@ export function Banner({children, action, sx}: BannerProps) {
       <Box sx={[...(Array.isArray(sx) ? sx : [sx])]}>
         {isOnMobile ? (
           <Alert
-            sx={{backgroundImage: `url(${AptosBannerImage})`, borderRadius: 1}}
+            sx={{ borderRadius: 1}}
             icon={false}
             action={
               <Stack
@@ -102,7 +101,7 @@ export function Banner({children, action, sx}: BannerProps) {
           </Alert>
         ) : (
           <Alert
-            sx={{backgroundImage: `url(${AptosBannerImage})`, borderRadius: 1}}
+            sx={{borderRadius: 1}}
             icon={false}
             action={
               <Stack

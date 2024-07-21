@@ -6,7 +6,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import {GlobalStateProvider} from "../../global-config/GlobalConfig";
 import {ProvideColorMode} from "../../context";
-import {GraphqlClientProvider} from "../../api/hooks/useGraphqlClient";
+// import {GraphqlClientProvider} from "../../api/hooks/useGraphqlClient";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -17,7 +17,7 @@ export default function ExplorerLayout({children}: LayoutProps) {
     <ProvideColorMode>
       <CssBaseline />
       <GlobalStateProvider>
-        <GraphqlClientProvider>
+        {/* <GraphqlClientProvider> */}
           <Box
             component="main"
             sx={{
@@ -41,7 +41,7 @@ export default function ExplorerLayout({children}: LayoutProps) {
             </Container>
             <Footer />
           </Box>
-        </GraphqlClientProvider>
+        {/* </GraphqlClientProvider> */}
       </GlobalStateProvider>
     </ProvideColorMode>
   );
