@@ -9,14 +9,12 @@ import {BrowserRouter} from "react-router-dom";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {
   AptosWalletAdapterProvider,
-  NetworkName,
 } from "@aptos-labs/wallet-adapter-react";
 import {PetraWallet} from "petra-plugin-wallet-adapter";
 import {PontemWallet} from "@pontem/wallet-adapter-plugin";
 import {MartianWallet} from "@martianwallet/aptos-wallet-adapter";
 import {RiseWallet} from "@rise-wallet/wallet-adapter";
 import {FewchaWallet} from "fewcha-plugin-wallet-adapter";
-// import {MSafeWalletAdapter} from "msafe-plugin-wallet-adapter";
 import {StatsigProvider} from "statsig-react";
 import {BloctoWallet} from "@blocto/aptos-wallet-adapter-plugin";
 import {NightlyWallet} from "@nightlylabs/aptos-wallet-adapter-plugin";
@@ -29,13 +27,11 @@ import { createWeb3Modal } from '@web3modal/wagmi/react'
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 
 import { WagmiProvider } from 'wagmi'
-import { arbitrum, mainnet } from 'wagmi/chains'
 import { createNetworkConfig, SuiClientProvider, WalletProvider } from '@mysten/dapp-kit';
-import { getFullnodeUrl } from '@mysten/sui/client';
  
 // Config options for the networks you want to connect to
 const { networkConfig } = createNetworkConfig({
-	m2: { url: 'https://sui.devnet.m2.movementlabs.xyz'},
+	m2: { url: 'https://sui.devnet.m2.movementlabs.xyz', language: 'sui' },
 });
 
 

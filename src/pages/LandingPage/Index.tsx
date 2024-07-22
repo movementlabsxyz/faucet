@@ -11,10 +11,9 @@ import "./hover.css"
 import {InputTransactionData, useWallet} from "@aptos-labs/wallet-adapter-react";
 import {WalletConnector} from "../../components/wallet/WalletConnector";
 import { ConnectButton, useCurrentAccount, useSignAndExecuteTransaction } from '@mysten/dapp-kit';
-import { toB64 } from '@mysten/sui/utils';
 import { useWriteContract } from 'wagmi'
 import evmTokensAbi from '../../abi/evmTokensAbi.json';
-import { Transaction } from "@mysten/sui/transactions";
+import { Transaction, TransactionArgument } from "@mysten/sui/transactions";
 import useSubmitTransaction from "../../api/hooks/useSubmitTransaction";
 
 const aptosFaucetAddress = '0x275f508689de8756169d1ee02d889c777de1cebda3a7bbcce63ba8a27c563c6f';
@@ -81,17 +80,24 @@ export default function LandingPage() {
 
   async function suiMint() {
     const tokenMint = `${PACKAGE_ID}::${token.toLowerCase()}::${token}`
-    const transaction = new Transaction().add({
-      // kind: 'MoveCall',
-      package: PACKAGE_ID,
-      module: 'tokens',
-      function: 'mint',
+    const value = token == 'USDC' || 'USDT' ? 60000000000 : token == 'WBTC' ? 1000000000 : 17000000000
+
+    
+    console.log('minting sui', tokenMint)
+    const transaction = new Transaction();
+    const transactionArgument: TransactionArgument = {
+      type: 'pure',
+      Input: value
+    };
+    transaction.moveCall({
+      target: '0x2::coin::mint',
       typeArguments: [tokenMint],
-      arguments: []
-  })
-    signAndExecuteTransaction(
+      arguments: [transactionArgument]
+    })
+    
+    await signAndExecuteTransaction(
       {
-        transaction: transaction,
+        transaction,
         chain: 'sui:m2',
       },
       {
