@@ -163,7 +163,7 @@ export default function LandingPage() {
 
   const style = { width: "100%", height: "5rem", lineHeight: 0.5, fontFamily: "TWKEverett-Medium", textAlign: "center", color: "white" }
   const text = { width: "100px", height: "5rem", lineHeight: 0.5, fontFamily: "TWKEverett-Medium" }
-
+  const blockStyle = {backgroundColor: 'rgba(237, 234, 230, 0.01)', padding: '1rem', margin: '2rem', borderRadius: '2px', border: '1px solid #101010'}
   return (
     <><Box
       sx={{
@@ -176,6 +176,7 @@ export default function LandingPage() {
         position: 'relative',
 
       }} >
+        <div style={blockStyle}>
       <div style={{ width: "300px" }}>
         <h1 style={{ textAlign: "left" }}>Faucets</h1>
       </div>
@@ -225,7 +226,8 @@ export default function LandingPage() {
           </div>
         </div>
       </div>
-      <div>
+      </div>
+      <div style={blockStyle}>
           <div>
             <h3 style={{ fontFamily: "TWKEverett-Regular", textAlign: "left" }}>Mint Mock Tokens</h3>
           </div>
@@ -264,7 +266,7 @@ export default function LandingPage() {
           </FormControl>
           </div>
 
-          <div>
+          <div style={{display: 'flex', justifyContent: "space-between"}}>
 
             {mock == 'aptos' && <WalletConnector
             networkSupport={"testnet"}
@@ -272,7 +274,15 @@ export default function LandingPage() {
             modalMaxWidth="sm" />}
             {mock == 'evm' && <w3m-button />}
             {mock == 'sui' && <ConnectButton />}
-            <Button sx={style} onClick={(handleMint)}>Mint</Button>
+            <Button sx={{
+                            fontFamily: "TWKEverett-Regular",
+                            width: 150,
+                            marginLeft: '1rem',
+                            borderRadius: 0,
+                            color: 'white',
+                            backgroundColor: '#1737FF',
+                            '&:hover': { backgroundColor: 'rgb(16, 38, 178)' }
+                        }} onClick={(handleMint)}>Mint</Button>
           </div>
         
       </div>

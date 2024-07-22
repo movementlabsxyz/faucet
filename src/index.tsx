@@ -72,6 +72,10 @@ const config = defaultWagmiConfig({
 createWeb3Modal({
   wagmiConfig: config,
   projectId,
+  themeVariables: {
+    '--w3m-border-radius-master': '0px',
+    '--w3m-accent': '#FFDA34'
+  }
 })
 
 // inform the compiler of the existence of the window.aptos API
