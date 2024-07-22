@@ -15,7 +15,7 @@ import { useWriteContract } from 'wagmi'
 import evmTokensAbi from '../../abi/evmTokensAbi.json';
 import { Transaction, TransactionArgument } from "@mysten/sui/transactions";
 import useSubmitTransaction from "../../api/hooks/useSubmitTransaction";
-import { bcs, fromB58, fromB64, fromHEX } from '@mysten/bcs';
+import { bcs, fromB58, fromB64, toHEX, fromHEX } from '@mysten/bcs';
 const aptosFaucetAddress = '0x275f508689de8756169d1ee02d889c777de1cebda3a7bbcce63ba8a27c563c6f';
 
 const CHAIN = {
@@ -60,6 +60,7 @@ export default function LandingPage() {
       }
     }
     const result = await submitTransaction(payload)
+    return result
   }
 
   async function evmMint() {
@@ -87,16 +88,16 @@ export default function LandingPage() {
       'WETH': `0x2edacfae4858522ae6cff36d8acc05a255b9b4403bd7e56d9b0ca6664edc25be`,
       'USDT': `0x54e04baa0fa5bf840efb48e44afb1c388690e8d52cf874a012edaa5fa487ab27`
     }
-    console.log('minting sui', tokenMint)
     const transaction = new Transaction();
-    const inputArgument: TransactionArgument = {
-      type: 'pure',
-      Input: value
-    };
-
+    const inputArgument = bcs.u64().serialize(value)
     const treasuryAddress = treasury[token as keyof typeof treasury]
-    const treasuryArgument = bcs.string().serialize(treasuryAddress)
-
+    const Address = bcs.bytes(32).transform({
+      input: (val: string) => fromHEX(val),
+      output: (val) => toHEX(val),
+    });
+    const treasuryArgument = Address.serialize(treasuryAddress)
+    console.log(treasuryArgument)
+    console.log(inputArgument)
     transaction.moveCall({
       target: '0x2::coin::mint',
       typeArguments: [tokenMint],
