@@ -1,6 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import '@mysten/dapp-kit/dist/index.css';
+import { type Chain } from 'viem'
+import FaucetRoutes from "./FaucetRoutes";
+import { http } from 'wagmi'
 
 import {BrowserRouter} from "react-router-dom";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
@@ -32,7 +35,7 @@ import { getFullnodeUrl } from '@mysten/sui/client';
  
 // Config options for the networks you want to connect to
 const { networkConfig } = createNetworkConfig({
-	devnet: { url: 'https://sui.devnet.m2.movementlabs.xyz'},
+	m2: { url: 'https://sui.devnet.m2.movementlabs.xyz'},
 });
 
 
@@ -47,41 +50,28 @@ const metadata = {
   icons: ['https://avatars.githubusercontent.com/u/37784886']
 }
 
-const chains = [mainnet, arbitrum] as const
+const mevmLegacy = {
+  id: 30730,
+  name: 'MEVM Legacy',
+  nativeCurrency: {
+    name:'Move', symbol: 'MOVE', decimals: 18
+  },
+  rpcUrls: {
+    default: { http: ['https://mevm.devnet.m1.movementlabs.xyz'] },
+  },
+  blockExplorers: {
+    default: { name: 'Movement Explorer', url: 'https://explorer.movementlabs.xyz' },
+  },
+} as const satisfies Chain
+
+const chains = [mevmLegacy] as const
 const config = defaultWagmiConfig({
-  chains,
+  chains: chains,
+  transports: {[mevmLegacy.id] : http('https://mevm.devnet.m1.movementlabs.xyz')},
   projectId,
   metadata,
 })
 
-
-import * as Sentry from "@sentry/react";
-// import {BrowserTracing} from "@sentry/tracing";
-
-import ReactGA from "react-ga4";
-// import {initGTM} from "./api/hooks/useGoogleTagManager";
-import {GTMEvents} from "./dataConstants";
-
-// initGTM({
-//   events: {
-//     walletConnection: GTMEvents.WALLET_CONNECTION,
-//     searchStats: GTMEvents.SEARCH_STATS,
-//   },
-// });
-
-ReactGA.initialize(process.env.GA_TRACKING_ID || "G-8XH7V50XK7");
-
-Sentry.init({
-  dsn: "https://531160c88f78483491d129c02be9f774@o1162451.ingest.sentry.io/6249755",
-  // integrations: [new BrowserTracing()],
-  environment: process.env.NODE_ENV,
-  enabled: process.env.NODE_ENV == "production",
-
-  // Set tracesSampleRate to 1.0 to capture 100%
-  // of transactions for performance monitoring.
-  // We recommend adjusting this value in production
-  tracesSampleRate: 0.5,
-});
 
 createWeb3Modal({
   wagmiConfig: config,
@@ -103,17 +93,11 @@ const wallets = [
   new MartianWallet(),
   new FewchaWallet(),
   new RiseWallet(),
-  // new MSafeWalletAdapter(),
   new NightlyWallet(),
   new OpenBlockWallet(),
   new TokenPocketWallet(),
   new TrustWallet(),
   new WelldoneWallet(),
-  // Blocto supports Testnet/Mainnet for now.
-  new BloctoWallet({
-    network: NetworkName.Testnet,
-    bloctoAppId: "6d85f56e-5f2e-46cd-b5f2-5cf9695b4d46",
-  }),
 ];
 
 ReactDOM.render(
@@ -132,10 +116,13 @@ ReactDOM.render(
       <QueryClientProvider client={queryClient}>
         <QueryClientProvider client={queryClient}>
         <AptosWalletAdapterProvider plugins={wallets} autoConnect={true}>
-        <SuiClientProvider networks={networkConfig} defaultNetwork="devnet">
+        <SuiClientProvider networks={networkConfig} defaultNetwork="m2">
         <WalletProvider>
+        <WagmiProvider config={config}>
           <BrowserRouter>
+          <FaucetRoutes />
           </BrowserRouter>
+          </WagmiProvider>
           </WalletProvider>
           </SuiClientProvider>
           </AptosWalletAdapterProvider>

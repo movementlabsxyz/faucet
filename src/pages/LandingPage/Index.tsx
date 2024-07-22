@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
 import { requestFromFaucet, requestFaucet, mevmRequestFaucet, m2RequestFaucet } from '../../api';
 import { AptosClient, FaucetClient, CoinClient } from 'aptos';
-import { Aptos, AptosConfig, AccountAddressInput } from '@aptos-labs/ts-sdk';
+import { Aptos, AptosConfig, TypeArgument } from '@aptos-labs/ts-sdk';
+
 import Chain from '../../components/Chain';
 import { ToggleButton, ToggleButtonGroup, Button, Select, FormControl,InputLabel,MenuItem } from '@mui/material';
 import { Network } from '../../utils';
 import Box from "@mui/material/Box";
 import "./hover.css"
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import {InputTransactionData, useWallet} from "@aptos-labs/wallet-adapter-react";
 import {WalletConnector} from "../../components/wallet/WalletConnector";
-import { ConnectButton } from '@mysten/dapp-kit';
+import { ConnectButton, useCurrentAccount, useSignAndExecuteTransaction } from '@mysten/dapp-kit';
+import { toB64 } from '@mysten/sui/utils';
 import { useWriteContract } from 'wagmi'
 import evmTokensAbi from '../../abi/evmTokensAbi.json';
+import { Transaction } from "@mysten/sui/transactions";
+import useSubmitTransaction from "../../api/hooks/useSubmitTransaction";
 
 const aptosFaucetAddress = '0x275f508689de8756169d1ee02d889c777de1cebda3a7bbcce63ba8a27c563c6f';
 
@@ -29,6 +33,12 @@ export default function LandingPage() {
   const [token, setToken] = useState('USDC');
   const {account} = useWallet();
   const { data: hash, writeContract } = useWriteContract()
+  const { submitTransaction } = useSubmitTransaction()
+  const currentAccount = useCurrentAccount();
+  const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
+  const [digest, setDigest] = useState('');
+  
+  const PACKAGE_ID = "0x457abead7283c8af79b0902e71decf173f88624fe8dd2e76be97b6132c39e9c9";
 
   const handleMint =() => {
     if (mock == 'aptos') {
@@ -40,19 +50,20 @@ export default function LandingPage() {
     }
   }
 
-  function aptosMint() {
-    const aptosClient = new Aptos(new AptosConfig({fullnode: CHAIN.movement.url, faucet: CHAIN.movement.faucetUrl}));
-    aptosClient.transaction.build.simple({
-      sender: account?.address as AccountAddressInput,
+  async function aptosMint() {
+    console.log('minting aptos')
+    const aptos = new Aptos(new AptosConfig({fullnode: CHAIN.movement.url, faucet: CHAIN.movement.faucetUrl}));
+    const payload: InputTransactionData = {
       data: {
-        function: `${aptosFaucetAddress}::tokens::mint`,
-        typeArguments: [`${aptosFaucetAddress}::tokens::${token}`],
+        function: `${aptosFaucetAddress}::faucet::mint`,
+        typeArguments: [`${aptosFaucetAddress}::tokens::${token}` as TypeArgument],
         functionArguments: []
       }
-    })
+    }
+    const result = await submitTransaction(payload)
   }
 
-  function evmMint() {
+  async function evmMint() {
     const tokenAddresses = {
       USDC: '0xdfd318a689EF63833C4e9ab6Da17F0d5e3010013',
       USDT: '0x3150DC83cc9985f2433E546e725C9B5E6feb2E8c',
@@ -68,7 +79,28 @@ export default function LandingPage() {
     
   }
 
-  function suiMint() {
+  async function suiMint() {
+    const tokenMint = `${PACKAGE_ID}::${token.toLowerCase()}::${token}`
+    const transaction = new Transaction().add({
+      // kind: 'MoveCall',
+      package: PACKAGE_ID,
+      module: 'tokens',
+      function: 'mint',
+      typeArguments: [tokenMint],
+      arguments: []
+  })
+    signAndExecuteTransaction(
+      {
+        transaction: transaction,
+        chain: 'sui:m2',
+      },
+      {
+        onSuccess: (result) => {
+          console.log('executed transaction', result);
+          setDigest(result.digest);
+        },
+      },
+    );
 
   }
 
@@ -192,7 +224,7 @@ export default function LandingPage() {
             <h3 style={{ fontFamily: "TWKEverett-Regular", textAlign: "left" }}>Mint Mock Tokens</h3>
           </div>
           <div>
-            <p style={{ fontFamily: "TWKEverett-Regular", textAlign: "left" }}>Mock tokens available for networks above. Hourly rate limit.</p>
+            <p style={{ fontFamily: "TWKEverett-Regular", textAlign: "left" }}>Mock tokens are available for networks above. Hourly rate limit.</p>
           </div>
           <div style={{ display: "flex"}}>
           <FormControl fullWidth style={{margin: '1rem'}}>
@@ -228,12 +260,13 @@ export default function LandingPage() {
 
           <div>
 
-            {mock == 'aptos' && <><WalletConnector
+            {mock == 'aptos' && <WalletConnector
             networkSupport={"testnet"}
             handleNavigate={() => `https://explorer.movementlabs.xyz/account/${account?.address}`}
-            modalMaxWidth="sm" /><Button sx={style} onClick={(handleMint)}>Mint</Button></>}
+            modalMaxWidth="sm" />}
             {mock == 'evm' && <w3m-button />}
             {mock == 'sui' && <ConnectButton />}
+            <Button sx={style} onClick={(handleMint)}>Mint</Button>
           </div>
         
       </div>
