@@ -15,7 +15,7 @@ import { useWriteContract } from 'wagmi'
 import evmTokensAbi from '../../abi/evmTokensAbi.json';
 import { Transaction, TransactionArgument } from "@mysten/sui/transactions";
 import useSubmitTransaction from "../../api/hooks/useSubmitTransaction";
-
+import { bcs, fromB58, fromB64, fromHEX } from '@mysten/bcs';
 const aptosFaucetAddress = '0x275f508689de8756169d1ee02d889c777de1cebda3a7bbcce63ba8a27c563c6f';
 
 const CHAIN = {
@@ -81,18 +81,26 @@ export default function LandingPage() {
   async function suiMint() {
     const tokenMint = `${PACKAGE_ID}::${token.toLowerCase()}::${token}`
     const value = token == 'USDC' || 'USDT' ? 60000000000 : token == 'WBTC' ? 1000000000 : 17000000000
-
-    
+    const treasury = {
+      'WBTC': `0x0401a6b9b03b694d16fe9806389625beb6d801f64a188d39aecfc090c5dce2fd`,
+      'USDC': `0x1292ab377437c97bc6dfead6b502c0a40c1cdd84d3b5c7c98ad6a303bec52897`, 
+      'WETH': `0x2edacfae4858522ae6cff36d8acc05a255b9b4403bd7e56d9b0ca6664edc25be`,
+      'USDT': `0x54e04baa0fa5bf840efb48e44afb1c388690e8d52cf874a012edaa5fa487ab27`
+    }
     console.log('minting sui', tokenMint)
     const transaction = new Transaction();
-    const transactionArgument: TransactionArgument = {
+    const inputArgument: TransactionArgument = {
       type: 'pure',
       Input: value
     };
+
+    const treasuryAddress = treasury[token as keyof typeof treasury]
+    const treasuryArgument = bcs.string().serialize(treasuryAddress)
+
     transaction.moveCall({
       target: '0x2::coin::mint',
       typeArguments: [tokenMint],
-      arguments: [transactionArgument]
+      arguments: [treasuryArgument, inputArgument]
     })
     
     await signAndExecuteTransaction(
@@ -162,8 +170,8 @@ export default function LandingPage() {
   };
 
   const style = { width: "100%", height: "5rem", lineHeight: 0.5, fontFamily: "TWKEverett-Medium", textAlign: "center", color: "white" }
-  const text = { width: "100px", height: "5rem", lineHeight: 0.5, fontFamily: "TWKEverett-Medium" }
-  const blockStyle = {backgroundColor: 'rgba(237, 234, 230, 0.01)', padding: '1rem', margin: '2rem', borderRadius: '2px', border: '1px solid #101010'}
+  const text = { width: "100px", height: "5rem", lineHeight: 0.5, fontFamily: "TWKEverett-Medium", borderRadius: '5px' }
+  const blockStyle = { backgroundColor: 'rgba(237, 234, 230, 0.01)', padding: '3rem', margin: '2rem', borderRadius: '2px', border: '1px solid #101010', boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.2)"}
   return (
     <><Box
       sx={{
@@ -187,7 +195,7 @@ export default function LandingPage() {
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
         <div>
           <div>
-            <h3 style={{ fontFamily: "TWKEverett-Regular", textAlign: "left" }}>Testnets</h3>
+            <h3 style={{ color: "#FFDA34", fontSize: '1rem', fontFamily: "TWKEverett-Mono", textAlign: "left" }}>Testnets</h3>
           </div>
           <div className="network">
           
@@ -202,7 +210,7 @@ export default function LandingPage() {
         </div>
         <div style={{ margin: "0 2rem" }}>
           <div style={{ width: "250px" }}>
-            <h3 style={{ fontFamily: "TWKEverett-Regular", textAlign: "left"}}>Legacy Devnets</h3>
+            <h3 style={{  color: "#FFDA34", fontSize: '1rem', fontFamily: "TWKEverett-Mono", textAlign: "left"}}>Legacy Devnets</h3>
           </div>
           <div
             className="network"
@@ -212,6 +220,7 @@ export default function LandingPage() {
               value={network}
               exclusive
               onChange={handleNetwork}
+              style={{ borderRadius: "10px" }}  
             >
               {/* <ToggleButton sx={{ ...style }} value="m1">
                 <div style={text}><h2>M1</h2>{"{APTOS}"}</div>
@@ -229,10 +238,10 @@ export default function LandingPage() {
       </div>
       <div style={blockStyle}>
           <div>
-            <h3 style={{ fontFamily: "TWKEverett-Regular", textAlign: "left" }}>Mint Mock Tokens</h3>
+            <h2 style={{ fontFamily: "TWKEverett-Regular", textAlign: "left" }}>Mock Tokens</h2>
           </div>
           <div>
-            <p style={{ fontFamily: "TWKEverett-Regular", textAlign: "left" }}>Mock tokens are available for networks above. Hourly rate limit.</p>
+            <p style={{ fontFamily: "TWKEverett-Regular", textAlign: "left" }}>Available for networks above. Hourly rate limit.</p>
           </div>
           <div style={{ display: "flex"}}>
           <FormControl fullWidth style={{margin: '1rem'}}>
@@ -266,7 +275,7 @@ export default function LandingPage() {
           </FormControl>
           </div>
 
-          <div style={{display: 'flex', justifyContent: "space-between"}}>
+          <div style={{display: 'flex', justifyContent: "space-between", padding: '2rem'}}>
 
             {mock == 'aptos' && <WalletConnector
             networkSupport={"testnet"}
@@ -275,13 +284,13 @@ export default function LandingPage() {
             {mock == 'evm' && <w3m-button />}
             {mock == 'sui' && <ConnectButton />}
             <Button sx={{
-                            fontFamily: "TWKEverett-Regular",
-                            width: 150,
-                            marginLeft: '1rem',
-                            borderRadius: 0,
-                            color: 'white',
-                            backgroundColor: '#1737FF',
-                            '&:hover': { backgroundColor: 'rgb(16, 38, 178)' }
+                              fontFamily: "TWKEverett-Regular",
+                              width: 150,
+                              borderRadius: 0,
+                              marginLeft: '2rem',
+                              color: 'black',
+                              backgroundColor: '#EDEAE6',
+                              '&:hover': { backgroundColor: '#C4B8A5' }
                         }} onClick={(handleMint)}>Mint</Button>
           </div>
         

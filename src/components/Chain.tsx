@@ -116,7 +116,7 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
 
                 <form name={name} onSubmit={handleFormSubmit}>
                     <TextField
-                        label={language + " Address"}
+                        label={language.toUpperCase() + " Address"}
                         variant="outlined"
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
@@ -142,26 +142,16 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
                             fontFamily: "TWKEverett-Regular",
                             width: 300,
                             borderRadius: 0,
-                            color: 'white',
-                            backgroundColor: '#1737FF',
-                            '&:hover': { backgroundColor: 'rgb(16, 38, 178)' }
+                            color: 'black',
+                            backgroundColor: '#EDEAE6',
+                            '&:hover': { backgroundColor: '#C4B8A5' }
                         }}
-                        // disabled={loading||token===null||!isValidHex(address, true)}
                     >
                         {/*  */}
-                        <WaterDropIcon sx={{ mr: 1}} />
                         Get MOVE
                     </Button>
                     <div>
                     {isDark && true
-                        // <ReCAPTCHA
-                        //     ref={recaptchaRef}
-                        //     sitekey="6Ldjt-UpAAAAANRZMth7DIcfzDBSRWRIsr22XsxQ"
-                        //     // size="invisible"
-                        //     hl="en"
-                        //     onChange={onChangeRe}
-                        //     theme="dark"
-                        // />
                     }
                         {!isDark &&
                             <ReCAPTCHA
