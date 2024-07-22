@@ -65,9 +65,7 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
             {
                 setSuccess(true);
                 status = true;
-            }
-                
-            
+            }         
         }
         
 

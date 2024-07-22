@@ -5,7 +5,6 @@ import { Aptos, AptosConfig, TypeArgument } from '@aptos-labs/ts-sdk';
 
 import Chain from '../../components/Chain';
 import { ToggleButton, ToggleButtonGroup, Button, Select, FormControl,InputLabel,MenuItem } from '@mui/material';
-import { Network } from '../../utils';
 import Box from "@mui/material/Box";
 import "./hover.css"
 import {InputTransactionData, useWallet} from "@aptos-labs/wallet-adapter-react";
@@ -13,11 +12,10 @@ import {WalletConnector} from "../../components/wallet/WalletConnector";
 import { ConnectButton, useCurrentAccount, useSignAndExecuteTransaction } from '@mysten/dapp-kit';
 import { useWriteContract } from 'wagmi'
 import evmTokensAbi from '../../abi/evmTokensAbi.json';
-import { Transaction, TransactionArgument } from "@mysten/sui/transactions";
+import { Transaction } from "@mysten/sui/transactions";
 import useSubmitTransaction from "../../api/hooks/useSubmitTransaction";
-import { bcs, fromB58, fromB64, fromHEX } from '@mysten/bcs';
-const aptosFaucetAddress = '0x275f508689de8756169d1ee02d889c777de1cebda3a7bbcce63ba8a27c563c6f';
 
+const aptosFaucetAddress = '0x275f508689de8756169d1ee02d889c777de1cebda3a7bbcce63ba8a27c563c6f';
 const CHAIN = {
   movement: {network: 'testnet', url: 'https://aptos.testnet.suzuka.movementlabs.xyz/v1', faucetUrl: 'https://faucet.testnet.suzuka.movementlabs.xyz', language: 'aptos'},
   m1: {network: 'devnet', url: 'https://aptos.devnet.m1.movementlabs.xyz', language: 'aptos'},
@@ -30,10 +28,10 @@ export default function LandingPage() {
   const [network, setNetwork] = useState('mevm');
   const [mock, setMock] = useState('aptos');
   const [token, setToken] = useState('USDC');
-  const {account} = useWallet();
+  // const account = useWallet();
   const { data: hash, writeContract } = useWriteContract()
   const { submitTransaction } = useSubmitTransaction()
-  const currentAccount = useCurrentAccount();
+  const account = useCurrentAccount();
   const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
   const [digest, setDigest] = useState('');
   
@@ -80,7 +78,19 @@ export default function LandingPage() {
 
   async function suiMint() {
     const tokenMint = `${PACKAGE_ID}::${token.toLowerCase()}::${token}`
-    const value = token == 'USDC' || 'USDT' ? 60000000000 : token == 'WBTC' ? 1000000000 : 17000000000
+    //const value = token == 'USDC' || 'USDT' ? 60000000000 : token == 'WBTC' ? 1000000000 : 17000000000
+
+    const value = token === 'USDC' ? 60000000000 :
+    token === 'USDT' ? 60000000000000 :
+    token === 'WBTC' ? 1000000000 :
+    token === 'WETH' ? 17000000000 :
+    0; // Default value in case of unknown token
+
+    if (value === 0) {
+    console.error('Unknown token type');
+    return;
+    }
+
     const treasury = {
       'WBTC': `0x0401a6b9b03b694d16fe9806389625beb6d801f64a188d39aecfc090c5dce2fd`,
       'USDC': `0x1292ab377437c97bc6dfead6b502c0a40c1cdd84d3b5c7c98ad6a303bec52897`, 
@@ -88,25 +98,26 @@ export default function LandingPage() {
       'USDT': `0x54e04baa0fa5bf840efb48e44afb1c388690e8d52cf874a012edaa5fa487ab27`
     }
     console.log('minting sui', tokenMint)
-    const transaction = new Transaction();
-    const inputArgument: TransactionArgument = {
-      type: 'pure',
-      Input: value
-    };
 
-    const treasuryAddress = treasury[token as keyof typeof treasury]
-    const treasuryArgument = bcs.string().serialize(treasuryAddress)
+    
+    const transaction = new Transaction();
+
+    const treasuryAddress = treasury[token as keyof typeof treasury];
 
     transaction.moveCall({
-      target: '0x2::coin::mint',
+      target: '0x2::coin::mint_and_transfer',
       typeArguments: [tokenMint],
-      arguments: [treasuryArgument, inputArgument]
+      arguments: [
+        transaction.object(treasuryAddress), 
+        transaction.pure.u64(value),
+        transaction.pure.address(account?.address as string)
+      ],
     })
     
     await signAndExecuteTransaction(
       {
         transaction,
-        chain: 'sui:m2',
+        //chain: 'sui:m2',
       },
       {
         onSuccess: (result) => {
