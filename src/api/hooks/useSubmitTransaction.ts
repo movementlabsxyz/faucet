@@ -38,7 +38,7 @@ const useSubmitTransaction = () => {
     }
   }, [transactionResponse]);
 
-  async function submitTransaction(transaction: InputTransactionData) {
+  async function submitTransaction(transaction: InputTransactionData) : Promise<any> {
 
     setTransactionInProcess(true);
 
@@ -59,14 +59,10 @@ const useSubmitTransaction = () => {
           await state.aptos_client.waitForTransaction(response["hash"], {
             checkSuccess: true,
           });
-          return {
-            transactionSubmitted: true,
-            transactionHash: response["hash"],
-            success: true,
-          };
+          return response["hash"]
         }
         // transaction failed
-        return {...responseOnError, message: response.message};
+        return response.message;
       } catch (error) {
         if (error instanceof FailedTransactionError) {
           return {

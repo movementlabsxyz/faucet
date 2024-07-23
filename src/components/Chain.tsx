@@ -16,8 +16,8 @@ import ReCAPTCHA from "react-google-recaptcha";
 
 export default function Chains({ name,eventName, language, amount, isEvm, network, faucetRequest }: any) {
 
-    const [success, setSuccess] = useState(false);
     const [address, setAddress] = useState("");
+    const [success, setSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [token, setToken] = useState<string|null>(null);
@@ -65,9 +65,7 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
             {
                 setSuccess(true);
                 status = true;
-            }
-                
-            
+            }         
         }
         
 
@@ -151,9 +149,7 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
                         Get MOVE
                     </Button>
                     <div>
-                    {isDark && true
-                    }
-                        {!isDark &&
+     
                             <ReCAPTCHA
                                 ref={recaptchaRef}
                                 sitekey="6Ldjt-UpAAAAANRZMth7DIcfzDBSRWRIsr22XsxQ"
@@ -162,7 +158,6 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
                                 onChange={onChangeRe}
                                 theme="light"
                             />
-                        }
                     </div>
                     {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account {_amount} MOVE</Alert>}
                     {errorMessage && <Alert severity="error" sx={{ width: 300, marginBottom: 2 }}>{errorMessage}</Alert>}
