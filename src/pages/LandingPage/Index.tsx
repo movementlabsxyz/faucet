@@ -214,8 +214,8 @@ export default function LandingPage() {
 
 }, [success, errorMessage]);
 
-  const style = { width: "100%", height: "5rem", lineHeight: 0.5, fontFamily: "TWKEverett-Medium", textAlign: "center", color: "white" }
-  const text = { width: "100px", height: "5rem", lineHeight: 0.5, fontFamily: "TWKEverett-Medium", borderRadius: '5px' }
+  const style = { width: "100%", height: "5rem", lineHeight: 0.5, fontFamily: "TWKEverett-Medium"}
+  const text = { width: "100px", height: "5rem", lineHeight: 0.5, fontFamily: "TWKEverett-Medium" }
   const blockStyle = { backgroundColor: 'rgba(237, 234, 230, 0.01)', padding: '3rem', margin: '2rem', borderRadius: '2px', border: '1px solid #101010', boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.2)" }
   return (
     <><Box
@@ -244,13 +244,24 @@ export default function LandingPage() {
             </div>
             <div className="network">
 
-              <Button
+              {/* <Button
                 href={'https://discord.com/channels/1101576619493167217/1255138490992037968'}
                 target={'_blank'}
                 sx={style}>
-                {/* @ts-ignore */}
                 <div style={style}><h2>Movement</h2>{"{APTOS}"}</div>
-              </Button>
+              </Button> */}
+              <ToggleButtonGroup
+            color="primary"
+            value={network}
+            exclusive
+            onChange={handleNetwork}
+          >
+            <ToggleButton
+              sx={style} value="movement">
+              <div style={style}><h2>Movement</h2>{"{APTOS}"}</div>
+            </ToggleButton>
+          </ToggleButtonGroup>
+
             </div>
           </div>
           <div style={{ margin: "0 2rem" }}>
