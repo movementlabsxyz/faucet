@@ -400,8 +400,8 @@ export async function mevmRequestFaucet(
   }
 }
 
-export async function m2RequestFaucet(
-  m2Url: string,
+export async function suiRequestFaucet(
+  suiUrl: string,
   address: string,
   token: string,
 ): Promise<any> {
@@ -422,7 +422,7 @@ export async function m2RequestFaucet(
   };
 
   try{
-    const res:any = await fetch(m2Url, requestOptions) .then((response) => response.text());
+    const res:any = await fetch(suiUrl, requestOptions) .then((response) => response.text());
     const res1 = JSON.parse(res);
 
     if (res1.code == 200) {

@@ -2,16 +2,12 @@ import React, { useEffect } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { useState,RefObject } from "react";
-import WaterDropIcon from '@mui/icons-material/WaterDrop';
-import { to } from "await-to-js";
+
 import TextField from "@mui/material/TextField";
 import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
-import { AptosClient, FaucetClient, CoinClient } from "aptos";
 import { Switch,useTheme } from "@mui/material";
-import FormControlLabel from '@mui/material/FormControlLabel';
-import { Network } from "../utils";
 import ReCAPTCHA from "react-google-recaptcha";
 
 export default function Chains({ name,eventName, language, amount, isEvm, network, faucetRequest }: any) {

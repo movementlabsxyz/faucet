@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { requestFromFaucet, requestFaucet, mevmRequestFaucet, m2RequestFaucet } from '../../api';
+import { requestFromFaucet, requestFaucet, mevmRequestFaucet, suiRequestFaucet } from '../../api';
 import { AptosClient, FaucetClient, CoinClient } from 'aptos';
 import { Aptos, AptosConfig, TypeArgument } from '@aptos-labs/ts-sdk';
 import { CircularProgress, Alert } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 import Chain from '../../components/Chain';
 import { ToggleButton, ToggleButtonGroup, Button, Select, FormControl, InputLabel, MenuItem } from '@mui/material';
@@ -17,12 +18,17 @@ import { Transaction } from "@mysten/sui/transactions";
 import useSubmitTransaction from "../../api/hooks/useSubmitTransaction";
 import { set } from 'lodash';
 
+
 const aptosFaucetAddress = '0x275f508689de8756169d1ee02d889c777de1cebda3a7bbcce63ba8a27c563c6f';
+const PACKAGE_ID = "0x8ac626e474c33520a815175649fefcbb272678c8c37a7b024e7171fa45d47711";
+
 const CHAIN = {
-  movement: { network: 'testnet', url: 'https://aptos.testnet.suzuka.movementlabs.xyz/v1', faucetUrl: 'https://faucet.testnet.suzuka.movementlabs.xyz', language: 'aptos' },
+  aptos: { network: 'testnet', url: 'https://aptos.testnet.suzuka.movementlabs.xyz/v1', faucetUrl: 'https://faucet.testnet.suzuka.movementlabs.xyz', language: 'aptos' },
   m1: { network: 'devnet', url: 'https://aptos.devnet.m1.movementlabs.xyz', language: 'aptos' },
-  mevm: { network: 'devnet', url: 'https://mevm.devnet.m1.movementlabs.xyz', language: 'evm' },
-  m2: { network: 'devnet', url: 'https://sui.devnet.m2.movementlabs.xyz/faucet/web', language: 'sui' }
+  mevmM1: { network: 'devnet', url: 'https://mevm.devnet.m1.movementlabs.xyz', language: 'evm' },
+  m2: { network: 'devnet', url: 'https://sui.devnet.m2.movementlabs.xyz/faucet/web', language: 'sui' },
+  mevm: { network: 'testnet', url: 'https://mevm.testnet.imola.movementlabs.xyz', language: 'evm' },
+  sui: { network: 'testnet', url: 'https://sui.testnet.imola.movementlabs.xyz/faucet/web', language: 'sui' }
 };
 
 
@@ -38,9 +44,9 @@ export default function LandingPage() {
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
 
-  const PACKAGE_ID = "0x457abead7283c8af79b0902e71decf173f88624fe8dd2e76be97b6132c39e9c9";
 
   const handleMint = async () => {
     setLoading(true);
@@ -68,23 +74,39 @@ export default function LandingPage() {
 
   async function aptosMint() {
     console.log('minting aptos')
-    const payload: InputTransactionData = {
-      data: {
-        function: `${aptosFaucetAddress}::faucet::mint`,
-        typeArguments: [`${aptosFaucetAddress}::tokens::${token}` as TypeArgument],
-        functionArguments: []
+    if (token === 'ALL') {
+      const payload: InputTransactionData = {
+        data: {
+          function: `${aptosFaucetAddress}::faucet::mintAll`,
+          typeArguments: [`${aptosFaucetAddress}::tokens::USDT` as TypeArgument,
+          `${aptosFaucetAddress}::tokens::USDC` as TypeArgument,
+          `${aptosFaucetAddress}::tokens::WBTC` as TypeArgument,
+          `${aptosFaucetAddress}::tokens::WETH` as TypeArgument],
+          functionArguments: []
+        }
       }
+      const response = await submitTransaction(payload);
+      setDigest(response);
+    } else {
+      const payload: InputTransactionData = {
+        data: {
+          function: `${aptosFaucetAddress}::faucet::mint`,
+          typeArguments: [`${aptosFaucetAddress}::tokens::${token}` as TypeArgument],
+          functionArguments: []
+        }
+      }
+      const response = await submitTransaction(payload);
+      setDigest(response);
     }
-    const response = await submitTransaction(payload);
-    setDigest(response);
   }
 
   async function evmMint() {
     const tokenAddresses = {
-      USDC: '0xdfd318a689EF63833C4e9ab6Da17F0d5e3010013',
-      USDT: '0x3150DC83cc9985f2433E546e725C9B5E6feb2E8c',
-      WBTC: '0x8507bC108d0e8b8bd404d04084692B118B4F8332',
-      WETH: '0x56c035c3f0e8e11fA34F79aaEf6a28A4cc8e31a8'
+      USDC: '0xaFE0732F985659986Cc3f27AeF76f419BAae5Cde',
+      USDT: '0x846B2EaEC7D9A21cf073F4dDa79C6aEa0919c867',
+      WBTC: '0x852d5ecB513f8F1928539AaF7217F7e6E0Bfdaa3',
+      WETH: '0x4114E6516413c5BA631002A0cF95E828714F8f18',
+      ALL: '0x4A6af60286C778514AFB95639B0A74a0adC24711'
     }
 
     const response = await writeContractAsync({
@@ -100,9 +122,9 @@ export default function LandingPage() {
     const tokenMint = `${PACKAGE_ID}::${token.toLowerCase()}::${token}`
     const valueOpt = {
       'USDC': 60000000000,
-      'USDT': 60000000000000,
-      'WBTC': 1000000000,
-      'WETH': 17000000000
+      'USDT': 60000000000,
+      'WBTC': 100000000,
+      'WETH': 1700000000
     }
 
     const value = valueOpt[token as keyof typeof valueOpt]
@@ -113,10 +135,10 @@ export default function LandingPage() {
     }
 
     const treasury = {
-      'WBTC': `0x0401a6b9b03b694d16fe9806389625beb6d801f64a188d39aecfc090c5dce2fd`,
-      'USDC': `0x1292ab377437c97bc6dfead6b502c0a40c1cdd84d3b5c7c98ad6a303bec52897`,
-      'WETH': `0x2edacfae4858522ae6cff36d8acc05a255b9b4403bd7e56d9b0ca6664edc25be`,
-      'USDT': `0x54e04baa0fa5bf840efb48e44afb1c388690e8d52cf874a012edaa5fa487ab27`
+      'WBTC': `0xd2c1127a16494f9df5b6f973baebd78e093d66b3c06463c4e930c8545a9b6df2`,
+      'WETH': `0xe02ba3510a9240ba970aed72e0c6188989c3e6d6bd316edfa12bd04da8ebf675`,
+      'USDC': `0x6bad1a88caef6f9ea56680cd31315b2cfeb6018b105471320407559042e6d067`,
+      'USDT': `0x8cacf2fd727720db5fc11006786fbcf69408decda4611921da791cc8ed844878`
     }
     console.log('minting sui', tokenMint)
 
@@ -153,6 +175,7 @@ export default function LandingPage() {
   const handleNetwork = (event: any, value: any) => {
     if (value !== null) {
       setNetwork(value);
+      navigate(`?network=${value}`);
     }
   };
 
@@ -164,9 +187,9 @@ export default function LandingPage() {
     setToken(e.target.value);
   };
 
-  const movementFaucetRequest = async (address: string, token: string) => {
-    const faucetClient = new FaucetClient(CHAIN.movement.url, CHAIN.movement.faucetUrl);
-    const aptos = new Aptos(new AptosConfig({ fullnode: CHAIN.movement.url, faucet: CHAIN.movement.faucetUrl }));
+  const aptosFaucetRequest = async (address: string, token: string) => {
+    const faucetClient = new FaucetClient(CHAIN.aptos.url, CHAIN.aptos.faucetUrl);
+    const aptos = new Aptos(new AptosConfig({ fullnode: CHAIN.aptos.url, faucet: CHAIN.aptos.faucetUrl }));
     return requestFromFaucet(
       faucetClient,
       aptos,
@@ -176,7 +199,7 @@ export default function LandingPage() {
 
 
   const m1FaucetRequest = async (address: string, token: string) => {
-    const aptosClient = new AptosClient(CHAIN.movement.url);
+    const aptosClient = new AptosClient(CHAIN.m1.url);
     return requestFaucet(
       aptosClient,
       CHAIN.m1.url,
@@ -185,9 +208,9 @@ export default function LandingPage() {
     );
   };
 
-  const m2FaucetRequest = async (address: string, token: string) => {
-    return m2RequestFaucet(
-      CHAIN.m2.url,
+  const suiFaucetRequest = async (address: string, token: string) => {
+    return suiRequestFaucet(
+      CHAIN.sui.url,
       address,
       token
     )
@@ -202,20 +225,28 @@ export default function LandingPage() {
   };
 
   useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const networkParam = params.get('network');
+    if (networkParam) {
+      setNetwork(networkParam);
+    }
+  }, [location]);
+
+  useEffect(() => {
 
     const timeout = setTimeout(() => {
-        setSuccess(false);
-        setErrorMessage(null);
+      setSuccess(false);
+      setErrorMessage(null);
+      setDigest('');
     }, 3000);
 
     return () => {
-        clearTimeout(timeout);
+      clearTimeout(timeout);
     };
 
-}, [success, errorMessage]);
+  }, [success, errorMessage]);
 
-  const style = { width: "100%", height: "5rem", lineHeight: 0.5, fontFamily: "TWKEverett-Medium"}
-  const text = { width: "100px", height: "5rem", lineHeight: 0.5, fontFamily: "TWKEverett-Medium" }
+  const style = { width: "100%", height: "2rem", fontFamily: "TWKEverett-Regular" }
   const blockStyle = { backgroundColor: 'rgba(237, 234, 230, 0.01)', padding: '3rem', margin: '2rem', borderRadius: '2px', border: '1px solid #101010', boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.2)" }
   return (
     <><Box
@@ -233,63 +264,41 @@ export default function LandingPage() {
         <div style={{ width: "300px" }}>
           <h1 style={{ textAlign: "left" }}>Faucets</h1>
         </div>
-        <Chain name="Movement" eventName="movement_apt_request" language={CHAIN.movement.language} amount={10} isEvm={false} network={network} faucetRequest={movementFaucetRequest} />
-        <Chain name="M1" eventName="m1_apt_request" language={CHAIN.m1.language} amount={1} isEvm={false} network={network} faucetRequest={m1FaucetRequest} />
+        <Chain name="aptos" eventName="movement_apt_request" language={CHAIN.aptos.language} amount={10} isEvm={false} network={network} faucetRequest={aptosFaucetRequest} />
+        {/* <Chain name="M1" eventName="m1_apt_request" language={CHAIN.m1.language} amount={1} isEvm={false} network={network} faucetRequest={m1FaucetRequest} /> */}
         <Chain name="MEVM" eventName="m1_evm_request" language={CHAIN.mevm.language} amount={1} isEvm={true} network={network} faucetRequest={handleM1evmFaucetRequest} />
-        <Chain name="M2" eventName="m2_sui_request" language={CHAIN.m2.language} amount={1} isEvm={false} network={network} faucetRequest={m2FaucetRequest} />
+        <Chain name="Sui" eventName="sui_sui_request" language={CHAIN.sui.language} amount={1} isEvm={false} network={network} faucetRequest={suiFaucetRequest} />
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
           <div>
             <div>
-              <h3 style={{ color: "#FFDA34", fontSize: '1rem', fontFamily: "TWKEverett-Mono", textAlign: "left" }}>Testnets</h3>
+              <h3 style={{ color: "#FFDA34", fontSize: '1rem', fontFamily: "TWKEverett-Mono", textAlign: "left" }}>Movement Testnets</h3>
             </div>
             <div className="network">
-
               {/* <Button
                 href={'https://discord.com/channels/1101576619493167217/1255138490992037968'}
                 target={'_blank'}
                 sx={style}>
-                <div style={style}><h2>Movement</h2>{"{APTOS}"}</div>
+                <div style={style}><h2>Movement</h2>{"{APTOS Move}"}</div>
               </Button> */}
-              <ToggleButtonGroup
-            color="primary"
-            value={network}
-            exclusive
-            onChange={handleNetwork}
-          >
-            <ToggleButton
-              sx={style} value="movement">
-              <div style={style}><h2>Movement</h2>{"{APTOS}"}</div>
-            </ToggleButton>
-          </ToggleButtonGroup>
-
-            </div>
-          </div>
-          <div style={{ margin: "0 2rem" }}>
-            <div style={{ width: "250px" }}>
-              <h3 style={{ color: "#FFDA34", fontSize: '1rem', fontFamily: "TWKEverett-Mono", textAlign: "left" }}>Legacy Devnets</h3>
-            </div>
-            <div
-              className="network"
-            >
               <ToggleButtonGroup
                 color="primary"
                 value={network}
                 exclusive
-                onChange={handleNetwork}
-                style={{ borderRadius: "10px" }}
-              >
-                {/* <ToggleButton sx={{ ...style }} value="m1">
-                <div style={text}><h2>M1</h2>{"{APTOS}"}</div>
-              </ToggleButton> */}
-                <ToggleButton sx={{ ...style }} value="mevm">
-                  <div style={text}><h2>M1</h2>{"{MEVM}"}</div>
+                onChange={handleNetwork}>
+                <ToggleButton
+                  value="aptos">
+                  <h3 style={style}>{"{Aptos Move}"}</h3>
                 </ToggleButton>
-                <ToggleButton sx={{ ...style }} value="m2">
-                  <div style={text}><h2>M2</h2>{"{SUI}"}</div>
+                <ToggleButton value="mevm">
+                  <h3 style={style}>{"{MEVM}"}</h3>
+                </ToggleButton>
+                <ToggleButton value="sui">
+                  <h3 style={style}>{"{Sui Move}"}</h3>
                 </ToggleButton>
               </ToggleButtonGroup>
             </div>
           </div>
+
         </div>
       </div>
       <div style={blockStyle}>
@@ -327,28 +336,29 @@ export default function LandingPage() {
               <MenuItem value={'USDT'}>USDT</MenuItem>
               <MenuItem value={'WBTC'}>WBTC</MenuItem>
               <MenuItem value={'WETH'}>WETH</MenuItem>
+              {mock != 'sui' && <MenuItem value={'ALL'}>ALL</MenuItem>}
             </Select>
           </FormControl>
         </div>
-            <div>
-        <div style={{ display: 'flex', justifyContent: "space-between", padding: '2rem' }}>
+        <div>
+          <div style={{ display: 'flex', justifyContent: "space-between", padding: '2rem' }}>
 
-          {mock == 'aptos' && <WalletConnector
-            networkSupport={"testnet"}
-            handleNavigate={() => `https://explorer.movementlabs.xyz/account/${account?.address}`}
-            modalMaxWidth="sm" />}
-          {mock == 'evm' && <w3m-button />}
-          {mock == 'sui' && <ConnectButton />}
-          {loading && <CircularProgress sx={{ position: 'absolute', left: '60%', fontFamily: "TWKEverett-Regular" }} />}
-          <Button sx={{
-            fontFamily: "TWKEverett-Regular",
-            width: 150,
-            borderRadius: 0,
-            marginLeft: '2rem',
-            color: 'black',
-            backgroundColor: '#EDEAE6',
-            '&:hover': { backgroundColor: '#C4B8A5' }
-          }} onClick={(handleMint)}>Mint</Button>
+            {mock == 'aptos' && <WalletConnector
+              networkSupport={"testnet"}
+              handleNavigate={() => `https://explorer.movementlabs.xyz/account/${account?.address}`}
+              modalMaxWidth="sm" />}
+            {mock == 'evm' && <w3m-button />}
+            {mock == 'sui' && <ConnectButton />}
+            {loading && <CircularProgress sx={{ position: 'absolute', left: '60%', fontFamily: "TWKEverett-Regular" }} />}
+            <Button sx={{
+              fontFamily: "TWKEverett-Regular",
+              width: 150,
+              borderRadius: 0,
+              marginLeft: '2rem',
+              color: 'black',
+              backgroundColor: '#EDEAE6',
+              '&:hover': { backgroundColor: '#C4B8A5' }
+            }} onClick={(handleMint)}>Mint</Button>
           </div>
           {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Minted {token}</Alert>}
           {digest && <Alert severity="error" sx={{ width: 300, marginBottom: 2 }}>{digest}</Alert>}

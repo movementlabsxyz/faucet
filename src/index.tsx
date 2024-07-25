@@ -46,24 +46,24 @@ const metadata = {
   icons: ['https://avatars.githubusercontent.com/u/37784886']
 }
 
-const mevmLegacy = {
-  id: 30730,
-  name: 'MEVM Legacy',
+const mevm = {
+  id: 30732,
+  name: 'MEVM',
   nativeCurrency: {
     name:'Move', symbol: 'MOVE', decimals: 18
   },
   rpcUrls: {
-    default: { http: ['https://mevm.devnet.m1.movementlabs.xyz'] },
+    default: { http: ['https://mevm.testnet.imola.movementlabs.xyz'] },
   },
   blockExplorers: {
     default: { name: 'Movement Explorer', url: 'https://explorer.movementlabs.xyz' },
   },
 } as const satisfies Chain
 
-const chains = [mevmLegacy] as const
+const chains = [mevm] as const
 const config = defaultWagmiConfig({
   chains: chains,
-  transports: {[mevmLegacy.id] : http('https://mevm.devnet.m1.movementlabs.xyz')},
+  transports: {[mevm.id] : http('https://mevm.testnet.imola.movementlabs.xyz')},
   projectId,
   metadata,
 })
