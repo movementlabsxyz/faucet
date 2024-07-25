@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { requestFromFaucet, requestFaucet, mevmRequestFaucet, suiRequestFaucet } from '../../api';
 import { AptosClient, FaucetClient, CoinClient } from 'aptos';
 import { Aptos, AptosConfig, TypeArgument } from '@aptos-labs/ts-sdk';
@@ -16,7 +16,6 @@ import { useWriteContract } from 'wagmi'
 import evmTokensAbi from '../../abi/evmTokensAbi.json';
 import { Transaction } from "@mysten/sui/transactions";
 import useSubmitTransaction from "../../api/hooks/useSubmitTransaction";
-import { set } from 'lodash';
 
 
 const aptosFaucetAddress = '0x275f508689de8756169d1ee02d889c777de1cebda3a7bbcce63ba8a27c563c6f';
@@ -44,9 +43,8 @@ export default function LandingPage() {
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [init, setInit] = useState(false);
   const navigate = useNavigate();
-
-
 
   const handleMint = async () => {
     setLoading(true);
@@ -247,7 +245,7 @@ export default function LandingPage() {
   }, [success, errorMessage]);
 
   const style = { width: "100%", height: "2rem", fontFamily: "TWKEverett-Regular" }
-  const blockStyle = { backgroundColor: 'rgba(237, 234, 230, 0.01)', padding: '3rem', margin: '2rem', borderRadius: '2px', border: '1px solid #101010', boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.2)" }
+  const blockStyle = { backgroundColor: 'rgba(237, 234, 230, 0.01)', padding: '3rem', margin: '2rem', borderRadius: '2px', boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.2)" }
   return (
     <><Box
       sx={{
@@ -271,7 +269,7 @@ export default function LandingPage() {
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
           <div>
             <div>
-              <h3 style={{ color: "#FFDA34", fontSize: '1rem', fontFamily: "TWKEverett-Mono", textAlign: "left" }}>Movement Testnets</h3>
+              <h3 style={{ color: "primary", fontSize: '1rem', fontFamily: "TWKEverett-Mono", textAlign: "left" }}>Movement Testnets</h3>
             </div>
             <div className="network">
               {/* <Button
@@ -365,6 +363,7 @@ export default function LandingPage() {
         </div>
       </div>
     </Box>
+
     </>
   );
 }
