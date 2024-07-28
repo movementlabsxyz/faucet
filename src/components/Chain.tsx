@@ -2,22 +2,18 @@ import React, { useEffect } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { useState,RefObject } from "react";
-import WaterDropIcon from '@mui/icons-material/WaterDrop';
-import { to } from "await-to-js";
+
 import TextField from "@mui/material/TextField";
 import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
-import { AptosClient, FaucetClient, CoinClient } from "aptos";
 import { Switch,useTheme } from "@mui/material";
-import FormControlLabel from '@mui/material/FormControlLabel';
-import { Network } from "../utils";
 import ReCAPTCHA from "react-google-recaptcha";
 
-export default function Chains({ name,eventName, language, amount, isEvm, hasTestnet, network, faucetRequest }: any) {
+export default function Chains({ name,eventName, language, amount, isEvm, network, faucetRequest }: any) {
 
-    const [success, setSuccess] = useState(false);
     const [address, setAddress] = useState("");
+    const [success, setSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [token, setToken] = useState<string|null>(null);
@@ -59,13 +55,15 @@ export default function Chains({ name,eventName, language, amount, isEvm, hasTes
         
         let status = false;
         const res = await faucetRequest(address,token);
-        
-        if (res && res.success) {
-            setSuccess(true);
-            status = true;
-        } else{
+        if (res.error) {
             setErrorMessage(res.error || "Failed to fund account.");
+        } else if (res) {
+            {
+                setSuccess(true);
+                status = true;
+            }         
         }
+        
 
         // (window as any).dataLayer.push({'event':eventName,'request_success':status});
 
@@ -96,10 +94,10 @@ export default function Chains({ name,eventName, language, amount, isEvm, hasTes
     const _amount = amount;
 
     return (
-        name?.toLowerCase() == language?.toLowerCase() && <Container sx={{ position: 'relative' }}>
+        name?.toLowerCase() == network?.toLowerCase() && <Container sx={{ position: 'relative' }}>
             <Box
                 sx={{
-                    fontFamily: "TWKEverett-Medium",
+                    fontFamily: "TWKEverett-Regular",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
@@ -112,11 +110,11 @@ export default function Chains({ name,eventName, language, amount, isEvm, hasTes
 
                 <form name={name} onSubmit={handleFormSubmit}>
                     <TextField
-                        label={name + " Address"}
+                        label={language.toUpperCase() + " Address"}
                         variant="outlined"
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
-                        sx={{ width: 300, marginBottom: 2, fontFamily: "TWKEverett-Medium" }}
+                        sx={{ width: 300, marginBottom: 2, fontFamily: "TWKEverett-Regular" }}
                         disabled={loading}
                         error={!isValidHex(address, true) && address !== ""}
                         helperText={!isValidHex(address, true) && address !== "" ? `Invalid address. Should be of the form: 0xab12... and be ${isEvm ? '20' : '32'} bytes in length` : ""}
@@ -129,35 +127,25 @@ export default function Chains({ name,eventName, language, amount, isEvm, hasTes
                     />} */}
                     <br />
 
-                    {loading && <CircularProgress sx={{ position: 'absolute', left: '50%', fontFamily: "TWKEverett-Medium" }} />}
+                    {loading && <CircularProgress sx={{ position: 'absolute', left: '50%', fontFamily: "TWKEverett-Regular" }} />}
 
                     <Button
                         onClick={handleRequest}
                         variant="contained"
                         sx={{
-                            fontFamily: "TWKEverett-Medium",
+                            fontFamily: "TWKEverett-Regular",
                             width: 300,
                             borderRadius: 0,
-                            color: 'white',
-                            backgroundColor: '#1737FF',
-                            '&:hover': { backgroundColor: 'rgb(16, 38, 178)' }
+                            color: 'black',
+                            backgroundColor: '#EDEAE6',
+                            '&:hover': { backgroundColor: '#C4B8A5' }
                         }}
-                        disabled={loading||token===null||!isValidHex(address, true)}
                     >
-                        <WaterDropIcon sx={{ mr: 1}} />
+                        {/*  */}
                         Get MOVE
                     </Button>
                     <div>
-                    {isDark &&
-                        <ReCAPTCHA
-                            ref={recaptchaRef}
-                            sitekey="6Ldjt-UpAAAAANRZMth7DIcfzDBSRWRIsr22XsxQ"
-                            // size="invisible"
-                            hl="en"
-                            onChange={onChangeRe}
-                            theme="dark"
-                        />}
-                        {!isDark &&
+     
                             <ReCAPTCHA
                                 ref={recaptchaRef}
                                 sitekey="6Ldjt-UpAAAAANRZMth7DIcfzDBSRWRIsr22XsxQ"
@@ -166,7 +154,6 @@ export default function Chains({ name,eventName, language, amount, isEvm, hasTes
                                 onChange={onChangeRe}
                                 theme="light"
                             />
-                        }
                     </div>
                     {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account {_amount} MOVE</Alert>}
                     {errorMessage && <Alert severity="error" sx={{ width: 300, marginBottom: 2 }}>{errorMessage}</Alert>}

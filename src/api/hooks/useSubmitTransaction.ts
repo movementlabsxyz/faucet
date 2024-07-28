@@ -1,6 +1,9 @@
-import {FailedTransactionError, Types} from "aptos";
+import {FailedTransactionError} from "aptos";
 import {useEffect, useState} from "react";
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import {
+  useWallet,
+  InputTransactionData,
+} from "@aptos-labs/wallet-adapter-react";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 
 export type TransactionResponse =
@@ -27,7 +30,7 @@ const useSubmitTransaction = () => {
   const [transactionInProcess, setTransactionInProcess] =
     useState<boolean>(false);
   const [state] = useGlobalState();
-  const {signAndSubmitTransaction, network} = useWallet();
+  const {signAndSubmitTransaction, wallet, network} = useWallet();
 
   useEffect(() => {
     if (transactionResponse !== null) {
@@ -35,20 +38,12 @@ const useSubmitTransaction = () => {
     }
   }, [transactionResponse]);
 
-  async function submitTransaction(payload: Types.TransactionPayload) {
-    if (network?.name.toLocaleLowerCase() !== state.network_name) {
-      setTransactionResponse({
-        transactionSubmitted: false,
-        message:
-          "Wallet and Explorer should use the same network to submit a transaction",
-      });
-      return;
-    }
+  async function submitTransaction(transaction: InputTransactionData) : Promise<any> {
 
     setTransactionInProcess(true);
 
-    const useSignAndSubmitTransaction = async (
-      transactionPayload: Types.TransactionPayload,
+    const signAndSubmitTransactionCall = async (
+      transaction: InputTransactionData,
     ): Promise<TransactionResponse> => {
       const responseOnError: TransactionResponseOnError = {
         transactionSubmitted: false,
@@ -57,22 +52,18 @@ const useSubmitTransaction = () => {
 
       let response;
       try {
-        response = await signAndSubmitTransaction(transactionPayload);
+        response = await signAndSubmitTransaction(transaction);
 
         // transaction submit succeed
         if ("hash" in response) {
           await state.aptos_client.waitForTransaction(response["hash"], {
             checkSuccess: true,
           });
-          return {
-            transactionSubmitted: true,
-            transactionHash: response["hash"],
-            success: true,
-          };
+          return response["hash"]
         }
         // transaction failed
-        return {...responseOnError, message: response.message};
-      } catch (error: any) {
+        return response.message;
+      } catch (error) {
         if (error instanceof FailedTransactionError) {
           return {
             transactionSubmitted: true,
@@ -80,13 +71,16 @@ const useSubmitTransaction = () => {
             message: error.message,
             success: false,
           };
+        } else if (error instanceof Error) {
+          return {...responseOnError, message: error.message};
         }
-        responseOnError.message = error;
       }
       return responseOnError;
     };
 
-    await useSignAndSubmitTransaction(payload).then(setTransactionResponse);
+    await signAndSubmitTransactionCall(transaction).then(
+      setTransactionResponse,
+    );
   }
 
   function clearTransactionResponse() {

@@ -1,0 +1,7 @@
+.network {
+    border: 1px solid transparent;
+}
+
+.network:hover {
+    border: 1px solid #FFDA34;
+}

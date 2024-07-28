@@ -8,7 +8,6 @@ import {ReactComponent as CloseIcon} from "../../assets/svg/icon_close.svg";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import Box from "@mui/material/Box";
 import {Divider, useTheme} from "@mui/material";
-import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
 import {useNavigate} from "../../routing";
 import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
 import {useGlobalState} from "../../global-config/GlobalConfig";
@@ -19,7 +18,6 @@ export default function NavMobile() {
   const theme = useTheme();
   const navigate = useNavigate();
   const [state] = useGlobalState();
-  const inMainnet = useGetInMainnet();
   const {account} = useWallet();
   const menuOpen = Boolean(menuAnchorEl);
 
@@ -76,20 +74,6 @@ export default function NavMobile() {
           maxWidth: "none",
         }}
       >
-        <MenuItem onClick={() => handleCloseAndNavigate("/transactions")}>
-          Transactions
-        </MenuItem>
-        {inMainnet && (
-          <MenuItem onClick={() => handleCloseAndNavigate("/analytics")}>
-            Analytics
-          </MenuItem>
-        )}
-        <MenuItem onClick={() => handleCloseAndNavigate("/validators")}>
-          Validators
-        </MenuItem>
-        <MenuItem onClick={() => handleCloseAndNavigate("/blocks")}>
-          Blocks
-        </MenuItem>
         <Divider />
         <WalletConnector
           networkSupport={state.network_name}

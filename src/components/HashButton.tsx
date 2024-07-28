@@ -20,7 +20,6 @@ import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
 import {assertNever} from "../utils";
-import {useGetNameFromAddress} from "../api/hooks/useGetANS";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import IdenticonImg from "./IdenticonImg";
 import {Link} from "../routing";
@@ -92,7 +91,6 @@ function AccountHashButtonInner({
   type,
   size = "small",
 }: AccountHashButtonInnerProps) {
-  const name = useGetNameFromAddress(hash);
   const truncateHash =
     size === "large" ? truncateAddressMiddle(hash) : truncateAddress(hash);
   const [copyTooltipOpen, setCopyTooltipOpen] = useState(false);
@@ -130,7 +128,7 @@ function AccountHashButtonInner({
         }}
       >
         <Tooltip title={hash} enterDelay={500} enterNextDelay={500}>
-          <span>{name ?? truncateHash}</span>
+          <span>{truncateHash}</span>
         </Tooltip>
         <Tooltip title="Copied" open={copyTooltipOpen}>
           <Button

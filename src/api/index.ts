@@ -1,9 +1,11 @@
 import { AptosAccount, AptosClient, FaucetClient, Types, CoinClient } from "aptos";
+import { Aptos } from "@aptos-labs/ts-sdk"
 import { OCTA } from "../constants";
 import { isNumeric } from "../pages/utils";
 import { sortTransactions } from "../utils";
 import { withResponseError } from "./client";
 import axios from "axios";
+import Header from "../pages/layout/Header";
 
 
 export async function getTransactions(
@@ -303,7 +305,7 @@ export async function requestFaucet(
   token:string
 ): Promise<any> {
 
-  const url = `${faucetUrl}?address=${pubkey}`;
+  const url = `${faucetUrl}/batch_mint?address=${pubkey}`;
   let txns = [];
   const headers = {
     'Token': token,
@@ -336,25 +338,34 @@ export const GLOBAL_SIGNER = AptosAccount.fromAptosAccountObject({
   address: "0x348116b94c9b734068cd07635c969fd724e5aa08fb63fd2ea52fd7d7e35b0fde"
 });
 
-export async function requestFaucetWithGlobalSigner(
-  aptosClient: AptosClient,
-  faucetClient: FaucetClient,
-  coinClient: CoinClient,
-  faucetUrl: string,
-  address: string,
-): Promise<any> {
+export async function requestFromFaucet (faucetClient: FaucetClient, aptos: Aptos, address : string) {
+  const response = await faucetClient.fundAccount(address, 1000000000);
+  // const response = await aptos.fundAccount({accountAddress: address, amount: 1000000000});
+  const tx = await response;
 
-  // double up the coins
-  const tx =
-    await requestFaucet(
-      aptosClient,
-      faucetUrl,
-      PUBLIC_KEY,
-      ''
-    )
-  console.log(tx);
-  return tx;
+  // console.log(response)
+  return response;
 }
+
+// export async function requestFaucetWithGlobalSigner(
+//   aptosClient: AptosClient,
+//   faucetClient: FaucetClient,
+//   coinClient: CoinClient,
+//   faucetUrl: string,
+//   address: string,
+// ): Promise<any> {
+
+//   // double up the coins
+//   const tx =
+//     await requestFaucet(
+//       aptosClient,
+//       faucetUrl,
+//       PUBLIC_KEY,
+//       ''
+//     )
+//   console.log(tx);
+//   return tx;
+// }
 
 export async function mevmRequestFaucet(
   mevmUrl: string,
@@ -389,8 +400,8 @@ export async function mevmRequestFaucet(
   }
 }
 
-export async function m2RequestFaucet(
-  m2Url: string,
+export async function suiRequestFaucet(
+  suiUrl: string,
   address: string,
   token: string,
 ): Promise<any> {
@@ -411,7 +422,7 @@ export async function m2RequestFaucet(
   };
 
   try{
-    const res:any = await fetch(m2Url, requestOptions) .then((response) => response.text());
+    const res:any = await fetch(suiUrl, requestOptions) .then((response) => response.text());
     const res1 = JSON.parse(res);
 
     if (res1.code == 200) {

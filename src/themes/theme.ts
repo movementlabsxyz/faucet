@@ -125,7 +125,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
       ? {
           // light mode palette values
           primary: {
-            main: primaryColorToned,
+            main: grey[900],
           },
 
           secondary: {

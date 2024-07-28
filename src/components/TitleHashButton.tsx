@@ -12,7 +12,6 @@ import {grey} from "../themes/colors/aptosColorPalette";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
-import {useGetNameFromAddress} from "../api/hooks/useGetANS";
 
 const BUTTON_HEIGHT = 34;
 const TOOLTIP_TIME = 2000; // 2s
@@ -109,34 +108,6 @@ function HashButton({hash}: {hash: string}) {
 
 function Name({address}: {address: string}) {
   const theme = useTheme();
-  const name = useGetNameFromAddress(address, true);
 
-  if (!name) {
     return null;
-  }
-
-  return (
-    <Box>
-      <Stack
-        justifyContent="center"
-        sx={{
-          height: BUTTON_HEIGHT,
-          backgroundColor: `${
-            theme.palette.mode === "dark" ? grey[600] : grey[200]
-          }`,
-          borderRadius: 1,
-          color: "inherit",
-          padding: "0.15rem 1rem 0.15rem 1rem",
-        }}
-      >
-        <Link
-          href={`https://www.aptosnames.com/name/${name}`}
-          target="_blank"
-          underline="none"
-        >
-          {`${name}.move`}
-        </Link>
-      </Stack>
-    </Box>
-  );
 }
