@@ -1,16 +1,12 @@
 /**
  * Network
  */
-export const devnetUrl =
-  process.env.APTOS_DEVNET_URL || "https://fullnode.devnet.aptoslabs.com/";
-
 export const networks = {
-  mainnet: "https://fullnode.mainnet.aptoslabs.com/",
-  testnet: "https://seed-node1.movementlabs.xyz",
-  devnet: devnetUrl,
-  local: "https://seed-node1.movementlabs.xyz",
-  // local: "https://submove-fuji.bbd.sh/v1",
-  previewnet: "https://fullnode-0.previewnet.gcp.aptosdev.com/v1",
+  mainnet: "https://mainnet.movementnetwork.xyz/",
+  testnet: "https://testnet.suzuka.movementlabs.xyz",
+  devnet: "https://devnet.imola.movementlabs.xyz",
+  local: "locahost:30731",
+  previewnet: "https://previewnet.movementnetwork.xyz",
 };
 
 export type NetworkName = keyof typeof networks;

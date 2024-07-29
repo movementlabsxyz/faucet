@@ -30,7 +30,7 @@ import { createNetworkConfig, SuiClientProvider, WalletProvider } from '@mysten/
  
 // Config options for the networks you want to connect to
 const { networkConfig } = createNetworkConfig({
-	m2: { url: 'https://sui.devnet.m2.movementlabs.xyz', language: 'sui' },
+	m2: { url: 'https://devnet.baku.movementlabs.xyz', language: 'sui' },
 });
 
 
