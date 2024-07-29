@@ -26,8 +26,8 @@ const CHAIN = {
   m1: { network: 'devnet', url: 'https://aptos.devnet.m1.movementlabs.xyz', language: 'aptos' },
   mevmM1: { network: 'devnet', url: 'https://mevm.devnet.m1.movementlabs.xyz', language: 'evm' },
   m2: { network: 'devnet', url: 'https://sui.devnet.m2.movementlabs.xyz/faucet/web', language: 'sui' },
-  mevm: { network: 'testnet', url: 'https://mevm.testnet.imola.movementlabs.xyz', language: 'evm' },
-  sui: { network: 'testnet', url: 'https://sui.testnet.imola.movementlabs.xyz/faucet/web', language: 'sui' }
+  mevm: { network: 'devnet', url: 'https://mevm.devnet.imola.movementlabs.xyz', language: 'evm' },
+  sui: { network: 'devnet', url: 'https://sui.devnet.imola.movementlabs.xyz/faucet/web', language: 'sui' }
 };
 
 

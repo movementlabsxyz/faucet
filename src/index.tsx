@@ -16,7 +16,6 @@ import {MartianWallet} from "@martianwallet/aptos-wallet-adapter";
 import {RiseWallet} from "@rise-wallet/wallet-adapter";
 import {FewchaWallet} from "fewcha-plugin-wallet-adapter";
 import {StatsigProvider} from "statsig-react";
-import {BloctoWallet} from "@blocto/aptos-wallet-adapter-plugin";
 import {NightlyWallet} from "@nightlylabs/aptos-wallet-adapter-plugin";
 import {OpenBlockWallet} from "@openblockhq/aptos-wallet-adapter";
 import {TokenPocketWallet} from "@tp-lab/aptos-wallet-adapter";
@@ -53,7 +52,7 @@ const mevm = {
     name:'Move', symbol: 'MOVE', decimals: 18
   },
   rpcUrls: {
-    default: { http: ['https://mevm.testnet.imola.movementlabs.xyz'] },
+    default: { http: ['https://mevm.devnet.imola.movementlabs.xyz'] },
   },
   blockExplorers: {
     default: { name: 'Movement Explorer', url: 'https://explorer.movementlabs.xyz' },
@@ -63,7 +62,7 @@ const mevm = {
 const chains = [mevm] as const
 const config = defaultWagmiConfig({
   chains: chains,
-  transports: {[mevm.id] : http('https://mevm.testnet.imola.movementlabs.xyz')},
+  transports: {[mevm.id] : http('https://mevm.devnet.imola.movementlabs.xyz')},
   projectId,
   metadata,
 })
