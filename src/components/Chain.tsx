@@ -48,37 +48,44 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
 
 
     const handleRequest = async () => {
-
-
         setLoading(true);
         recaptchaRef.current?.reset();
         
         let status = false;
-        const res = await faucetRequest(address,token);
-        if (res.error) {
-            setErrorMessage(res.error || "Failed to fund account.");
-        } else if (res) {
-            {
+        try {
+            const res = await faucetRequest(address, token);
+            console.log(res);
+    
+            if (res.error || res.e) {
+                setErrorMessage(res?.error || "Failed to fund account.");
+            } else if (res) {
                 setSuccess(true);
                 status = true;
-            }         
+            }
+    
+            (window as any).gtag('event', eventName, {
+                'gtagIP': (window as any).gtagIP,
+                'href': location.href,
+                'time': Date.now(),
+                'address': address,
+                'value': status,
+                'token': token,
+                'type': name,
+                'error': res.error || "none",
+            });
+    
+            setToken(null);
+        } catch (error : any) {
+            console.log(error);
+            // Handle rate limit rejection
+            if (error.response?.status === 429) {
+                setErrorMessage("You are being rate limited. Please try again later.");
+            } else {
+                setErrorMessage("An unexpected error occurred. Please try again.");
+            }
+        } finally {
+            setLoading(false);
         }
-        
-
-        // (window as any).dataLayer.push({'event':eventName,'request_success':status});
-
-        (window as any).gtag('event', eventName, {
-            'gtagIP': (window as any).gtagIP,
-            'href': location.href,
-            'time': Date.now(),
-            'address': address,
-            'value': status,
-            'token': token,
-            'type': name,
-            'error': res.error||"none",
-          });
-        setToken(null);
-        setLoading(false);
     };
 
     const handleFormSubmit = (event: React.FormEvent) => {
@@ -148,7 +155,7 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
      
                             <ReCAPTCHA
                                 ref={recaptchaRef}
-                                sitekey="6Ldjt-UpAAAAANRZMth7DIcfzDBSRWRIsr22XsxQ"
+                                sitekey={process.env.REACT_APP_APTOS_DEVNET_SITEKEY?.toString()||"6LdPgxMqAAAAAByFdD5V8PiPKYZS4mSZWUUcZW6B"}
                                 // size="invisible"
                                 hl="en"
                                 onChange={onChangeRe}
