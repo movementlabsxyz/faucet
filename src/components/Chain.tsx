@@ -146,7 +146,7 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
      
                             <ReCAPTCHA
                                 ref={recaptchaRef}
-                                sitekey={process.env.REACT_APP_APTOS_DEVNET_SITEKEY?.toString()||"6LdPgxMqAAAAAByFdD5V8PiPKYZS4mSZWUUcZW6B"}
+                                sitekey={process.env.REACT_APP_APTOS_DEVNET_SITEKEY??"6LdPgxMqAAAAAByFdD5V8PiPKYZS4mSZWUUcZW6B"}
                                 // size="invisible"
                                 hl="en"
                                 onChange={onChangeRe}
