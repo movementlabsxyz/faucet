@@ -150,7 +150,7 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
                                 // size="invisible"
                                 hl="en"
                                 onChange={onChangeRe}
-                                theme="light"
+                                theme="dark"
                             />
                     </div>
                     {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account {_amount} MOVE</Alert>}
