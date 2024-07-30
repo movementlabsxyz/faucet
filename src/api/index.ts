@@ -431,6 +431,6 @@ export async function suiRequestFaucet(
       return {error:res1.message?.message||res1.message};
     }
   }catch(e){
-    return e;
+    return {e};
   }
 }
