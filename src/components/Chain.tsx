@@ -135,8 +135,8 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
                             width: 300,
                             borderRadius: 0,
                             color: 'black',
-                            backgroundColor: '#C4B8A5',
-                            '&:hover': { backgroundColor: 'rgba(196,184,165, 0.7)' }
+                            backgroundColor: '#EDEAE6',
+                            '&:hover': { backgroundColor: '#C4B8A5' }
                         }}
                     >
                         {/*  */}
@@ -150,7 +150,7 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
                                 // size="invisible"
                                 hl="en"
                                 onChange={onChangeRe}
-                                theme="light"
+                                theme="dark"
                             />
                     </div>
                     {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account {_amount} MOVE</Alert>}
