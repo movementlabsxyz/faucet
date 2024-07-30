@@ -268,9 +268,6 @@ export default function LandingPage() {
         <Chain name="Sui" eventName="sui_sui_request" language={CHAIN.sui.language} amount={1} isEvm={false} network={network} faucetRequest={suiFaucetRequest} />
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
           <div>
-            <div>
-              <h3 style={{ color: "primary", fontSize: '1rem', fontFamily: "TWKEverett-Mono", textAlign: "left" }}>Movement Testnets</h3>
-            </div>
             <div className="network">
               {/* <Button
                 href={'https://discord.com/channels/1101576619493167217/1255138490992037968'}
