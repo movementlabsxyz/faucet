@@ -51,6 +51,13 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
 
 
         setLoading(true);
+        if (recaptchaRef.current === null) return;
+        const captchaValue = recaptchaRef?.current.getValue()
+        if (!captchaValue) {
+            setErrorMessage("Please complete the captcha.");
+            setLoading(false);
+            return;
+        }
         recaptchaRef.current?.reset();
         
         let status = false;
