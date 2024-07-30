@@ -135,8 +135,8 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
                             width: 300,
                             borderRadius: 0,
                             color: 'black',
-                            backgroundColor: '#EDEAE6',
-                            '&:hover': { backgroundColor: '#C4B8A5' }
+                            backgroundColor: '#C4B8A5',
+                            '&:hover': { backgroundColor: 'rgba(196,184,165, 0.7)' }
                         }}
                     >
                         {/*  */}

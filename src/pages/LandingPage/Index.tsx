@@ -351,8 +351,8 @@ export default function LandingPage() {
               borderRadius: 0,
               marginLeft: '2rem',
               color: 'black',
-              backgroundColor: '#EDEAE6',
-              '&:hover': { backgroundColor: '#C4B8A5' }
+              backgroundColor: '#C4B8A5',
+              '&:hover': { backgroundColor: 'rgba(196,184,165, 0.7)' }
             }} onClick={(handleMint)}>Mint</Button>
           </div>
           {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Minted {token}</Alert>}
