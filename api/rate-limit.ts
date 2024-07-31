@@ -9,12 +9,7 @@ const ratelimit = new Ratelimit({
   limiter: Ratelimit.slidingWindow(3, '30 s'),
 });
 
-// Define which routes you want to rate limit
-export const config = {
-  runtime: 'nodejs',
-};
-
-export default async function GET(request: Request) {
+export default async function handler(request: Request) {
   try {
     const ip = ipAddress(request) || '127.0.0.1';
     console.log(`IP Address: ${ip}`);
