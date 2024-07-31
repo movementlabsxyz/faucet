@@ -338,12 +338,20 @@ export const GLOBAL_SIGNER = AptosAccount.fromAptosAccountObject({
   address: "0x348116b94c9b734068cd07635c969fd724e5aa08fb63fd2ea52fd7d7e35b0fde"
 });
 
-export async function requestFromFaucet (faucetClient: FaucetClient, aptos: Aptos, address : string) {
+export async function requestFromFaucet(faucetClient: FaucetClient, aptos: Aptos, address : string, token: string) {
+  const recaptcha = await fetch("/api/captcha", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ token }),
+  });
+  console.log(recaptcha);
+  if (!recaptcha.ok) {
+    return new Error("Failed to validate reCAPTCHA");
+  }
   const response = await faucetClient.fundAccount(address, 1000000000);
   // const response = await aptos.fundAccount({accountAddress: address, amount: 1000000000});
-  const tx = await response;
-
-  // console.log(response)
   return response;
 }
 

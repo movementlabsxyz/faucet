@@ -32,3 +32,4 @@ yarn-error.log*
 movement-explorer.txt
 
 yarn.lock
+.vercel

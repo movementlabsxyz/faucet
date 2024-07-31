@@ -12,6 +12,7 @@ const ratelimit = new Ratelimit({
 // Define which routes you want to rate limit
 export const config = {
   matcher: '/',
+  runtime: 'edge'
 }
 
 export default async function middleware(request: Request) {

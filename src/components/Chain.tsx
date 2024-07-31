@@ -10,6 +10,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { Switch,useTheme } from "@mui/material";
 import ReCAPTCHA from "react-google-recaptcha";
 
+
 export default function Chains({ name,eventName, language, amount, isEvm, network, faucetRequest }: any) {
 
     const [address, setAddress] = useState("");
@@ -48,8 +49,9 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
 
 
     const handleRequest = async () => {
-
-
+        
+        const rateLimit = await fetch('/api/rate-limit');
+        console.log("rateLimit",rateLimit);
         setLoading(true);
         if (recaptchaRef.current === null) return;
         const captchaValue = recaptchaRef?.current.getValue()

@@ -195,7 +195,8 @@ export default function LandingPage() {
     return requestFromFaucet(
       faucetClient,
       aptos,
-      address
+      address,
+      token
     );
   };
 

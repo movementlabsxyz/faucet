@@ -101,6 +101,9 @@ dependencies:
   '@vercel/edge':
     specifier: ^1.1.2
     version: 1.1.2
+  '@vercel/functions':
+    specifier: ^1.4.0
+    version: 1.4.0
   '@vercel/kv':
     specifier: ^2.0.0
     version: 2.0.0
@@ -6900,6 +6903,16 @@ packages:
 
   /@vercel/edge@1.1.2:
     resolution: {integrity: sha512-wt5SnhsMahWX8U9ZZhFUQoiXhMn/CUxA5xeMdZX1cwyOL1ZbDR3rNI8HRT9RSU73nDxeF6jlnqJyp/0Jy0VM2A==}
+    dev: false
+
+  /@vercel/functions@1.4.0:
+    resolution: {integrity: sha512-Ln6SpIkms1UJg306X2kbEMyG9ol+mjDr2xx389cvsBxgFyFMI9Bm+LYOG4N3TSik4FI59MECyyc4oz7AIAYmqQ==}
+    engines: {node: '>= 16'}
+    peerDependencies:
+      '@aws-sdk/credential-provider-web-identity': '*'
+    peerDependenciesMeta:
+      '@aws-sdk/credential-provider-web-identity':
+        optional: true
     dev: false
 
   /@vercel/kv@2.0.0:
