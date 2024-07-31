@@ -9,6 +9,10 @@ const ratelimit = new Ratelimit({
   limiter: Ratelimit.slidingWindow(3, '30 s'),
 });
 
+export const config = {
+  runtime: 'edge',
+};
+
 export default async function handler(request: Request) {
   try {
     const ip = ipAddress(request) || '127.0.0.1';
