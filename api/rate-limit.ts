@@ -2,16 +2,17 @@ import { ipAddress } from '@vercel/functions';
 import { Ratelimit } from '@upstash/ratelimit';
 import { kv } from '@vercel/kv';
 import { NextResponse } from 'next/server';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const ratelimit = new Ratelimit({
   redis: kv,
   // 3 requests from the same IP in 30 seconds
   limiter: Ratelimit.slidingWindow(3, '30 s'),
 });
-
-export const config = {
-  runtime: 'edge',
-};
 
 export default async function handler(request: Request) {
   try {
