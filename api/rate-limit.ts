@@ -13,11 +13,18 @@ const ratelimit = new Ratelimit({
   limiter: Ratelimit.slidingWindow(3, '30 s'),
 });
 
-export default async function handler(request: Request) {
+function getHeader(request: Request, headerName: string): string | null {
+  // Try to get header in a case-insensitive way
+  const headerValue = request.headers[headerName.toLowerCase() as any] || request.headers[headerName.toUpperCase() as any];
+  return headerValue || null;
+}
+
+export default async function handler(req: Request, res: Response): Promise<Response> {
   try {
-    const ip = ipAddress(request) || '127.0.0.1';
+    const ip = getHeader(req, 'x-forwarded-for') || getHeader(req, 'cf-connecting-ip') || await ipAddress(req);
+
     console.log(`IP Address: ${ip}`);
-    const { success, pending, limit, reset, remaining } = await ratelimit.limit(ip);
+    const { success, pending, limit, reset, remaining } = await ratelimit.limit(ip??'');
 
     console.log({
       success,
@@ -26,9 +33,12 @@ export default async function handler(request: Request) {
       remaining,
     });
 
-    return new Response(String(success ? 200 : 429));
+    return new Response(JSON.stringify({ success, pending, limit, reset, remaining }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (error) {
     console.error('Error in handler:', error);
-    return new Response(String(500));
+    return new Response('Internal Server Error', { status: 500 });
   }
 }

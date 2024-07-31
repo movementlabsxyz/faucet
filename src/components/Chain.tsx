@@ -51,6 +51,7 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
         try {
           const response = await fetch('/api/rate-limit');
           console.log("Response:", response);
+          
           // Check if the response is an HTML page
           const contentType = response.headers.get('content-type');
           if (!contentType || !contentType.includes('application/json')) {
