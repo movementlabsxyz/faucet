@@ -1,7 +1,6 @@
 import { ipAddress } from '@vercel/functions';
 import { Ratelimit } from '@upstash/ratelimit';
 import { kv } from '@vercel/kv';
-import { NextResponse } from 'next/server';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -27,24 +26,9 @@ export default async function handler(request: Request) {
       remaining,
     });
 
-    return new NextResponse(JSON.stringify({
-      success,
-      limit,
-      reset,
-      remaining,
-    }), {
-      status: success ? 200 : 429,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    return new Response(String(success ? 200 : 429));
   } catch (error) {
     console.error('Error in handler:', error);
-    return new NextResponse(JSON.stringify({ error: 'Internal Server Error' }), {
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    return new Response(String(500));
   }
 }
