@@ -2,6 +2,7 @@
   "name": "movement-faucets",
   "version": "1.5.3",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@apollo/client": "^3.7.10",
     "@aptos-labs/aptos-names-connector": "^0.0.2",
