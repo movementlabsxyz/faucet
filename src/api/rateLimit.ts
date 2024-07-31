@@ -14,7 +14,7 @@ export const config = {
   runtime: 'edge'
 }
 
-export default async function middleware(request: Request) {
+export default async function handler(request: Request) {
   // You could alternatively limit based on user ID or similar
   const ip = ipAddress(request) || '127.0.0.1'
   const { success, pending, limit, reset, remaining } = await ratelimit.limit(
