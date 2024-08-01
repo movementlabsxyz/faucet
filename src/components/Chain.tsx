@@ -49,7 +49,7 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
     
     const checkRateLimit = async () => {
         try {
-          const response = await fetch('/src/pages/api/rate-limit');
+          const response = await fetch('/api/rate-limit');
           console.log("Response:", response);
 
           // Check if the response is an HTML page
@@ -72,7 +72,34 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
         } catch (error) {
           console.error('Error fetching rate limit data:', error);
         }
-      };
+    };
+
+    const checkCaptcha = async () => {
+        try {
+            const response = await fetch('/api/capctcha');
+            console.log("Response:", response);
+  
+            // Check if the response is an HTML page
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+              const text = await response.text();
+              throw new Error(`Expected JSON but received: ${text}`);
+            }
+        
+            const rateLimitData = await response.json();
+            console.log("Rate Limit Data:", rateLimitData);
+        
+            if (!response.ok) {
+              // Handle rate limit exceeded
+              console.warn('Rate limit exceeded. Please try again later.');
+            } else {
+              // Handle successful rate limit check
+              console.log('Rate limit info:', rateLimitData);
+            }
+          } catch (error) {
+            console.error('Error fetching rate limit data:', error);
+          }
+    }
 
     const handleRequest = async () => {
         

@@ -8,10 +8,6 @@ const ratelimit = new Ratelimit({
   limiter: Ratelimit.slidingWindow(2, '10 s'),
 });
 
-// Define which routes you want to rate limit
-export const config = {
-  matcher: '/',
-};
 
 export default async function handler(request: NextRequest) {
   // You could alternatively limit based on user ID or similar

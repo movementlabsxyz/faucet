@@ -1,6 +1,6 @@
 
 export default async function handler(req, res) {
-    const { address, token } = req.body;
+    const { token } = req.body;
     
     // Validate reCAPTCHA
     const secretKey = process.env.RECAPTCHA_SECRET_KEY;
