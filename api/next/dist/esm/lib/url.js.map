@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/lib/url.ts"],"names":["DUMMY_ORIGIN","getUrlWithoutHost","url","URL","getPathname","pathname","isFullStringUrl","test"],"mappings":"AAAA,MAAMA,eAAe;AAErB,SAASC,kBAAkBC,GAAW;IACpC,OAAO,IAAIC,IAAID,KAAKF;AACtB;AAEA,OAAO,SAASI,YAAYF,GAAW;IACrC,OAAOD,kBAAkBC,KAAKG,QAAQ;AACxC;AAEA,OAAO,SAASC,gBAAgBJ,GAAW;IACzC,OAAO,cAAcK,IAAI,CAACL;AAC5B"}
