@@ -1,4 +1,3 @@
-import { NextRequest, NextResponse } from './next/server';
 import { Ratelimit } from '@upstash/ratelimit';
 import { kv } from '@vercel/kv';
 
@@ -8,14 +7,16 @@ const ratelimit = new Ratelimit({
   limiter: Ratelimit.slidingWindow(2, '10 s'),
 });
 
+function ips(req: Request) {
+return req.headers.get("x-forwarded-for")?.split(/\s*,\s*/);
+}
 
-export default async function handler(request: NextRequest) {
+export default async function handler(request: Request) {
   // You could alternatively limit based on user ID or similar
-  const ip = request.ip ?? '127.0.0.1';
+  const ip = ips(request) ?? '127.0.0.1';
+  
   const { success, pending, limit, reset, remaining } = await ratelimit.limit(
-    ip
+    ip[0]
   );
-  return success
-    ? NextResponse.next()
-    : NextResponse.redirect(new URL('/blocked', request.url));
+  return  new Response(String(success ? 200 : 429));
 }
