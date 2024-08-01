@@ -20,15 +20,36 @@ function getXForwardedFor(req: ExtendedIncomingMessage): string | undefined {
 }
 
 function ips(req: any) {
-return getXForwardedFor(req)?.split(/\s*,\s*/);
+  return getXForwardedFor(req)?.split(/\s*,\s*/);
 }
 
 export default async function handler(request: any, response: any) {
   // You could alternatively limit based on user ID or similar
+  console.log('init verification')
+  const { token } = request.body;
+  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+  const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`;
+
+  if (!secretKey) {
+    return request.status(500).json({ error: 'reCAPTCHA secret key not set' });
+  }
+  console.log('secret key exists')
   const ip = ips(request) ?? '127.0.0.1';
-  console.log("IP:", ip);
+
   const { success, pending, limit, reset, remaining } = await ratelimit.limit(
     ip[0]
   );
-  response.status(success ? 200 : 429).json({ success, pending, limit, reset, remaining });
+  try {
+    const verification = await fetch(verificationUrl, {
+      method: 'POST',
+    });
+    const data = await verification.json();
+
+    if (!data.success) {
+      return response.status(400).json({ error: 'Invalid reCAPTCHA token' });
+    }
+    response.status(success ? 200 : 429).json({ success, pending, limit, reset, remaining });
+  } catch (error) {
+    response.status(500).json({ error: 'Server error' });
+  }
 }
