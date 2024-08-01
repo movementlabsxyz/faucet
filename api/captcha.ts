@@ -2,12 +2,12 @@
 export default async function handler(req: any, res: any) {
     const { token } = req.body;
     console.log('init verification')
-    
     // Validate reCAPTCHA
     const secretKey = process.env.RECAPTCHA_SECRET_KEY;
     if (!secretKey) {
         return res.status(500).json({ error: 'reCAPTCHA secret key not set' });
     }
+    console.log('secret key exists')
     const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`;
     try {
         const response = await fetch(verificationUrl, {
