@@ -76,7 +76,9 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
 
     const checkCaptcha = async () => {
         try {
-            const response = await fetch('/api/capctcha');
+            const response = await fetch('/api/capctcha', {
+                
+            });
             console.log("Response:", response);
   
             // Check if the response is an HTML page
