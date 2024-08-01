@@ -181,15 +181,14 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
                     </Button>
                     <div>
 
-                            {process.env.REACT_APP_RECAPTCHA_PUBLIC_KEY &&
                             <ReCAPTCHA
                                 ref={recaptchaRef}
-                                sitekey={language == 'aptos' ? process.env.REACT_APP_RECAPTCHA_PUBLIC_KEY : "6LdPgxMqAAAAAByFdD5V8PiPKYZS4mSZWUUcZW6B"}
+                                sitekey={language == 'aptos' ? process.env.REACT_APP_RECAPTCHA_PUBLIC_KEY??'' : "6LdPgxMqAAAAAByFdD5V8PiPKYZS4mSZWUUcZW6B"}
                                 // size="invisible"
                                 hl="en"
                                 onChange={onChangeRe}
                                 theme="dark"
-                            />}
+                            />
                     </div>
                     {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account {_amount} MOVE</Alert>}
                     {errorMessage && <Alert severity="error" sx={{ width: 300, marginBottom: 2 }}>{errorMessage}</Alert>}
