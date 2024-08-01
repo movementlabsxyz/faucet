@@ -191,12 +191,10 @@ export default function LandingPage() {
 
   const aptosFaucetRequest = async (address: string, token: string) => {
     const faucetClient = new FaucetClient(CHAIN.aptos.url, CHAIN.aptos.faucetUrl);
-    const aptos = new Aptos(new AptosConfig({ fullnode: CHAIN.aptos.url, faucet: CHAIN.aptos.faucetUrl }));
+    // const aptos = new Aptos(new AptosConfig({ fullnode: CHAIN.aptos.url, faucet: CHAIN.aptos.faucetUrl }));
     return requestFromFaucet(
       faucetClient,
-      aptos,
-      address,
-      token
+      address
     );
   };
 

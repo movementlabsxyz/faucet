@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { useState,RefObject } from "react";
@@ -16,14 +16,13 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
     const [success, setSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const recaptchaRef = useRef<ReCAPTCHA>(null);
     const [token, setToken] = useState<string|null>(null);
     const theme = useTheme();
     const [isDark, setIsDark] = useState(theme.palette.mode === "dark");
     useEffect(() => {
         setIsDark(theme.palette.mode === "dark");
     }, [theme]);
-  
-
     // decay the success state
     useEffect(() => {
 
@@ -38,18 +37,21 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
 
     }, [success, errorMessage]);
 
+    useEffect(() => {
+        if (recaptchaRef.current) {
+          // If you need to do anything with the recaptchaRef, you can do it here
+          console.log('ReCAPTCHA is ready');
+        }
+      }, []);
+
     const onChangeRe = (value:string|null)=> {
         // console.log("Captcha value:", value);
         setToken(value);
       }
-
-    const recaptchaRef: RefObject<ReCAPTCHA> = React.createRef();
     
     const checkRateLimit = async () => {
         try {
           const response = await fetch('/api/rate-limit');
-          console.log("Response:", response);
-
           // Check if the response is an HTML page
           const contentType = response.headers.get('content-type');
           if (!contentType || !contentType.includes('application/json')) {
@@ -75,26 +77,48 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
         }
     };
 
+    const checkCaptcha = async (token: string) => {
+        const response = await fetch('/api/captcha', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ token }),
+            });
+            console.log('catpcha response', response)
+        if (response.status === 200) {
+            return true;
+        } else {
+            setErrorMessage('Failed to verify captcha.');
+            return false;
+        }
+    }
+
     const handleRequest = async () => {
         setLoading(true);
         const rateLimited = await checkRateLimit();
-        console.log("Rate limited:", rateLimited);
         if (rateLimited) {
             setErrorMessage('Rate limit exceeded. Please try again later.');
             setLoading(false);
             return;
         }
-        if (recaptchaRef.current === null) return;
+        if (recaptchaRef.current === null) return console.log("recaptchaRef is null");
         const captchaValue = recaptchaRef?.current.getValue()
         if (!captchaValue) {
             setErrorMessage("Please complete the captcha.");
             setLoading(false);
             return;
         }
+        const captcha = await checkCaptcha(captchaValue);
+        if (!captcha) {
+            setErrorMessage("Failed to verify captcha.");
+            setLoading(false);
+            return;
+        }
         recaptchaRef.current?.reset();
         
         let status = false;
-        const res = await faucetRequest(address,token);
+        const res = await faucetRequest(address, token);
         console.log(res)
         if (res.error) {
             setErrorMessage(res.error || "Failed to fund account.");
@@ -186,7 +210,7 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
      
                             <ReCAPTCHA
                                 ref={recaptchaRef}
-                                sitekey={process.env.REACT_APP_APTOS_DEVNET_SITEKEY??"6LdPgxMqAAAAAByFdD5V8PiPKYZS4mSZWUUcZW6B"}
+                                sitekey={language == 'aptos' ? '6Ldjt-UpAAAAANRZMth7DIcfzDBSRWRIsr22XsxQ' : "6LdPgxMqAAAAAByFdD5V8PiPKYZS4mSZWUUcZW6B"}
                                 // size="invisible"
                                 hl="en"
                                 onChange={onChangeRe}
