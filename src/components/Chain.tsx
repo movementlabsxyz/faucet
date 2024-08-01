@@ -10,7 +10,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { Switch,useTheme } from "@mui/material";
 import ReCAPTCHA from "react-google-recaptcha";
 
-
 export default function Chains({ name,eventName, language, amount, isEvm, network, faucetRequest }: any) {
 
     const [address, setAddress] = useState("");
@@ -18,7 +17,6 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [token, setToken] = useState<string|null>(null);
-
     const theme = useTheme();
     const [isDark, setIsDark] = useState(theme.palette.mode === "dark");
     useEffect(() => {
@@ -60,54 +58,32 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
           }
       
           const rateLimitData = await response.json();
-          console.log("Rate Limit Data:", rateLimitData);
+          console.log(rateLimitData)
+           if (rateLimitData) return !rateLimitData.success;
       
           if (!response.ok) {
             // Handle rate limit exceeded
-            console.warn('Rate limit exceeded. Please try again later.');
+            setErrorMessage('Rate limit exceeded. Please try again later.');
+            return true;
           } else {
             // Handle successful rate limit check
-            console.log('Rate limit info:', rateLimitData);
+            return false;
           }
         } catch (error) {
-          console.error('Error fetching rate limit data:', error);
+            setErrorMessage('Error fetching rate limit data');
+          return false;
         }
     };
 
-    const checkCaptcha = async () => {
-        try {
-            const response = await fetch('/api/capctcha', {
-                
-            });
-            console.log("Response:", response);
-  
-            // Check if the response is an HTML page
-            const contentType = response.headers.get('content-type');
-            if (!contentType || !contentType.includes('application/json')) {
-              const text = await response.text();
-              throw new Error(`Expected JSON but received: ${text}`);
-            }
-        
-            const rateLimitData = await response.json();
-            console.log("Rate Limit Data:", rateLimitData);
-        
-            if (!response.ok) {
-              // Handle rate limit exceeded
-              console.warn('Rate limit exceeded. Please try again later.');
-            } else {
-              // Handle successful rate limit check
-              console.log('Rate limit info:', rateLimitData);
-            }
-          } catch (error) {
-            console.error('Error fetching rate limit data:', error);
-          }
-    }
-
     const handleRequest = async () => {
-        
-        checkRateLimit();
-        
         setLoading(true);
+        const rateLimited = await checkRateLimit();
+        console.log("Rate limited:", rateLimited);
+        if (rateLimited) {
+            setErrorMessage('Rate limit exceeded. Please try again later.');
+            setLoading(false);
+            return;
+        }
         if (recaptchaRef.current === null) return;
         const captchaValue = recaptchaRef?.current.getValue()
         if (!captchaValue) {
