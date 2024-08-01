@@ -183,7 +183,7 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
 
                             <ReCAPTCHA
                                 ref={recaptchaRef}
-                                sitekey={language == 'aptos' ? process.env.REACT_APP_RECAPTCHA_PUBLIC_KEY??'' : "6LdPgxMqAAAAAByFdD5V8PiPKYZS4mSZWUUcZW6B"}
+                                sitekey={language == 'aptos' ? process.env.REACT_APP_RECAPTCHA_APTOS_PUBLIC_KEY??'' : "6LdPgxMqAAAAAByFdD5V8PiPKYZS4mSZWUUcZW6B"}
                                 // size="invisible"
                                 hl="en"
                                 onChange={onChangeRe}
