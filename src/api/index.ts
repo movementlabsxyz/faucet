@@ -5,7 +5,6 @@ import { isNumeric } from "../pages/utils";
 import { sortTransactions } from "../utils";
 import { withResponseError } from "./client";
 import axios from "axios";
-import Header from "../pages/layout/Header";
 
 
 export async function getTransactions(

@@ -49,9 +49,15 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
         setToken(value);
       }
     
-    const checkRateLimit = async () => {
+    const checkRateLimit = async (token:string) => {
         try {
-          const response = await fetch('/api/rate-limit');
+          const response = await fetch('/api/rate-limit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ token }),
+            });
           // Check if the response is an HTML page
           const contentType = response.headers.get('content-type');
           if (!contentType || !contentType.includes('application/json')) {
@@ -77,31 +83,9 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
         }
     };
 
-    const checkCaptcha = async (token: string) => {
-        const response = await fetch('/api/captcha', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ token }),
-            });
-            console.log('catpcha response', response)
-        if (response.status === 200) {
-            return true;
-        } else {
-            setErrorMessage('Failed to verify captcha.');
-            return false;
-        }
-    }
-
     const handleRequest = async () => {
         setLoading(true);
-        const rateLimited = await checkRateLimit();
-        if (rateLimited) {
-            setErrorMessage('Rate limit exceeded. Please try again later.');
-            setLoading(false);
-            return;
-        }
+        
         if (recaptchaRef.current === null) return console.log("recaptchaRef is null");
         const captchaValue = recaptchaRef?.current.getValue()
         if (!captchaValue) {
@@ -109,13 +93,12 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
             setLoading(false);
             return;
         }
-        const captcha = await checkCaptcha(captchaValue);
-        if (!captcha) {
-            setErrorMessage("Failed to verify captcha.");
+        const rateLimited = await checkRateLimit(captchaValue);
+        if (rateLimited) {
+            setErrorMessage('Rate limit exceeded. Please try again later.');
             setLoading(false);
             return;
         }
-        recaptchaRef.current?.reset();
         
         let status = false;
         const res = await faucetRequest(address, token);
@@ -128,17 +111,7 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
                 status = true;
             }         
         }
-        
-        (window as any).gtag('event', eventName, {
-            'gtagIP': (window as any).gtagIP,
-            'href': location.href,
-            'time': Date.now(),
-            'address': address,
-            'value': status,
-            'token': token,
-            'type': name,
-            'error': res.error||"none",
-          });
+        recaptchaRef.current?.reset();
         setToken(null);
         setLoading(false);
     };

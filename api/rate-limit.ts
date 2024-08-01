@@ -5,7 +5,7 @@ import { IncomingMessage } from 'http';
 const ratelimit = new Ratelimit({
   redis: kv,
   // 5 requests from the same IP in 10 seconds
-  limiter: Ratelimit.slidingWindow(2, '20 s'),
+  limiter: Ratelimit.slidingWindow(1, '30 s'),
 });
 
 type ExtendedIncomingMessage = IncomingMessage & {
@@ -46,8 +46,9 @@ export default async function handler(request: any, response: any) {
     const data = await verification.json();
 
     if (!data.success) {
-      return response.status(400).json({ error: 'Invalid reCAPTCHA token' });
+      response.status(400).json({ error: 'Invalid reCAPTCHA token' });
     }
+    console.log('verification successful', success)
     response.status(success ? 200 : 429).json({ success, pending, limit, reset, remaining });
   } catch (error) {
     response.status(500).json({ error: 'Server error' });
