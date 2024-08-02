@@ -79,7 +79,7 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
           }
         } catch (error) {
             setErrorMessage('Error fetching rate limit data');
-          return false;
+          return true;
         }
     };
 
