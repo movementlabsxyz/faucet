@@ -82,6 +82,7 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
           return true;
         }
     };
+    
 
     const handleRequest = async () => {
         setLoading(true);
