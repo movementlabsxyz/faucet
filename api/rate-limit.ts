@@ -91,14 +91,30 @@ export default async function handler(request: any, response: any) {
   const { success, pending, limit, reset, remaining } = await ratelimit.limit(
     ip[0]
   );
-  console.log('ratelimit', success, pending, limit, reset, remaining)
-  const score = await createAssessment("movement-faucet-1722352143785", "6LdVjR0qAAAAAFSjzYqyRFsnUDn-iRrzQmv0nnp3", "", token);
-  console.log('score', score)
-  if (score === (null || undefined)) {
-    response.status(400).json({ error: 'Invalid reCAPTCHA token' });
-  } else if (score != null && score < 0.5) {
-    response.status(400).json({ error: 'reCAPTCHA score too low' });
-  } else {
+
+  // const score = await createAssessment("movement-faucet-1722352143785", "6LdVjR0qAAAAAFSjzYqyRFsnUDn-iRrzQmv0nnp3", "", token);
+  // console.log('score', score)
+  // if (score === (null || undefined)) {
+  //   response.status(400).json({ error: 'Invalid reCAPTCHA token' });
+  // } else if (score != null && score < 0.5) {
+  //   response.status(400).json({ error: 'reCAPTCHA score too low' });
+  // } else {
+  //   response.status(success ? 200 : 429).json({ success, pending, limit, reset, remaining });
+  // }
+
+  try {
+    const verification = await fetch(verificationUrl, {
+      method: 'POST',
+    });
+    const data = await verification.json();
+    console.log('data', data)
+    if (data.success == false) {
+      response.status(400).json({ error: 'Invalid reCAPTCHA token' });
+    }
+    console.log('verification successful', data.success)
+    console.log('not rate limited', success)
     response.status(success ? 200 : 429).json({ success, pending, limit, reset, remaining });
+  } catch (error) {
+    response.status(500).json({ error: 'Server error' });
   }
 }

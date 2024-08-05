@@ -1,23 +1,23 @@
 import React, { useEffect, useRef } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { useState,RefObject } from "react";
+import { useState, RefObject } from "react";
 
 import TextField from "@mui/material/TextField";
 import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Switch,useTheme } from "@mui/material";
+import { Switch, useTheme } from "@mui/material";
 import ReCAPTCHA from "react-google-recaptcha";
 
-export default function Chains({ name,eventName, language, amount, isEvm, network, faucetRequest }: any) {
+export default function Chains({ name, eventName, language, amount, isEvm, network, faucetRequest }: any) {
 
     const [address, setAddress] = useState("");
     const [success, setSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const recaptchaRef = useRef<ReCAPTCHA>(null);
-    const [token, setToken] = useState<string|null>(null);
+    const [token, setToken] = useState<string | null>(null);
     const theme = useTheme();
     const [isDark, setIsDark] = useState(theme.palette.mode === "dark");
     useEffect(() => {
@@ -39,82 +39,75 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
 
     useEffect(() => {
         if (recaptchaRef.current) {
-          // If you need to do anything with the recaptchaRef, you can do it here
-          console.log('ReCAPTCHA is ready');
+            // If you need to do anything with the recaptchaRef, you can do it here
+            console.log('ReCAPTCHA is ready');
         }
-      }, []);
+    }, []);
 
-    const onChangeRe = (value:string|null)=> {
+    const onChangeRe = (value: string | null) => {
         // console.log("Captcha value:", value);
         setToken(value);
-      }
-    
-    const checkRateLimit = async (token:string) => {
+    }
+
+    const checkRateLimit = async (token: string) => {
         try {
-          const response = await fetch('/api/rate-limit', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ token }),
+            const response = await fetch('/api/rate-limit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ token }),
             });
-          // Check if the response is an HTML page
-          const contentType = response.headers.get('content-type');
-          if (!contentType || !contentType.includes('application/json')) {
-            const text = await response.text();
-            throw new Error(`Expected JSON but received: ${text}`);
-          }
-      
-          const rateLimitData = await response.json();
-          console.log(rateLimitData)
-           if (rateLimitData) return !rateLimitData.success;
-      
-          if (!response.ok) {
-            // Handle rate limit exceeded
-            setErrorMessage('Rate limit exceeded. Please try again later.');
-            return true;
-          } else {
-            // Handle successful rate limit check
-            return false;
-          }
+            // Check if the response is an HTML page
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                const text = await response.text();
+                throw new Error(`Expected JSON but received: ${text}`);
+            }
+
+            const rateLimitData = await response.json();
+            console.log('Limit:', rateLimitData.limit);
+            if (response.status == 200) {
+                return false;
+            } else {
+                return true;
+            }
         } catch (error) {
-            setErrorMessage('Error fetching rate limit data');
-          return true;
+            console.error('Error checking rate limit:', error);
+            return true;
         }
     };
-    
+
 
     const handleRequest = async () => {
         setLoading(true);
-        
+
         if (recaptchaRef.current === null) return console.log("recaptchaRef is null");
         const captchaValue = recaptchaRef?.current.getValue()
         if (!captchaValue) {
             setErrorMessage("Please complete the captcha.");
-            setLoading(false);
-            return;
-        }
-        const rateLimited = await checkRateLimit(captchaValue);
-        if (rateLimited) {
-            setErrorMessage('Rate limit exceeded. Please try again later.');
-            setLoading(false);
-            return;
-        }
-        
-        let status = false;
-        const res = await faucetRequest(address, token);
-        console.log(res)
-        if (res.error) {
-            setErrorMessage(res.error || "Failed to fund account.");
-        } else if (res) {
-            {
-                setSuccess(true);
-                status = true;
-            }         
+        } else {
+            const rateLimited = await checkRateLimit(captchaValue);
+            if (rateLimited) {
+                setErrorMessage('Rate limit exceeded. Please try again later.');
+            } else {
+                let status = false;
+                const res = await faucetRequest(address, token);
+                console.log(res)
+                if (res.error) {
+                    setErrorMessage(res.error || "Failed to fund account.");
+                } else if (res) {
+                    {
+                        setSuccess(true);
+                        status = true;
+                    }
+                }
+            }
         }
         recaptchaRef.current?.reset();
         setToken(null);
         setLoading(false);
+
     };
 
     const handleFormSubmit = (event: React.FormEvent) => {
@@ -182,14 +175,14 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
                     </Button>
                     <div>
 
-                            <ReCAPTCHA
-                                ref={recaptchaRef}
-                                sitekey={language == 'aptos' ? process.env.REACT_APP_RECAPTCHA_APTOS_PUBLIC_KEY??'' : "6LdPgxMqAAAAAByFdD5V8PiPKYZS4mSZWUUcZW6B"}
-                                // size="invisible"
-                                hl="en"
-                                onChange={onChangeRe}
-                                theme="dark"
-                            />
+                        <ReCAPTCHA
+                            ref={recaptchaRef}
+                            sitekey={language == 'aptos' ? process.env.REACT_APP_RECAPTCHA_APTOS_PUBLIC_KEY ?? '' : "6LdPgxMqAAAAAByFdD5V8PiPKYZS4mSZWUUcZW6B"}
+                            // size="invisible"
+                            hl="en"
+                            onChange={onChangeRe}
+                            theme="dark"
+                        />
                     </div>
                     {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account {_amount} MOVE</Alert>}
                     {errorMessage && <Alert severity="error" sx={{ width: 300, marginBottom: 2 }}>{errorMessage}</Alert>}
