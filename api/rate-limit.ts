@@ -6,7 +6,7 @@ import { RecaptchaEnterpriseServiceClient } from '@google-cloud/recaptcha-enterp
 const ratelimit = new Ratelimit({
   redis: kv,
   // 5 requests from the same IP in 10 seconds
-  limiter: Ratelimit.slidingWindow(1, '30 s'),
+  limiter: Ratelimit.slidingWindow(2, '30 s'),
 });
 
 type ExtendedIncomingMessage = IncomingMessage & {
