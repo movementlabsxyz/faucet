@@ -49,36 +49,6 @@ export default function Chains({ name, eventName, language, amount, isEvm, netwo
         setToken(value);
     }
 
-    const checkRateLimit = async (token: string) => {
-        try {
-            const response = await fetch('/api/rate-limit', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ token }),
-            });
-            // Check if the response is an HTML page
-            const contentType = response.headers.get('content-type');
-            if (!contentType || !contentType.includes('application/json')) {
-                const text = await response.text();
-                throw new Error(`Expected JSON but received: ${text}`);
-            }
-
-            const rateLimitData = await response.json();
-            console.log('Limit:', rateLimitData.limit);
-            if (response.status == 200) {
-                return false;
-            } else {
-                return true;
-            }
-        } catch (error) {
-            console.error('Error checking rate limit:', error);
-            return true;
-        }
-    };
-
-
     const handleRequest = async () => {
         setLoading(true);
 
@@ -87,21 +57,18 @@ export default function Chains({ name, eventName, language, amount, isEvm, netwo
         if (!captchaValue) {
             setErrorMessage("Please complete the captcha.");
         } else {
-            const rateLimited = await checkRateLimit(captchaValue);
-            if (rateLimited) {
-                setErrorMessage('Rate limit exceeded. Please try again later.');
-            } else {
-                let status = false;
-                const res = await faucetRequest(address, token);
-                console.log(res)
-                if (res.error) {
-                    setErrorMessage(res.error || "Failed to fund account.");
-                } else if (res) {
-                    {
-                        setSuccess(true);
-                        status = true;
-                    }
+
+            let status = false;
+            const res = await faucetRequest(address, token);
+            console.log(res)
+            if (res.error) {
+                setErrorMessage(res.error || "Failed to fund account.");
+            } else if (res) {
+                {
+                    setSuccess(true);
+                    status = true;
                 }
+
             }
         }
         recaptchaRef.current?.reset();
