@@ -2,12 +2,12 @@ import {Ratelimit} from "@upstash/ratelimit";
 import {kv} from "@vercel/kv";
 import {IncomingMessage} from "http";
 import {RecaptchaEnterpriseServiceClient} from "@google-cloud/recaptcha-enterprise";
-import {Aptos, AptosConfig} from "@aptos-labs/ts-sdk";
+import {Aptos, AptosConfig, Network} from "@aptos-labs/ts-sdk";
 
 const ratelimit = new Ratelimit({
   redis: kv,
   // 5 requests from the same IP in 10 seconds
-  limiter: Ratelimit.slidingWindow(2, "30 s"),
+  limiter: Ratelimit.slidingWindow(10, "30 s"),
 });
 
 type ExtendedIncomingMessage = IncomingMessage & {
@@ -87,7 +87,7 @@ export default async function handler(request: any, response: any) {
   const secretKey = process.env.RECAPTCHA_SECRET_KEY;
   const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`;
 
-  if (!secretKey) {
+  if (!secretKey || !process.env.FAUCET_AUTH_TOKEN) {
     return request.status(500).json({error: "reCAPTCHA secret key not set"});
   }
   const ip = ips(request) ?? "127.0.0.1";
@@ -120,17 +120,18 @@ export default async function handler(request: any, response: any) {
       return response.status(429).json({success: false, error: "Rate limited"});
     }
 
-    const HEADERS: Record<string, string | number | boolean> = {
+    const HEADERS = {
       Authorization: `Bearer ${process.env.FAUCET_AUTH_TOKEN}`
     };
     const aptos = new Aptos(
       new AptosConfig({
+        network: Network.TESTNET,
         fullnode: "https://aptos.testnet.suzuka.movementlabs.xyz/v1",
         faucet: "https://faucet.testnet.suzuka.movementlabs.xyz",
         faucetConfig: {HEADERS: HEADERS},
       }),
     );
-    
+
     const fund = await aptos.fundAccount({
       accountAddress: address,
       amount: 1000000000,
@@ -142,6 +143,7 @@ export default async function handler(request: any, response: any) {
     }
     return response.status(200).json({success: true, hash: fund.hash, limit: limit});
   } catch (error) {
+    console.log(error)
     return response.status(500).json({success: false, error: "Server error"});
   }
 }
