@@ -83,17 +83,13 @@ async function createAssessment(
 
 export default async function handler(request: any, response: any) {
   // You could alternatively limit based on user ID or similar
-  console.log("init verification");
   const {token, address} = request.body;
-  console.log("token", token);
-  console.log("address", address);
   const secretKey = process.env.RECAPTCHA_SECRET_KEY;
   const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`;
 
   if (!secretKey) {
     return request.status(500).json({error: "reCAPTCHA secret key not set"});
   }
-  console.log("secret key exists");
   const ip = ips(request) ?? "127.0.0.1";
 
   const {success, pending, limit, reset, remaining} = await ratelimit.limit(
@@ -115,18 +111,14 @@ export default async function handler(request: any, response: any) {
       method: "POST",
     });
     const data = await verification.json();
-    console.log("data", data);
     if (data.success == false) {
       return response
         .status(400)
         .json({success: false, error: "Invalid reCAPTCHA token"});
     }
-    console.log("verification successful", data.success);
-    console.log("not rate limited", success);
     if (!success) {
       return response.status(429).json({success: false, error: "Rate limited"});
     }
-    // TODO: Move faucet request here
     const aptos = new Aptos(
       new AptosConfig({
         fullnode: "https://aptos.testnet.suzuka.movementlabs.xyz/v1",

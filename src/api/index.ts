@@ -1,5 +1,4 @@
-import { AptosAccount, AptosClient, FaucetClient, Types, CoinClient } from "aptos";
-import { Aptos } from "@aptos-labs/ts-sdk"
+import { AptosClient, Types } from "aptos";
 import { OCTA } from "../constants";
 import { isNumeric } from "../pages/utils";
 import { sortTransactions } from "../utils";
