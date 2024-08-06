@@ -24,6 +24,7 @@ function ips(req: any) {
   return getXForwardedFor(req)?.split(/\s*,\s*/);
 }
 
+// TODO: Use createAssessment instead.
 async function createAssessment(
   // TODO: Replace the token and reCAPTCHA action variables before running the sample.
   projectID: string,
@@ -113,6 +114,7 @@ export default async function handler(request: any, response: any) {
     }
     console.log('verification successful', data.success)
     console.log('not rate limited', success)
+    // TODO: Move faucet request here
     response.status(success ? 200 : 429).json({ success, pending, limit, reset, remaining });
   } catch (error) {
     response.status(500).json({ error: 'Server error' });
