@@ -119,13 +119,18 @@ export default async function handler(request: any, response: any) {
     if (!success) {
       return response.status(429).json({success: false, error: "Rate limited"});
     }
+
+    const HEADERS: Record<string, string | number | boolean> = {
+      Authorization: `Bearer ${process.env.FAUCET_AUTH_TOKEN}`
+    };
     const aptos = new Aptos(
       new AptosConfig({
         fullnode: "https://aptos.testnet.suzuka.movementlabs.xyz/v1",
         faucet: "https://faucet.testnet.suzuka.movementlabs.xyz",
-        faucetConfig: {AUTH_TOKEN: process.env.FAUCET_AUTH_TOKEN},
+        faucetConfig: {HEADERS: HEADERS},
       }),
     );
+    
     const fund = await aptos.fundAccount({
       accountAddress: address,
       amount: 1000000000,
