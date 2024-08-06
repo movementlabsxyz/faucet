@@ -135,8 +135,8 @@ export default async function handler(request: any, response: any) {
         .status(400)
         .json({success: false, error: "Failed to fund account"});
     }
-    response.status(200).json({success: true, hash: fund.hash, limit: limit});
+    return response.status(200).json({success: true, hash: fund.hash, limit: limit});
   } catch (error) {
-    response.status(500).json({error: "Server error"});
+    return response.status(500).json({success: false, error: "Server error"});
   }
 }

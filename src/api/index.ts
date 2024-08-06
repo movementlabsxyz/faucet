@@ -324,7 +324,7 @@ export async function requestFaucet(
   }
 }
 
-export async function requestFromFaucet(address : string, captchaValue: string) {
+export async function aptosRequestFaucet(address : string, captchaValue: string) {
   try {
     const response = await fetch('/api/rate-limit', {
         method: 'POST',

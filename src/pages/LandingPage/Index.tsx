@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { requestFromFaucet, requestFaucet, mevmRequestFaucet, suiRequestFaucet } from '../../api';
+import { aptosRequestFaucet, requestFaucet, mevmRequestFaucet, suiRequestFaucet } from '../../api';
 import { AptosClient, FaucetClient, CoinClient } from 'aptos';
 import { Aptos, AptosConfig, TypeArgument } from '@aptos-labs/ts-sdk';
 import { CircularProgress, Alert } from '@mui/material';
@@ -185,22 +185,12 @@ export default function LandingPage() {
   };
 
   const aptosFaucetRequest = async (address: string, token: string) => {
-    return requestFromFaucet(
+    return aptosRequestFaucet(
       address,
       token
     );
   };
 
-
-  const m1FaucetRequest = async (address: string, token: string) => {
-    const aptosClient = new AptosClient(CHAIN.m1.url);
-    return requestFaucet(
-      aptosClient,
-      CHAIN.m1.url,
-      address,
-      token
-    );
-  };
 
   const suiFaucetRequest = async (address: string, token: string) => {
     return suiRequestFaucet(
@@ -259,7 +249,6 @@ export default function LandingPage() {
           <h1 style={{ textAlign: "left" }}>Faucets</h1>
         </div>
         <Chain name="aptos" eventName="movement_apt_request" language={CHAIN.aptos.language} amount={10} isEvm={false} network={network} faucetRequest={aptosFaucetRequest} />
-        {/* <Chain name="M1" eventName="m1_apt_request" language={CHAIN.m1.language} amount={1} isEvm={false} network={network} faucetRequest={m1FaucetRequest} /> */}
         <Chain name="MEVM" eventName="m1_evm_request" language={CHAIN.mevm.language} amount={1} isEvm={true} network={network} faucetRequest={handleM1evmFaucetRequest} />
         <Chain name="Sui" eventName="sui_sui_request" language={CHAIN.sui.language} amount={1} isEvm={false} network={network} faucetRequest={suiFaucetRequest} />
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
