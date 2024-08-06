@@ -7,7 +7,7 @@ import {Aptos, AptosConfig, Network} from "@aptos-labs/ts-sdk";
 const ratelimit = new Ratelimit({
   redis: kv,
   // 5 requests from the same IP in 10 seconds
-  limiter: Ratelimit.slidingWindow(10, "30 s"),
+  limiter: Ratelimit.slidingWindow(2, "60 s"),
 });
 
 type ExtendedIncomingMessage = IncomingMessage & {
@@ -119,9 +119,9 @@ export default async function handler(request: any, response: any) {
     if (!success) {
       return response.status(429).json({success: false, error: "Rate limited"});
     }
-
+    
     const HEADERS = {
-      Authorization: `Bearer ${process.env.FAUCET_AUTH_TOKEN}`
+      authorization: `Bearer ${process.env.FAUCET_AUTH_TOKEN}`
     };
     const aptos = new Aptos(
       new AptosConfig({
@@ -131,6 +131,7 @@ export default async function handler(request: any, response: any) {
         faucetConfig: {HEADERS: HEADERS},
       }),
     );
+    
 
     const fund = await aptos.fundAccount({
       accountAddress: address,
@@ -143,7 +144,7 @@ export default async function handler(request: any, response: any) {
     }
     return response.status(200).json({success: true, hash: fund.hash, limit: limit});
   } catch (error) {
-    console.log(error)
+    console.log(`error`)
     return response.status(500).json({success: false, error: "Server error"});
   }
 }
