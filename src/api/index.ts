@@ -1,11 +1,9 @@
-import { AptosAccount, AptosClient, FaucetClient, Types, CoinClient } from "aptos";
-import { Aptos } from "@aptos-labs/ts-sdk"
+import { AptosClient, Types } from "aptos";
 import { OCTA } from "../constants";
 import { isNumeric } from "../pages/utils";
 import { sortTransactions } from "../utils";
 import { withResponseError } from "./client";
 import axios from "axios";
-import Header from "../pages/layout/Header";
 
 
 export async function getTransactions(
@@ -324,48 +322,36 @@ export async function requestFaucet(
     console.error("Failed to fund account with faucet:", error);
     throw error;
   }
-
 }
 
-// NOTE: this is a private key for the faucet account, do not use it for anything else
-const PRIVATE_KEY = "0xb6003d3fe766b8b98700a1f6ba71258043f9b9a39052631341ca5bd2e336473b";
-const PUBLIC_KEY = "0xbf37798ec90ed4b98e146ee0250510debc69fa4a7a3c69811c503bb44c6a059f";
-// const encoder = new TextEncoder(); // This is a built-in JavaScript API for encoding text
+export async function aptosRequestFaucet(address : string, captchaValue: string) {
+  try {
+    const response = await fetch('/api/rate-limit', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token: captchaValue, address: address }),
+    });
+    // Check if the response is an HTML page
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        throw new Error(`Expected JSON but received: ${text}`);
+    }
 
-export const GLOBAL_SIGNER = AptosAccount.fromAptosAccountObject({
-  privateKeyHex: PRIVATE_KEY,
-  publicKeyHex: PUBLIC_KEY,
-  address: "0x348116b94c9b734068cd07635c969fd724e5aa08fb63fd2ea52fd7d7e35b0fde"
-});
-
-export async function requestFromFaucet (faucetClient: FaucetClient, aptos: Aptos, address : string) {
-  const response = await faucetClient.fundAccount(address, 1000000000);
-  // const response = await aptos.fundAccount({accountAddress: address, amount: 1000000000});
-  const tx = await response;
-
-  // console.log(response)
-  return response;
+    const fundAccountData = await response.json();
+    console.log('Limit:', fundAccountData.limit);
+    if (response.status == 200) {
+        return {success: fundAccountData.hash};
+    } else {
+        return {error: fundAccountData.error};
+    }
+} catch (error) {
+    console.error('Error funding account', error);
+    return {error: error};
 }
-
-// export async function requestFaucetWithGlobalSigner(
-//   aptosClient: AptosClient,
-//   faucetClient: FaucetClient,
-//   coinClient: CoinClient,
-//   faucetUrl: string,
-//   address: string,
-// ): Promise<any> {
-
-//   // double up the coins
-//   const tx =
-//     await requestFaucet(
-//       aptosClient,
-//       faucetUrl,
-//       PUBLIC_KEY,
-//       ''
-//     )
-//   console.log(tx);
-//   return tx;
-// }
+}
 
 export async function mevmRequestFaucet(
   mevmUrl: string,

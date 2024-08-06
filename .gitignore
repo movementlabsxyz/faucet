@@ -32,3 +32,6 @@ yarn-error.log*
 movement-explorer.txt
 
 yarn.lock
+.vercel
+
+GOOGLE_APPLICATION_CREDENTIALS.json

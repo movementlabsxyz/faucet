@@ -1,30 +1,28 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { useState,RefObject } from "react";
+import { useState, RefObject } from "react";
 
 import TextField from "@mui/material/TextField";
 import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Switch,useTheme } from "@mui/material";
+import { Switch, useTheme } from "@mui/material";
 import ReCAPTCHA from "react-google-recaptcha";
 
-export default function Chains({ name,eventName, language, amount, isEvm, network, faucetRequest }: any) {
+export default function Chains({ name, eventName, language, amount, isEvm, network, faucetRequest }: any) {
 
     const [address, setAddress] = useState("");
     const [success, setSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-    const [token, setToken] = useState<string|null>(null);
-
+    const recaptchaRef = useRef<ReCAPTCHA>(null);
+    const [token, setToken] = useState<string | null>(null);
     const theme = useTheme();
     const [isDark, setIsDark] = useState(theme.palette.mode === "dark");
     useEffect(() => {
         setIsDark(theme.palette.mode === "dark");
     }, [theme]);
-  
-
     // decay the success state
     useEffect(() => {
 
@@ -39,51 +37,44 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
 
     }, [success, errorMessage]);
 
-    const onChangeRe = (value:string|null)=> {
+    useEffect(() => {
+        if (recaptchaRef.current) {
+            // If you need to do anything with the recaptchaRef, you can do it here
+            console.log('ReCAPTCHA is ready');
+        }
+    }, []);
+
+    const onChangeRe = (value: string | null) => {
         // console.log("Captcha value:", value);
         setToken(value);
-      }
-
-    const recaptchaRef: RefObject<ReCAPTCHA> = React.createRef();
-
+    }
 
     const handleRequest = async () => {
-
-
         setLoading(true);
-        if (recaptchaRef.current === null) return;
+
+        if (recaptchaRef.current === null) return console.log("recaptchaRef is null");
         const captchaValue = recaptchaRef?.current.getValue()
         if (!captchaValue) {
             setErrorMessage("Please complete the captcha.");
-            setLoading(false);
-            return;
+        } else {
+
+            let status = false;
+            const res = await faucetRequest(address, token);
+            console.log(res)
+            if (res.error) {
+                setErrorMessage(res.error || "Failed to fund account.");
+            } else if (res) {
+                {
+                    setSuccess(true);
+                    status = true;
+                }
+
+            }
         }
         recaptchaRef.current?.reset();
-        
-        let status = false;
-        const res = await faucetRequest(address,token);
-        console.log(res)
-        if (res.error) {
-            setErrorMessage(res.error || "Failed to fund account.");
-        } else if (res) {
-            {
-                setSuccess(true);
-                status = true;
-            }         
-        }
-        
-        (window as any).gtag('event', eventName, {
-            'gtagIP': (window as any).gtagIP,
-            'href': location.href,
-            'time': Date.now(),
-            'address': address,
-            'value': status,
-            'token': token,
-            'type': name,
-            'error': res.error||"none",
-          });
         setToken(null);
         setLoading(false);
+
     };
 
     const handleFormSubmit = (event: React.FormEvent) => {
@@ -150,15 +141,15 @@ export default function Chains({ name,eventName, language, amount, isEvm, networ
                         Get MOVE
                     </Button>
                     <div>
-     
-                            <ReCAPTCHA
-                                ref={recaptchaRef}
-                                sitekey={process.env.REACT_APP_APTOS_DEVNET_SITEKEY??"6LdPgxMqAAAAAByFdD5V8PiPKYZS4mSZWUUcZW6B"}
-                                // size="invisible"
-                                hl="en"
-                                onChange={onChangeRe}
-                                theme="dark"
-                            />
+
+                        <ReCAPTCHA
+                            ref={recaptchaRef}
+                            sitekey={language == 'aptos' ? process.env.REACT_APP_RECAPTCHA_APTOS_PUBLIC_KEY ?? '' : "6LdPgxMqAAAAAByFdD5V8PiPKYZS4mSZWUUcZW6B"}
+                            // size="invisible"
+                            hl="en"
+                            onChange={onChangeRe}
+                            theme="dark"
+                        />
                     </div>
                     {success && <Alert severity="success" sx={{ width: 300, marginBottom: 2 }}>Funded account {_amount} MOVE</Alert>}
                     {errorMessage && <Alert severity="error" sx={{ width: 300, marginBottom: 2 }}>{errorMessage}</Alert>}
