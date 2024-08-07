@@ -19,7 +19,7 @@
     "@mui/material": "^5.11.16",
     "@mui/system": "^5.11.16",
     "@mui/x-date-pickers": "^5.0.20",
-    "@mysten/dapp-kit": "^0.14.12",
+    "@mysten/dapp-kit": "0.14.14",
     "@mysten/sui": "1.4.0",
     "@nightlylabs/aptos-wallet-adapter-plugin": "^0.2.12",
     "@openblockhq/aptos-wallet-adapter": "^0.1.5",
