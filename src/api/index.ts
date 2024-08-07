@@ -348,9 +348,9 @@ export async function aptosRequestFaucet(address : string, captchaValue: string)
     } else {
         return {error: fundAccountData.error};
     }
-} catch (error) {
-    console.error('Error funding account', error);
-    return {error: error};
+} catch (error : any) {
+    console.error('Error funding account', error.message);
+    return {error: error.message || "Undentified error"};
 }
 }
 
