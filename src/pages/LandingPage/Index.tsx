@@ -254,12 +254,6 @@ export default function LandingPage() {
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
           <div>
             <div className="network">
-              {/* <Button
-                href={'https://discord.com/channels/1101576619493167217/1255138490992037968'}
-                target={'_blank'}
-                sx={style}>
-                <div style={style}><h2>Movement</h2>{"{APTOS Move}"}</div>
-              </Button> */}
               <ToggleButtonGroup
                 color="primary"
                 value={network}
