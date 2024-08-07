@@ -90,12 +90,8 @@ export default async function handler(request: any, response: any) {
   if (!secretKey || !process.env.FAUCET_AUTH_TOKEN) {
     return request.status(500).json({error: "reCAPTCHA secret key not set"});
   }
-  console.log(`keys exist`)
+  console.log(`keys exist`);
   const ip = ips(request) ?? "127.0.0.1";
-
-  const {success, pending, limit, reset, remaining} = await ratelimit.limit(
-    ip[0],
-  );
 
   // const score = await createAssessment("movement-faucet-1722352143785", "6LdVjR0qAAAAAFSjzYqyRFsnUDn-iRrzQmv0nnp3", "", token);
   // console.log('score', score)
@@ -106,24 +102,25 @@ export default async function handler(request: any, response: any) {
   // } else {
   //   response.status(success ? 200 : 429).json({ success, pending, limit, reset, remaining });
   // }
-
+  const [{success, pending, limit, reset, remaining}, verification] =
+    await Promise.all([
+      ratelimit.limit(ip[0]),
+      fetch(verificationUrl, {method: "POST"}),
+    ]);
   try {
-    const verification = await fetch(verificationUrl, {
-      method: "POST",
-    });
     const data = await verification.json();
     if (data.success == false) {
       return response
         .status(400)
         .json({success: false, error: "Invalid reCAPTCHA token"});
     }
-    console.log(`successful recaptcha`)
+    console.log(`successful recaptcha`);
     if (!success) {
       return response.status(429).json({success: false, error: "Rate limited"});
     }
-    console.log(`successful rate limit`)
+    console.log(`successful rate limit`);
     const HEADERS = {
-      authorization: `Bearer ${process.env.FAUCET_AUTH_TOKEN}`
+      authorization: `Bearer ${process.env.FAUCET_AUTH_TOKEN}`,
     };
     const aptos = new Aptos(
       new AptosConfig({
@@ -133,7 +130,6 @@ export default async function handler(request: any, response: any) {
         faucetConfig: {HEADERS: HEADERS},
       }),
     );
-    
 
     const fund = await aptos.fundAccount({
       accountAddress: address,
@@ -144,11 +140,13 @@ export default async function handler(request: any, response: any) {
         .status(400)
         .json({success: false, error: "Failed to fund account"});
     }
-    console.log(`successful funding`)
+    console.log(`successful funding`);
 
-    return response.status(200).json({success: true, hash: fund.hash, limit: limit});
+    return response
+      .status(200)
+      .json({success: true, hash: fund.hash, limit: limit});
   } catch (error) {
-    console.log(`error`)
+    console.log(`error`);
     return response.status(500).json({success: false, error: "Server error"});
   }
 }
