@@ -339,7 +339,8 @@ export async function aptosRequestFaucet(address : string, captchaValue: string)
         const text = await response.text();
         throw new Error(`Expected JSON but received: ${text}`);
     }
-
+    console.log(typeof response)
+    console.log(response)
     const fundAccountData = await response.json();
     console.log('Limit:', fundAccountData.limit);
     if (response.status == 200) {
@@ -417,6 +418,6 @@ export async function suiRequestFaucet(
       return {error:res1.message?.message||res1.message};
     }
   }catch(e){
-    return {e};
+    return {error: String(e)};
   }
 }

@@ -90,6 +90,7 @@ export default async function handler(request: any, response: any) {
   if (!secretKey || !process.env.FAUCET_AUTH_TOKEN) {
     return request.status(500).json({error: "reCAPTCHA secret key not set"});
   }
+  console.log(`keys exist`)
   const ip = ips(request) ?? "127.0.0.1";
 
   const {success, pending, limit, reset, remaining} = await ratelimit.limit(
@@ -116,10 +117,11 @@ export default async function handler(request: any, response: any) {
         .status(400)
         .json({success: false, error: "Invalid reCAPTCHA token"});
     }
+    console.log(`successful recaptcha`)
     if (!success) {
       return response.status(429).json({success: false, error: "Rate limited"});
     }
-    
+    console.log(`successful rate limit`)
     const HEADERS = {
       authorization: `Bearer ${process.env.FAUCET_AUTH_TOKEN}`
     };
@@ -142,6 +144,8 @@ export default async function handler(request: any, response: any) {
         .status(400)
         .json({success: false, error: "Failed to fund account"});
     }
+    console.log(`successful funding`)
+
     return response.status(200).json({success: true, hash: fund.hash, limit: limit});
   } catch (error) {
     console.log(`error`)
