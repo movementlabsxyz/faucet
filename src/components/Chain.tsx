@@ -50,7 +50,6 @@ export default function Chains({
   }, []);
 
   const onChangeRe = (value: string | null) => {
-    // console.log("Captcha value:", value);
     setToken(value);
   };
 
