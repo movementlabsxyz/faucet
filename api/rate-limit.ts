@@ -91,7 +91,7 @@ export default async function handler(request: any, response: any) {
     return request.status(500).json({error: "reCAPTCHA secret key not set"});
   }
   console.log(`keys exist`);
-  const ip = ips(request) ?? "127.0.0.1";
+  const ip = ips(request)?.[0] ?? "127.0.0.1";
 
   // const score = await createAssessment("movement-faucet-1722352143785", "6LdVjR0qAAAAAFSjzYqyRFsnUDn-iRrzQmv0nnp3", "", token);
   // console.log('score', score)
