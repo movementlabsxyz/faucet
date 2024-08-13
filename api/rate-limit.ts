@@ -146,7 +146,7 @@ export default async function handler(request: any, response: any) {
       .status(200)
       .json({success: true, hash: fund.hash, limit: limit});
   } catch (error) {
-    console.log(`error`);
+    console.log(error);
     return response.status(500).json({success: false, error: "Server error"});
   }
 }
