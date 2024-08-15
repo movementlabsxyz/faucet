@@ -102,11 +102,15 @@ export default async function handler(request: any, response: any) {
   // } else {
   //   response.status(success ? 200 : 429).json({ success, pending, limit, reset, remaining });
   // }
-  const [{success, pending, limit, reset, remaining}, verification] =
-    await Promise.all([
-      ratelimit.limit(ip[0]),
-      fetch(verificationUrl, {method: "POST"}),
-    ]);
+  const {success, pending, limit, reset, remaining} = await ratelimit.limit(
+    ip[0],
+  );
+  if (!success) {
+    return response.status(429).json({success: false, error: "Rate limited"});
+  }
+  
+  console.log(`successful rate limit`);
+  const verification = await fetch(verificationUrl, {method: "POST"});
   try {
     const data = await verification.json();
     if (data.success == false) {
@@ -115,10 +119,6 @@ export default async function handler(request: any, response: any) {
         .json({success: false, error: "Invalid reCAPTCHA token"});
     }
     console.log(`successful recaptcha`);
-    if (!success) {
-      return response.status(429).json({success: false, error: "Rate limited"});
-    }
-    console.log(`successful rate limit`);
     const HEADERS = {
       authorization: `Bearer ${process.env.FAUCET_AUTH_TOKEN}`,
     };
