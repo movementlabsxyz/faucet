@@ -17,6 +17,7 @@ type ExtendedIncomingMessage = IncomingMessage & {
   };
 };
 
+
 function getXForwardedFor(req: ExtendedIncomingMessage): string | undefined {
   return req.headers["x-forwarded-for"];
 }
