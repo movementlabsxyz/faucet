@@ -8,6 +8,8 @@ import {
   partitionWallets,
   useWallet,
 } from "@aptos-labs/wallet-adapter-react";
+import { OKXWallet } from "@okwallet/aptos-wallet-adapter";
+
 import {
   Box,
   Breakpoint,
@@ -77,7 +79,8 @@ export default function WalletsModal({
     /** Wallets that use traditional wallet extensions */
     otherWallets,
   } = getAptosConnectWallets(wallets);
-
+  const walletsToAdd = [new OKXWallet];
+  otherWallets.push(...walletsToAdd);
   const {
     /** Wallets that are currently installed or loadable. */
     defaultWallets,

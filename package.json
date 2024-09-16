@@ -22,6 +22,7 @@
     "@mysten/dapp-kit": "0.14.14",
     "@mysten/sui": "1.4.0",
     "@nightlylabs/aptos-wallet-adapter-plugin": "^0.2.12",
+    "@okwallet/aptos-wallet-adapter": "^0.0.7",
     "@openblockhq/aptos-wallet-adapter": "^0.1.5",
     "@pontem/wallet-adapter-plugin": "^0.1.4",
     "@rise-wallet/wallet-adapter": "^0.1.2",
