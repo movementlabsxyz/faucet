@@ -110,8 +110,12 @@ export default async function handler(request: any, response: any) {
     address,
   );
   
-  if (!success || !addressSuccess) {
-    return response.status(429).json({success: false, error: "Rate limited"});
+  if (!success) {
+    return response.status(429).json({success: false, error: "IP rate limited"});
+  }
+
+  if (!addressSuccess) {
+    return response.status(429).json({success: false, error: "Address rate limited"});
   }
   
   console.log(`successful rate limit`);
