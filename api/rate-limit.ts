@@ -156,6 +156,6 @@ export default async function handler(request: any, response: any) {
       .json({success: true, hash: fund.hash, limit: limit});
   } catch (error) {
     console.log(error);
-    return response.status(500).json({success: false, error: "Server error"});
+    return response.status(500).json({success: false, error: "Sorry but we ran into an issue.  Please try again in a few minutes."});
   }
 }
