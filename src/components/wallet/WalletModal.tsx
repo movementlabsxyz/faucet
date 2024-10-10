@@ -79,6 +79,7 @@ export default function WalletsModal({
     /** Wallets that use traditional wallet extensions */
     otherWallets,
   } = getAptosConnectWallets(wallets);
+  // ADD WALLETS HERE
   const walletsToAdd = [new OKXWallet];
   otherWallets.push(...walletsToAdd);
   const {

@@ -6,8 +6,8 @@ import {Aptos, AptosConfig, Network} from "@aptos-labs/ts-sdk";
 
 const ratelimit = new Ratelimit({
   redis: kv,
-  // 5 requests from the same IP in 10 seconds
-  limiter: Ratelimit.slidingWindow(3, "86400 s"),
+  // 3 requests from the same IP in 24 hours
+  limiter: Ratelimit.slidingWindow(2, "86400 s"),
 });
 
 type ExtendedIncomingMessage = IncomingMessage & {
@@ -106,7 +106,11 @@ export default async function handler(request: any, response: any) {
   const {success, pending, limit, reset, remaining} = await ratelimit.limit(
     ip[0],
   );
-  if (!success) {
+  const {success : addressSuccess, pending: addressPending, limit: addressLimit, reset: addressReset, remaining: addressRemaining} = await ratelimit.limit(
+    address,
+  );
+  
+  if (!success || !addressSuccess) {
     return response.status(429).json({success: false, error: "Rate limited"});
   }
   
