@@ -5,6 +5,7 @@ import { type Chain } from 'viem'
 import FaucetRoutes from "./FaucetRoutes";
 import { http } from 'wagmi'
 
+import {holesky} from 'wagmi/chains';
 import {BrowserRouter} from "react-router-dom";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {
@@ -59,10 +60,10 @@ const mevm = {
   },
 } as const satisfies Chain
 
-const chains = [mevm] as const
+const chains = [holesky, mevm] as const
 const config = defaultWagmiConfig({
   chains: chains,
-  transports: {[mevm.id] : http('https://mevm.devnet.imola.movementlabs.xyz')},
+  transports: {[holesky.id]: http("https://holesky.gateway.tenderly.co"),[mevm.id] : http('https://mevm.devnet.imola.movementlabs.xyz')},
   projectId,
   metadata,
 })

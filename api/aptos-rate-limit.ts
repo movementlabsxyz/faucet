@@ -7,7 +7,7 @@ import {Aptos, AptosConfig, Network} from "@aptos-labs/ts-sdk";
 const ratelimit = new Ratelimit({
   redis: kv,
   // 3 requests from the same IP in 24 hours
-  limiter: Ratelimit.slidingWindow(2, "86400 s"),
+  limiter: Ratelimit.slidingWindow(10, "86400 s"),
 });
 
 type ExtendedIncomingMessage = IncomingMessage & {
@@ -92,10 +92,20 @@ export default async function handler(request: any, response: any) {
     console.log(`secret key not set`);
     return request.status(500).json({error: "reCAPTCHA secret key not set"});
   }
-  const ip = ips(request) ?? "127.0.0.1";
+  const ip = ips(request)?.[0] ?? "127.0.0.1";
 
+  // const score = await createAssessment("movement-faucet-1722352143785", "6LdVjR0qAAAAAFSjzYqyRFsnUDn-iRrzQmv0nnp3", "", token);
+  // console.log('score', score)
+  // if (score === (null || undefined)) {
+  //   response.status(400).json({ error: 'Invalid reCAPTCHA token' });
+  // } else if (score != null && score < 0.5) {
+  //   response.status(400).json({ error: 'reCAPTCHA score too low' });
+  // } else {
+  //   response.status(success ? 200 : 429).json({ success, pending, limit, reset, remaining });
+  // }
+  console.log(ip)
   const {success, pending, limit, reset, remaining} = await ratelimit.limit(
-    ip[0],
+    ip,
   );
   const {success : addressSuccess, pending: addressPending, limit: addressLimit, reset: addressReset, remaining: addressRemaining} = await ratelimit.limit(
     address,
@@ -119,10 +129,32 @@ export default async function handler(request: any, response: any) {
         .status(400)
         .json({success: false, error: "Invalid reCAPTCHA token"});
     }
+    const HEADERS = {
+      authorization: `Bearer ${process.env.FAUCET_AUTH_TOKEN}`,
+    };
+    const aptos = new Aptos(
+      new AptosConfig({
+        network: Network.TESTNET,
+        fullnode: network == "movement" ? "https://testnet.movementnetwork.xyz/v1" : "https://aptos.testnet.suzuka.movementlabs.xyz/v1",
+        faucet: network == "movement" ? "https://faucet.testnet.movementnetwork.xyz" : "https://faucet.testnet.suzuka.movementlabs.xyz",
+        faucetConfig: {HEADERS: HEADERS},
+      }),
+    );
+
+    const fund = await aptos.fundAccount({
+      accountAddress: address,
+      amount: 1000000000,
+    });
+    if (!fund.success) {
+      console.log(`failed to fund account`);
+      return response
+        .status(400)
+        .json({success: false, error: "Failed to fund account"});
+    }
 
     return response
       .status(200)
-      .json({success: true, limit: limit});
+      .json({success: true, hash: fund.hash, limit: limit});
   } catch (error) {
     console.log(error);
     return response.status(500).json({success: false, error: "Sorry but we ran into an issue.  Please try again in a few minutes."});

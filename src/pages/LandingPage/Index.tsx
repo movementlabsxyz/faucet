@@ -12,15 +12,20 @@ import "./hover.css"
 import { InputTransactionData, useWallet } from "@aptos-labs/wallet-adapter-react";
 import { WalletConnector } from "../../components/wallet/WalletConnector";
 import { ConnectButton, useCurrentAccount, useSignAndExecuteTransaction } from '@mysten/dapp-kit';
-import { useWriteContract } from 'wagmi'
+import { useWriteContract, useSwitchChain, useChainId } from 'wagmi'
 import evmTokensAbi from '../../abi/evmTokensAbi.json';
+import moveL1FaucetAbi from '../../abi/moveL1FaucetAbi.json';
 import { Transaction } from "@mysten/sui/transactions";
 import useSubmitTransaction from "../../api/hooks/useSubmitTransaction";
+import {Link } from "@mui/material"
 
 const aptosFaucetAddress = '0x275f508689de8756169d1ee02d889c777de1cebda3a7bbcce63ba8a27c563c6f';
 const PACKAGE_ID = "0x8ac626e474c33520a815175649fefcbb272678c8c37a7b024e7171fa45d47711";
+const moveL1FaucetAddress = '0x0';
+
 
 const CHAIN = {
+  holesky: { network: 'testnet', url: 'https://holesky.gateway.tenderly.co', language: 'evm' },
   movement: {network: 'testnet', url: 'https://testnet.movementnetwork.xyz', faucetUrl: 'https://faucet.testnet.movementnetwork.xyz', language: 'aptos'},
   aptos: { network: 'testnet', url: 'https://aptos.testnet.suzuka.movementlabs.xyz/v1', faucetUrl: 'https://faucet.testnet.suzuka.movementlabs.xyz', language: 'aptos' },
   m1: { network: 'devnet', url: 'https://aptos.devnet.m1.movementlabs.xyz', language: 'aptos' },
@@ -45,13 +50,17 @@ export default function LandingPage() {
   const [loading, setLoading] = useState(false);
   const [init, setInit] = useState(false);
   const navigate = useNavigate();
+  const chain = useChainId();
+  const { chains, switchChainAsync } = useSwitchChain()
 
   const handleMint = async () => {
     setLoading(true);
 
     let status = false;
     let res = null;
-    if (mock == 'aptos') {
+    if (mock == 'holesky') {
+      res = handleL1Faucet();
+    } else if (mock == 'aptos') {
       res = aptosMint();
     } else if (mock == 'evm') {
       res = evmMint();
@@ -68,6 +77,20 @@ export default function LandingPage() {
       }
     }
     setLoading(false)
+  }
+
+  const handleL1Faucet = async () => {
+    console.log('requesting move on l1');
+    await switchChainAsync({ chainId: 17000});
+    const response = await writeContractAsync({
+      address: moveL1FaucetAddress,
+      abi: moveL1FaucetAbi,
+      functionName: 'faucet',
+      value: 100000000000000000n
+    });
+
+
+    setDigest(response);
   }
 
   async function aptosMint() {
@@ -106,12 +129,12 @@ export default function LandingPage() {
       WETH: '0x4114E6516413c5BA631002A0cF95E828714F8f18',
       ALL: '0x4A6af60286C778514AFB95639B0A74a0adC24711'
     }
-
+    await switchChainAsync({ chainId: 30732});
     const response = await writeContractAsync({
       address: tokenAddresses[token as keyof typeof tokenAddresses] as `0x${string}`,
       abi: evmTokensAbi,
       functionName: 'mint',
-    })
+    });
 
     setDigest(response);
   }
@@ -284,10 +307,10 @@ export default function LandingPage() {
       </div>
       <div style={blockStyle}>
         <div>
-          <h2 style={{ fontFamily: "TWKEverett-Regular", textAlign: "left" }}>Mock Tokens</h2>
+          <h2 style={{ fontFamily: "TWKEverett-Regular", textAlign: "left" }}>Tokens</h2>
         </div>
         <div>
-          <p style={{ fontFamily: "TWKEverett-Regular", textAlign: "left" }}>Available for networks above. Hourly rate limit.</p>
+          <p style={{ fontFamily: "TWKEverett-Regular", textAlign: "left", fontSize: "0.75rem" }}>Daily rate limit.</p>
         </div>
         <div style={{ display: "flex" }}>
           <FormControl fullWidth style={{ margin: '1rem' }}>
@@ -299,11 +322,24 @@ export default function LandingPage() {
               label="Network"
               onChange={handleChange}
             >
+              <MenuItem value={'holesky'}>Holesky</MenuItem>
               <MenuItem value={'aptos'}>Aptos</MenuItem>
               <MenuItem value={'evm'}>EVM</MenuItem>
               <MenuItem value={'sui'}>Sui</MenuItem>
             </Select>
           </FormControl>
+          {mock == 'holesky' ? <FormControl fullWidth style={{ margin: '1rem' }}>
+          <InputLabel id="token-label">Token</InputLabel>
+            <Select
+              labelId="token-label"
+              id="token-select"
+              value={token}
+              label="Token"
+              onChange={handleTokenChange}
+            >
+              <MenuItem value={'MOVE'}>MOVE</MenuItem>
+            </Select>
+          </FormControl> :
           <FormControl fullWidth style={{ margin: '1rem' }}>
             <InputLabel id="token-label">Token</InputLabel>
             <Select
@@ -319,11 +355,20 @@ export default function LandingPage() {
               <MenuItem value={'WETH'}>WETH</MenuItem>
               {mock != 'sui' && <MenuItem value={'ALL'}>ALL</MenuItem>}
             </Select>
-          </FormControl>
+          </FormControl>}
+          
         </div>
         <div>
+        {mock == 'holesky' && <p style={{ fontFamily: "TWKEverett-Regular", textAlign: "left" }}>MOVE token on Ethereum Holesky Testnet. {" "}
+        <Link href="https://bridge.movementnetwork.xyz" target="_blank"
+        >Bridge it.</Link> </p>}
+        {mock == 'evm' && <p style={{ fontFamily: "TWKEverett-Regular", textAlign: "left" }}>USDC, USDT, ETH and BTC on MEVM Testnet. </p>}
+        {mock == 'aptos' && <p style={{ fontFamily: "TWKEverett-Regular", textAlign: "left" }}>USDC, USDT, ETH and BTC on Suzuka Testnet. </p>}
+        {mock == 'sui' && <p style={{ fontFamily: "TWKEverett-Regular", textAlign: "left" }}>USDC, USDT, ETH and BTC on Sui Testnet. </p>}
+
           <div style={{ display: 'flex', justifyContent: "space-between", padding: '2rem' }}>
 
+          {mock == 'holesky' && <w3m-button />}
             {mock == 'aptos' && <WalletConnector
               networkSupport={"testnet"}
               handleNavigate={() => `https://explorer.movementlabs.xyz/account/${account?.address}`}
