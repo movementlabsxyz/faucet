@@ -21,6 +21,7 @@ const aptosFaucetAddress = '0x275f508689de8756169d1ee02d889c777de1cebda3a7bbcce6
 const PACKAGE_ID = "0x8ac626e474c33520a815175649fefcbb272678c8c37a7b024e7171fa45d47711";
 
 const CHAIN = {
+  movement: {network: 'testnet', url: 'https://testnet.movementnetwork.xyz', faucetUrl: 'https://faucet.testnet.movementnetwork.xyz', language: 'aptos'},
   aptos: { network: 'testnet', url: 'https://aptos.testnet.suzuka.movementlabs.xyz/v1', faucetUrl: 'https://faucet.testnet.suzuka.movementlabs.xyz', language: 'aptos' },
   m1: { network: 'devnet', url: 'https://aptos.devnet.m1.movementlabs.xyz', language: 'aptos' },
   mevmM1: { network: 'devnet', url: 'https://mevm.devnet.m1.movementlabs.xyz', language: 'evm' },
@@ -184,23 +185,24 @@ export default function LandingPage() {
     setToken(e.target.value);
   };
 
-  const aptosFaucetRequest = async (address: string, token: string) => {
+  const aptosFaucetRequest = async (address: string, token: string, network: string) => {
     return aptosRequestFaucet(
       address,
-      token
+      token,
+      network
     );
   };
 
 
-  const suiFaucetRequest = async (address: string, token: string) => {
+  const suiFaucetRequest = async (address: string, token: string, network: string) => {
     return suiRequestFaucet(
       CHAIN.sui.url,
       address,
-      token
+      token,
     )
   };
 
-  const handleM1evmFaucetRequest = async (address: string, token: string) => {
+  const handleM1evmFaucetRequest = async (address: string, token: string, network: string) => {
     return mevmRequestFaucet(
       CHAIN.mevm.url,
       address,
@@ -248,6 +250,7 @@ export default function LandingPage() {
         <div style={{ width: "300px" }}>
           <h1 style={{ textAlign: "left" }}>Faucets</h1>
         </div>
+        <Chain name="movement" eventName="movement_apt_request" language={CHAIN.movement.language} amount={10} isEvm={false} network={network} faucetRequest={aptosFaucetRequest} />
         <Chain name="aptos" eventName="movement_apt_request" language={CHAIN.aptos.language} amount={10} isEvm={false} network={network} faucetRequest={aptosFaucetRequest} />
         <Chain name="MEVM" eventName="m1_evm_request" language={CHAIN.mevm.language} amount={1} isEvm={true} network={network} faucetRequest={handleM1evmFaucetRequest} />
         <Chain name="Sui" eventName="sui_sui_request" language={CHAIN.sui.language} amount={1} isEvm={false} network={network} faucetRequest={suiFaucetRequest} />
@@ -259,6 +262,10 @@ export default function LandingPage() {
                 value={network}
                 exclusive
                 onChange={handleNetwork}>
+                  <ToggleButton
+                  value="movement">
+                  <h3 style={style}>{"{Movement}"}</h3>
+                </ToggleButton>
                 <ToggleButton
                   value="aptos">
                   <h3 style={style}>{"{Aptos Move}"}</h3>

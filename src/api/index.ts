@@ -324,14 +324,14 @@ export async function requestFaucet(
   }
 }
 
-export async function aptosRequestFaucet(address : string, captchaValue: string) {
+export async function aptosRequestFaucet(address : string, captchaValue: string, network: string) {
   try {
     const response = await fetch('/api/rate-limit', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ token: captchaValue, address: address }),
+        body: JSON.stringify({ token: captchaValue, address: address, network: network }),
     });
     // Check if the response is an HTML page
     const contentType = response.headers.get('content-type');

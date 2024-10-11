@@ -84,7 +84,7 @@ async function createAssessment(
 
 export default async function handler(request: any, response: any) {
   // You could alternatively limit based on user ID or similar
-  const {token, address} = request.body;
+  const {token, address, network} = request.body;
   const secretKey = process.env.RECAPTCHA_SECRET_KEY;
   const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`;
 
@@ -134,8 +134,8 @@ export default async function handler(request: any, response: any) {
     const aptos = new Aptos(
       new AptosConfig({
         network: Network.TESTNET,
-        fullnode: "https://aptos.testnet.suzuka.movementlabs.xyz/v1",
-        faucet: "https://faucet.testnet.suzuka.movementlabs.xyz",
+        fullnode: network == "movement" ? "https://testnet.movementnetwork.xyz/v1" : "https://aptos.testnet.suzuka.movementlabs.xyz/v1",
+        faucet: network == "movement" ? "https://faucet.testnet.movementnetwork.xyz" : "https://faucet.testnet.suzuka.movementlabs.xyz",
         faucetConfig: {HEADERS: HEADERS},
       }),
     );

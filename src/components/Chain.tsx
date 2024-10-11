@@ -63,7 +63,7 @@ export default function Chains({
       setErrorMessage("Please complete the captcha.");
     } else {
       let status = false;
-      const res = await faucetRequest(address, token);
+      const res = await faucetRequest(address, token, name);
       console.log(res);
       if (res.error) {
         try {
