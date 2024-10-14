@@ -32,7 +32,7 @@ import {
   useCurrentAccount,
   useSignAndExecuteTransaction,
 } from "@mysten/dapp-kit";
-import {waitForTransactionReceipt} from "wagmi/core";
+import {waitForTransactionReceipt} from "@wagmi/core";
 import {useWriteContract, useSwitchChain, useChainId} from "wagmi";
 import evmTokensAbi from "../../abi/evmTokensAbi.json";
 import moveL1FaucetAbi from "../../abi/moveL1FaucetAbi.json";
