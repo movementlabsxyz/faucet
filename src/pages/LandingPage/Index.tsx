@@ -93,7 +93,7 @@ const CHAIN = {
 };
 
 export default function LandingPage() {
-  const [network, setNetwork] = useState("mevm");
+  const [network, setNetwork] = useState("movement");
   const [mock, setMock] = useState("holesky");
   const [token, setToken] = useState("MOVE");
   const {data: hash, writeContractAsync} = useWriteContract();
@@ -262,8 +262,8 @@ export default function LandingPage() {
 
   const handleNetwork = (event: any, value: any) => {
     if (value !== null) {
-      setNetwork(value);
-      navigate(`?network=${value}`);
+      setNetwork(event.target.value);
+      navigate(`?network=${event.target.value}`);
     }
   };
 
@@ -345,8 +345,23 @@ export default function LandingPage() {
         }}
       >
         <div style={blockStyle}>
-          <div style={{width: "300px"}}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <h1 style={{textAlign: "left"}}>Faucets</h1>
+            <div className="network">
+              <FormControl fullWidth style={{margin: "1rem"}}>
+              <InputLabel>Network</InputLabel>
+                <Select
+                  value={network}
+                  label="Network"
+                  onChange={handleNetwork}
+                >
+                  <MenuItem value={"movement"}>Movement</MenuItem>
+                  <MenuItem value={"aptos"}>Aptos Move</MenuItem>
+                  <MenuItem value={"mevm"}>MEVM</MenuItem>
+                  <MenuItem value={"sui"}>Sui Move</MenuItem>
+                </Select>
+            </FormControl>
+              </div>
           </div>
           <Chain
             name="movement"
@@ -391,29 +406,6 @@ export default function LandingPage() {
               justifyContent: "center",
             }}
           >
-            <div>
-              <div className="network">
-                <ToggleButtonGroup
-                  color="primary"
-                  value={network}
-                  exclusive
-                  onChange={handleNetwork}
-                >
-                  <ToggleButton value="movement">
-                    <h3 style={style}>{"{Movement}"}</h3>
-                  </ToggleButton>
-                  <ToggleButton value="aptos">
-                    <h3 style={style}>{"{Aptos Move}"}</h3>
-                  </ToggleButton>
-                  <ToggleButton value="mevm">
-                    <h3 style={style}>{"{MEVM}"}</h3>
-                  </ToggleButton>
-                  <ToggleButton value="sui">
-                    <h3 style={style}>{"{Sui Move}"}</h3>
-                  </ToggleButton>
-                </ToggleButtonGroup>
-              </div>
-            </div>
           </div>
         </div>
         <div style={blockStyle}>
@@ -444,7 +436,7 @@ export default function LandingPage() {
                 onChange={handleChange}
               >
                 <MenuItem value={"holesky"}>Ethereum Holesky</MenuItem>
-                <MenuItem value={"aptos"}>Movement</MenuItem>
+                <MenuItem value={"movement"}>Movement</MenuItem>
                 <MenuItem value={"aptos"}>Aptos Move</MenuItem>
                 <MenuItem value={"evm"}>MEVM</MenuItem>
                 <MenuItem value={"sui"}>Sui Move</MenuItem>
