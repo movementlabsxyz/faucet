@@ -436,7 +436,7 @@ export default function LandingPage() {
                 onChange={handleChange}
               >
                 <MenuItem value={"holesky"}>Eth Holesky</MenuItem>
-                <MenuItem value={"movement"}>Movement</MenuItem>
+                <MenuItem value={"movement"}>Movement Testnet</MenuItem>
                 <MenuItem value={"aptos"}>Aptos Move</MenuItem>
                 <MenuItem value={"evm"}>MEVM</MenuItem>
                 <MenuItem value={"sui"}>Sui Move</MenuItem>
@@ -507,7 +507,7 @@ export default function LandingPage() {
               }}
             >
               {mock == "holesky" && <w3m-button />}
-              {mock == "aptos" && (
+              {(mock == "aptos" || mock == "movement") && (
                 <WalletConnector
                   networkSupport={"testnet"}
                   handleNavigate={() =>
