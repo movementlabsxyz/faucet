@@ -61,7 +61,7 @@ const mevm = {
 } as const satisfies Chain
 
 const chains = [holesky, mevm] as const
-const config = defaultWagmiConfig({
+export const config = defaultWagmiConfig({
   chains: chains,
   transports: {[holesky.id]: http("https://holesky.gateway.tenderly.co"),[mevm.id] : http('https://mevm.devnet.imola.movementlabs.xyz')},
   projectId,
