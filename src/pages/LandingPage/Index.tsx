@@ -435,7 +435,7 @@ export default function LandingPage() {
                 label="Network"
                 onChange={handleChange}
               >
-                <MenuItem value={"holesky"}>Ethereum Holesky</MenuItem>
+                <MenuItem value={"holesky"}>Eth Holesky</MenuItem>
                 <MenuItem value={"movement"}>Movement</MenuItem>
                 <MenuItem value={"aptos"}>Aptos Move</MenuItem>
                 <MenuItem value={"evm"}>MEVM</MenuItem>
