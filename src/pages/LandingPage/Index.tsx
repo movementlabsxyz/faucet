@@ -38,8 +38,8 @@ const CHAIN = {
 
 export default function LandingPage() {
   const [network, setNetwork] = useState('mevm');
-  const [mock, setMock] = useState('aptos');
-  const [token, setToken] = useState('USDC');
+  const [mock, setMock] = useState('holesky');
+  const [token, setToken] = useState('MOVE');
   const { data: hash, writeContractAsync } = useWriteContract()
   const { submitTransaction } = useSubmitTransaction()
   const account = useCurrentAccount();
@@ -322,10 +322,11 @@ export default function LandingPage() {
               label="Network"
               onChange={handleChange}
             >
-              <MenuItem value={'holesky'}>Holesky</MenuItem>
-              <MenuItem value={'aptos'}>Aptos</MenuItem>
-              <MenuItem value={'evm'}>EVM</MenuItem>
-              <MenuItem value={'sui'}>Sui</MenuItem>
+              <MenuItem value={'holesky'}>Ethereum Holesky</MenuItem>
+              <MenuItem value={'aptos'}>Movement</MenuItem>
+              <MenuItem value={'aptos'}>Aptos Move</MenuItem>
+              <MenuItem value={'evm'}>MEVM</MenuItem>
+              <MenuItem value={'sui'}>Sui Move</MenuItem>
             </Select>
           </FormControl>
           {mock == 'holesky' ? <FormControl fullWidth style={{ margin: '1rem' }}>
