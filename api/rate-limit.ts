@@ -92,7 +92,7 @@ export default async function handler(request: any, response: any) {
     console.log(`secret key not set`);
     return request.status(500).json({error: "reCAPTCHA secret key not set"});
   }
-  const ip = ips(request) ?? "127.0.0.1";
+  // const ip = ips(request) ?? "127.0.0.1";
 
   // const score = await createAssessment("movement-faucet-1722352143785", "6LdVjR0qAAAAAFSjzYqyRFsnUDn-iRrzQmv0nnp3", "", token);
   // console.log('score', score)
@@ -103,31 +103,31 @@ export default async function handler(request: any, response: any) {
   // } else {
   //   response.status(success ? 200 : 429).json({ success, pending, limit, reset, remaining });
   // }
-  const {success, pending, limit, reset, remaining} = await ratelimit.limit(
-    ip[0],
-  );
-  const {success : addressSuccess, pending: addressPending, limit: addressLimit, reset: addressReset, remaining: addressRemaining} = await ratelimit.limit(
-    address,
-  );
+  // const {success, pending, limit, reset, remaining} = await ratelimit.limit(
+  //   ip[0],
+  // );
+  // const {success : addressSuccess, pending: addressPending, limit: addressLimit, reset: addressReset, remaining: addressRemaining} = await ratelimit.limit(
+  //   address,
+  // );
   
-  if (!success) {
-    console.log(`ip rate limit`);
-    return response.status(429).json({success: false, error: "IP rate limited"});
-  }
+  // if (!success) {
+  //   console.log(`ip rate limit`);
+  //   return response.status(429).json({success: false, error: "IP rate limited"});
+  // }
 
-  if (!addressSuccess) {
-    console.log(`address rate limit`);
-    return response.status(429).json({success: false, error: "Address rate limited"});
-  }
+  // if (!addressSuccess) {
+  //   console.log(`address rate limit`);
+  //   return response.status(429).json({success: false, error: "Address rate limited"});
+  // }
   
-  const verification = await fetch(verificationUrl, {method: "POST"});
-  try {
-    const data = await verification.json();
-    if (data.success == false) {
-      return response
-        .status(400)
-        .json({success: false, error: "Invalid reCAPTCHA token"});
-    }
+  // const verification = await fetch(verificationUrl, {method: "POST"});
+  // try {
+  //   const data = await verification.json();
+  //   if (data.success == false) {
+  //     return response
+  //       .status(400)
+  //       .json({success: false, error: "Invalid reCAPTCHA token"});
+  //   }
     const HEADERS = {
       authorization: `Bearer ${process.env.FAUCET_AUTH_TOKEN}`,
     };
@@ -153,9 +153,6 @@ export default async function handler(request: any, response: any) {
 
     return response
       .status(200)
-      .json({success: true, hash: fund.hash, limit: limit});
-  } catch (error) {
-    console.log(error);
-    return response.status(500).json({success: false, error: "Sorry but we ran into an issue.  Please try again in a few minutes."});
-  }
+      .json({success: true, hash: fund.hash, limit: 1});
+
 }
