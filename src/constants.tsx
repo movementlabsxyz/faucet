@@ -3,7 +3,7 @@
  */
 export const networks = {
   mainnet: "https://mainnet.movementnetwork.xyz/",
-  testnet: "https://testnet.suzuka.movementlabs.xyz",
+  testnet: "https://testnet.porto.movementnetwork.xyz",
   devnet: "https://devnet.imola.movementlabs.xyz",
   local: "locahost:30731",
   previewnet: "https://previewnet.movementnetwork.xyz",

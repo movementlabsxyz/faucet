@@ -21,8 +21,7 @@ const aptosFaucetAddress = '0x275f508689de8756169d1ee02d889c777de1cebda3a7bbcce6
 const PACKAGE_ID = "0x8ac626e474c33520a815175649fefcbb272678c8c37a7b024e7171fa45d47711";
 
 const CHAIN = {
-  movement: {network: 'testnet', url: 'https://testnet.movementnetwork.xyz', faucetUrl: 'https://faucet.testnet.movementnetwork.xyz', language: 'aptos'},
-  aptos: { network: 'testnet', url: 'https://aptos.testnet.suzuka.movementlabs.xyz/v1', faucetUrl: 'https://faucet.testnet.suzuka.movementlabs.xyz', language: 'aptos' },
+  aptos: { network: 'testnet', url: 'https://aptos.testnet.porto.movementlabs.xyz/v1', faucetUrl: 'https://faucet.testnet.porto.movementlabs.xyz', language: 'aptos' },
   m1: { network: 'devnet', url: 'https://aptos.devnet.m1.movementlabs.xyz', language: 'aptos' },
   mevmM1: { network: 'devnet', url: 'https://mevm.devnet.m1.movementlabs.xyz', language: 'evm' },
   m2: { network: 'devnet', url: 'https://sui.devnet.m2.movementlabs.xyz/faucet/web', language: 'sui' },
@@ -32,7 +31,7 @@ const CHAIN = {
 
 
 export default function LandingPage() {
-  const [network, setNetwork] = useState('mevm');
+  const [network, setNetwork] = useState('aptos');
   const [mock, setMock] = useState('aptos');
   const [token, setToken] = useState('USDC');
   const { data: hash, writeContractAsync } = useWriteContract()
@@ -232,7 +231,7 @@ export default function LandingPage() {
 
   }, [success, errorMessage]);
 
-  const style = { width: "100%", height: "2rem", fontFamily: "TWKEverett-Regular" }
+  const style = { width: "100%", height: "1.5rem", fontFamily: "TWKEverett-Regular" }
   const blockStyle = { backgroundColor: 'rgba(237, 234, 230, 0.01)', padding: '3rem', margin: '2rem', borderRadius: '2px', boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.2)" }
   return (
     <><Box
@@ -247,38 +246,24 @@ export default function LandingPage() {
 
       }} >
       <div style={blockStyle}>
-        <div style={{ width: "300px" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <h1 style={{ textAlign: "left" }}>Faucets</h1>
-        </div>
-        <Chain name="movement" eventName="movement_apt_request" language={CHAIN.movement.language} amount={10} isEvm={false} network={network} faucetRequest={aptosFaucetRequest} />
-        <Chain name="aptos" eventName="movement_apt_request" language={CHAIN.aptos.language} amount={10} isEvm={false} network={network} faucetRequest={aptosFaucetRequest} />
-        <Chain name="MEVM" eventName="m1_evm_request" language={CHAIN.mevm.language} amount={1} isEvm={true} network={network} faucetRequest={handleM1evmFaucetRequest} />
-        <Chain name="Sui" eventName="sui_sui_request" language={CHAIN.sui.language} amount={1} isEvm={false} network={network} faucetRequest={suiFaucetRequest} />
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
-          <div>
-            <div className="network">
+          <div className="">
               <ToggleButtonGroup
                 color="primary"
                 value={network}
                 exclusive
                 onChange={handleNetwork}>
-                  <ToggleButton
-                  value="movement">
-                  <h3 style={style}>{"{Movement}"}</h3>
-                </ToggleButton>
                 <ToggleButton
                   value="aptos">
                   <h3 style={style}>{"{Aptos Move}"}</h3>
                 </ToggleButton>
-                <ToggleButton value="mevm">
-                  <h3 style={style}>{"{MEVM}"}</h3>
-                </ToggleButton>
-                <ToggleButton value="sui">
-                  <h3 style={style}>{"{Sui Move}"}</h3>
-                </ToggleButton>
               </ToggleButtonGroup>
             </div>
-          </div>
+        </div>
+        <Chain name="aptos" eventName="movement_apt_request" language={CHAIN.aptos.language} amount={10} isEvm={false} network={network} faucetRequest={aptosFaucetRequest} />
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
+            
 
         </div>
       </div>
@@ -300,8 +285,6 @@ export default function LandingPage() {
               onChange={handleChange}
             >
               <MenuItem value={'aptos'}>Aptos</MenuItem>
-              <MenuItem value={'evm'}>EVM</MenuItem>
-              <MenuItem value={'sui'}>Sui</MenuItem>
             </Select>
           </FormControl>
           <FormControl fullWidth style={{ margin: '1rem' }}>
