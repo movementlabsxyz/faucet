@@ -56,12 +56,12 @@ export default function Chains({
   const handleRequest = async () => {
     setLoading(true);
 
-    // if (recaptchaRef.current === null)
-    //   return console.log("recaptchaRef is null");
-    // const captchaValue = recaptchaRef?.current.getValue();
-    // if (!captchaValue) {
-    //   setErrorMessage("Please complete the captcha.");
-    // } else {
+    if (recaptchaRef.current === null)
+      return console.log("recaptchaRef is null");
+    const captchaValue = recaptchaRef?.current.getValue();
+    if (!captchaValue) {
+      setErrorMessage("Please complete the captcha.");
+    } else {
       let status = false;
       const res = await faucetRequest(address, token, name);
       console.log(res);
@@ -75,8 +75,8 @@ export default function Chains({
         setSuccess(true);
         status = true;
       }
-    // }
-    // recaptchaRef.current?.reset();
+    }
+    recaptchaRef.current?.reset();
     setToken(null);
     setLoading(false);
   };
@@ -160,7 +160,7 @@ export default function Chains({
               {/*  */}
               Get MOVE
             </Button>
-            {/* <div>
+            <div>
               <ReCAPTCHA
                 ref={recaptchaRef}
                 sitekey={
@@ -173,7 +173,7 @@ export default function Chains({
                 onChange={onChangeRe}
                 theme="dark"
               />
-            </div> */}
+            </div>
             {success && (
               <Alert severity="success" sx={{width: 300, marginBottom: 2}}>
                 Funded account {_amount} MOVE
