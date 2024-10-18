@@ -74,7 +74,7 @@ createWeb3Modal({
   projectId,
   themeVariables: {
     '--w3m-border-radius-master': '0px',
-    '--w3m-accent': '#FFDA34'
+    '--w3m-accent': '#FFDA34',
   }
 })
 

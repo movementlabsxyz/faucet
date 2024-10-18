@@ -333,6 +333,7 @@ export default function LandingPage() {
     margin: "2rem",
     borderRadius: "2px",
     boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.2)",
+    width: "500px",
   };
   return (
     <>
@@ -351,7 +352,7 @@ export default function LandingPage() {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <h1 style={{textAlign: "left"}}>Faucets</h1>
             <div className="network">
-              <FormControl fullWidth style={{margin: "1rem"}}>
+              <FormControl fullWidth style={{margin: "1rem", width: '220px'}}>
               <InputLabel>Network</InputLabel>
                 <Select
                   value={network}
@@ -429,7 +430,7 @@ export default function LandingPage() {
             </p>
           </div>
           <div style={{display: "flex"}}>
-            <FormControl fullWidth style={{margin: "1rem"}}>
+            <FormControl fullWidth style={{margin: "1rem", width: '220px'}}>
               <InputLabel id="demo-simple-select-label">Network</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
@@ -437,6 +438,7 @@ export default function LandingPage() {
                 value={mock}
                 label="Network"
                 onChange={handleChange}
+
               >
                 <MenuItem value={"holesky"}>Ethereum Holesky</MenuItem>
                 <MenuItem value={"bardock"}>Movement Bardock</MenuItem>
@@ -446,7 +448,7 @@ export default function LandingPage() {
               </Select>
             </FormControl>
             {mock == "holesky" ? (
-              <FormControl fullWidth style={{margin: "1rem"}}>
+              <FormControl fullWidth style={{margin: "1rem", width: '100px'}}>
                 <InputLabel id="token-label">Token</InputLabel>
                 <Select
                   labelId="token-label"
@@ -459,7 +461,7 @@ export default function LandingPage() {
                 </Select>
               </FormControl>
             ) : (
-              <FormControl fullWidth style={{margin: "1rem"}}>
+              <FormControl fullWidth style={{margin: "1rem", width: '100px'}}>
                 <InputLabel id="token-label">Token</InputLabel>
                 <Select
                   labelId="token-label"
@@ -480,7 +482,12 @@ export default function LandingPage() {
           <div>
             {mock == "holesky" && (
               <p style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
-                MOVE token on Ethereum Holesky Testnet. You need 0.1 HoleskyETH to claim.
+                MOVE token on Ethereum Holesky Testnet. Costs 0.1 HoleskyETH to claim.
+              </p>
+            )}
+            {mock == "bardock" && (
+              <p style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
+                USDC, USDT, ETH and BTC on Bardock Testnet.{" "}
               </p>
             )}
             {mock == "evm" && (
