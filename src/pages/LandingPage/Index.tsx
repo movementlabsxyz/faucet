@@ -7,7 +7,7 @@ import {
 } from "../../api";
 import {AptosClient, FaucetClient, CoinClient} from "aptos";
 import {Aptos, AptosConfig, TypeArgument} from "@aptos-labs/ts-sdk";
-import {CircularProgress, Alert} from "@mui/material";
+import {CircularProgress, Alert, useTheme, useMediaQuery} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 
 import Chain from "../../components/Chain";
@@ -110,6 +110,8 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const chain = useChainId();
   const {chains, switchChainAsync} = useSwitchChain();
+  const theme = useTheme();
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
 
   const handleMint = async () => {
     setLoading(true);
@@ -336,257 +338,262 @@ export default function LandingPage() {
     width: "500px",
   };
   return (
-    <>
-      <Box
-        sx={{
-          fontFamily: "TWKEverett-Regular",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          height: "100%",
-          position: "relative",
-        }}
-      >
-        <div style={blockStyle}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <h1 style={{textAlign: "left"}}>Faucets</h1>
-            <div className="network">
-              <FormControl fullWidth style={{margin: "1rem", width: '220px'}}>
-              <InputLabel>Network</InputLabel>
-                <Select
-                  value={network}
-                  label="Network"
-                  onChange={handleNetwork}
-                >
-                  <MenuItem value={"bardock"}>Movement Bardock</MenuItem>
-                  <MenuItem value={"aptos"}>Aptos Move</MenuItem>
-                  <MenuItem value={"mevm"}>MEVM</MenuItem>
-                  <MenuItem value={"sui"}>Sui Move</MenuItem>
-                </Select>
-            </FormControl>
-              </div>
-          </div>
-          <Chain
-            name="bardock"
-            eventName="movement_apt_request"
-            language={CHAIN.bardock.language}
-            amount={10}
-            isEvm={false}
-            network={network}
-            faucetRequest={aptosFaucetRequest}
-          />
-          <Chain
-            name="aptos"
-            eventName="movement_apt_request"
-            language={CHAIN.aptos.language}
-            amount={10}
-            isEvm={false}
-            network={network}
-            faucetRequest={aptosFaucetRequest}
-          />
-          <Chain
-            name="MEVM"
-            eventName="m1_evm_request"
-            language={CHAIN.mevm.language}
-            amount={1}
-            isEvm={true}
-            network={network}
-            faucetRequest={handleM1evmFaucetRequest}
-          />
-          <Chain
-            name="Sui"
-            eventName="sui_sui_request"
-            language={CHAIN.sui.language}
-            amount={1}
-            isEvm={false}
-            network={network}
-            faucetRequest={suiFaucetRequest}
-          />
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              justifyContent: "center",
-            }}
-          >
-          </div>
-        </div>
-        <div style={blockStyle}>
-          <div>
-            <h2 style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
-              Tokens
-            </h2>
-          </div>
-          <div>
-            <p
-              style={{
-                fontFamily: "TWKEverett-Regular",
-                textAlign: "left",
-                fontSize: "0.75rem",
-              }}
-            >
-              Daily rate limit.
-            </p>
-          </div>
-          <div style={{display: "flex"}}>
-            <FormControl fullWidth style={{margin: "1rem", width: '220px'}}>
-              <InputLabel id="demo-simple-select-label">Network</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={mock}
-                label="Network"
-                onChange={handleChange}
+    <Box
+      sx={{
+        fontFamily: "TWKEverett-Regular",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100%",
+        position: "relative",
 
-              >
-                <MenuItem value={"holesky"}>Ethereum Holesky</MenuItem>
+      }}
+    >
+      <div style={blockStyle}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <h1 style={{textAlign: "left"}}>Faucets</h1>
+          <div className="network">
+            <FormControl fullWidth style={{margin: "1rem", width: "220px"}}>
+              <InputLabel>Network</InputLabel>
+              <Select value={network} label="Network" onChange={handleNetwork}>
                 <MenuItem value={"bardock"}>Movement Bardock</MenuItem>
                 <MenuItem value={"aptos"}>Aptos Move</MenuItem>
-                <MenuItem value={"evm"}>MEVM</MenuItem>
+                <MenuItem value={"mevm"}>MEVM</MenuItem>
                 <MenuItem value={"sui"}>Sui Move</MenuItem>
               </Select>
             </FormControl>
-            {mock == "holesky" ? (
-              <FormControl fullWidth style={{margin: "1rem", width: '100px'}}>
-                <InputLabel id="token-label">Token</InputLabel>
-                <Select
-                  labelId="token-label"
-                  id="token-select"
-                  value={token}
-                  label="Token"
-                  onChange={handleTokenChange}
-                >
-                  <MenuItem value={"MOVE"}>MOVE</MenuItem>
-                </Select>
-              </FormControl>
-            ) : (
-              <FormControl fullWidth style={{margin: "1rem", width: '100px'}}>
-                <InputLabel id="token-label">Token</InputLabel>
-                <Select
-                  labelId="token-label"
-                  id="token-select"
-                  value={token}
-                  label="Token"
-                  onChange={handleTokenChange}
-                >
-                  <MenuItem value={"USDC"}>USDC</MenuItem>
-                  <MenuItem value={"USDT"}>USDT</MenuItem>
-                  <MenuItem value={"WBTC"}>WBTC</MenuItem>
-                  <MenuItem value={"WETH"}>WETH</MenuItem>
-                  {mock != "sui" && <MenuItem value={"ALL"}>ALL</MenuItem>}
-                </Select>
-              </FormControl>
-            )}
-          </div>
-          <div>
-            {mock == "holesky" && (
-              <p style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
-                MOVE token on Ethereum Holesky Testnet. Costs 0.1 HoleskyETH to claim.
-              </p>
-            )}
-            {mock == "bardock" && (
-              <p style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
-                USDC, USDT, ETH and BTC on Bardock Testnet.{" "}
-              </p>
-            )}
-            {mock == "evm" && (
-              <p style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
-                USDC, USDT, ETH and BTC on MEVM Testnet.{" "}
-              </p>
-            )}
-            {mock == "aptos" && (
-              <p style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
-                USDC, USDT, ETH and BTC on Suzuka Testnet.{" "}
-              </p>
-            )}
-            {mock == "sui" && (
-              <p style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
-                USDC, USDT, ETH and BTC on Sui Testnet.{" "}
-              </p>
-            )}
-
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                padding: "2rem",
-              }}
-            >
-              {mock == "holesky" && <w3m-button />}
-              {(mock == "aptos" || mock == "bardock") && (
-                <WalletConnector
-                  networkSupport={"testnet"}
-                  handleNavigate={() =>
-                    `https://explorer.movementlabs.xyz/account/${account?.address}`
-                  }
-                  modalMaxWidth="sm"
-                />
-              )}
-              {mock == "evm" && <w3m-button />}
-              {mock == "sui" && <ConnectButton />}
-              {loading && (
-                <CircularProgress
-                  sx={{
-                    position: "absolute",
-                    left: "60%",
-                    fontFamily: "TWKEverett-Regular",
-                  }}
-                />
-              )}
-              <Button
-                sx={{
-                  fontFamily: "TWKEverett-Regular",
-                  width: 150,
-                  borderRadius: 0,
-                  marginLeft: "2rem",
-                  color: "black",
-                  backgroundColor: "#EDEAE6",
-                  "&:hover": {backgroundColor: "#C4B8A5"},
-                }}
-                onClick={handleMint}
-                // onClick={() => setBridgePopup(true)}
-              >
-                Claim
-              </Button>
-            </div>
-            {success && (
-              <Alert severity="success" sx={{width: 300, marginBottom: 2}}>
-                Minted {token}
-              </Alert>
-            )}
-            {digest && (
-              <Alert severity="error" sx={{width: 300, marginBottom: 2}}>
-                {digest}
-              </Alert>
-            )}
-            <Modal
-              open={bridgePopup}
-              onClose={() => setBridgePopup(false)}
-              aria-labelledby="parent-modal-title"
-              aria-describedby="parent-modal-description"
-            >
-              <Box sx={{ ...blockStyle, position: 'absolute',
-                          top: '50%',
-                          left: '50%',
-                          transform: 'translate(-50%, -50%)',
-                          bgcolor: 'background.paper',
-                          border: '2px solid #000',
-                          boxShadow: 24,
-                          p: 4}}>
-                <h2 id="parent-modal-title">Success</h2>
-                <p id="parent-modal-description">
-                  You have successfully minted MOVE on Holesky. <br />
-                  <Link href="https://bridge.movementnetwork.xyz" target="_blank">
-                  Bridge it
-                </Link>{" "}
-                   now to Movement.
-                </p>
-              </Box>
-            </Modal>
           </div>
         </div>
-      </Box>
-    </>
+        <Chain
+          name="bardock"
+          eventName="movement_apt_request"
+          language={CHAIN.bardock.language}
+          amount={10}
+          isEvm={false}
+          network={network}
+          faucetRequest={aptosFaucetRequest}
+        />
+        <Chain
+          name="aptos"
+          eventName="movement_apt_request"
+          language={CHAIN.aptos.language}
+          amount={10}
+          isEvm={false}
+          network={network}
+          faucetRequest={aptosFaucetRequest}
+        />
+        <Chain
+          name="MEVM"
+          eventName="m1_evm_request"
+          language={CHAIN.mevm.language}
+          amount={1}
+          isEvm={true}
+          network={network}
+          faucetRequest={handleM1evmFaucetRequest}
+        />
+        <Chain
+          name="Sui"
+          eventName="sui_sui_request"
+          language={CHAIN.sui.language}
+          amount={1}
+          isEvm={false}
+          network={network}
+          faucetRequest={suiFaucetRequest}
+        />
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+          }}
+        ></div>
+      </div>
+      <div style={blockStyle}>
+        <div>
+          <h2 style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
+            Tokens
+          </h2>
+        </div>
+        <div>
+          <p
+            style={{
+              fontFamily: "TWKEverett-Regular",
+              textAlign: "left",
+              fontSize: "0.75rem",
+            }}
+          >
+            Daily rate limit.
+          </p>
+        </div>
+        <div style={{display: "flex"}}>
+          <FormControl fullWidth style={{margin: "1rem", width: "220px"}}>
+            <InputLabel id="demo-simple-select-label">Network</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={mock}
+              label="Network"
+              onChange={handleChange}
+            >
+              <MenuItem value={"holesky"}>Ethereum Holesky</MenuItem>
+              <MenuItem value={"bardock"}>Movement Bardock</MenuItem>
+              <MenuItem value={"aptos"}>Aptos Move</MenuItem>
+              <MenuItem value={"evm"}>MEVM</MenuItem>
+              <MenuItem value={"sui"}>Sui Move</MenuItem>
+            </Select>
+          </FormControl>
+          {mock == "holesky" ? (
+            <FormControl fullWidth style={{margin: "1rem", width: "100px"}}>
+              <InputLabel id="token-label">Token</InputLabel>
+              <Select
+                labelId="token-label"
+                id="token-select"
+                value={token}
+                label="Token"
+                onChange={handleTokenChange}
+              >
+                <MenuItem value={"MOVE"}>MOVE</MenuItem>
+              </Select>
+            </FormControl>
+          ) : (
+            <FormControl fullWidth style={{margin: "1rem", width: "100px"}}>
+              <InputLabel id="token-label">Token</InputLabel>
+              <Select
+                labelId="token-label"
+                id="token-select"
+                value={token}
+                label="Token"
+                onChange={handleTokenChange}
+              >
+                <MenuItem value={"USDC"}>USDC</MenuItem>
+                <MenuItem value={"USDT"}>USDT</MenuItem>
+                <MenuItem value={"WBTC"}>WBTC</MenuItem>
+                <MenuItem value={"WETH"}>WETH</MenuItem>
+                {mock != "sui" && <MenuItem value={"ALL"}>ALL</MenuItem>}
+              </Select>
+            </FormControl>
+          )}
+        </div>
+        <div>
+          {mock == "holesky" && (
+            <p style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
+              MOVE token on Ethereum Holesky Testnet. Costs 0.1 HoleskyETH to
+              claim.
+            </p>
+          )}
+          {mock == "bardock" && (
+            <p style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
+              USDC, USDT, ETH and BTC on Bardock Testnet.{" "}
+            </p>
+          )}
+          {mock == "evm" && (
+            <p style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
+              USDC, USDT, ETH and BTC on MEVM Testnet.{" "}
+            </p>
+          )}
+          {mock == "aptos" && (
+            <p style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
+              USDC, USDT, ETH and BTC on Suzuka Testnet.{" "}
+            </p>
+          )}
+          {mock == "sui" && (
+            <p style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
+              USDC, USDT, ETH and BTC on Sui Testnet.{" "}
+            </p>
+          )}
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              padding: "2rem",
+            }}
+          >
+            {mock == "holesky" && <w3m-button />}
+            {(mock == "aptos" || mock == "bardock") && (
+              <WalletConnector
+                networkSupport={"testnet"}
+                handleNavigate={() =>
+                  `https://explorer.movementlabs.xyz/account/${account?.address}`
+                }
+                modalMaxWidth="sm"
+              />
+            )}
+            {mock == "evm" && <w3m-button />}
+            {mock == "sui" && <ConnectButton />}
+            {loading && (
+              <CircularProgress
+                sx={{
+                  position: "absolute",
+                  left: "60%",
+                  fontFamily: "TWKEverett-Regular",
+                }}
+              />
+            )}
+            <Button
+              sx={{
+                fontFamily: "TWKEverett-Regular",
+                width: 150,
+                borderRadius: 0,
+                marginLeft: "2rem",
+                color: "black",
+                backgroundColor: "#EDEAE6",
+                "&:hover": {backgroundColor: "#C4B8A5"},
+              }}
+              onClick={handleMint}
+              // onClick={() => setBridgePopup(true)}
+            >
+              Claim
+            </Button>
+          </div>
+          {success && (
+            <Alert severity="success" sx={{width: 300, marginBottom: 2}}>
+              Minted {token}
+            </Alert>
+          )}
+          {digest && (
+            <Alert severity="error" sx={{width: 300, marginBottom: 2}}>
+              {digest}
+            </Alert>
+          )}
+          <Modal
+            open={bridgePopup}
+            onClose={() => setBridgePopup(false)}
+            aria-labelledby="parent-modal-title"
+            aria-describedby="parent-modal-description"
+          >
+            <Box
+              sx={{
+                ...blockStyle,
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                bgcolor: "background.paper",
+                border: "2px solid #000",
+                boxShadow: 24,
+                p: 4,
+              }}
+            >
+              <h2 id="parent-modal-title">Success</h2>
+              <p id="parent-modal-description">
+                You have successfully minted MOVE on Holesky. <br />
+                <Link href="https://bridge.movementnetwork.xyz" target="_blank">
+                  Bridge it
+                </Link>{" "}
+                now to Movement.
+              </p>
+            </Box>
+          </Modal>
+        </div>
+      </div>
+    </Box>
   );
 }
