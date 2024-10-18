@@ -19,6 +19,7 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
+  Modal,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import "./hover.css";
@@ -104,6 +105,7 @@ export default function LandingPage() {
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [bridgePopup, setBridgePopup] = useState(false);
   const [init, setInit] = useState(false);
   const navigate = useNavigate();
   const chain = useChainId();
@@ -113,7 +115,7 @@ export default function LandingPage() {
     setLoading(true);
 
     let status = false;
-    let res = null;
+    let res;
     if (mock == "holesky") {
       res = handleL1Faucet();
     } else if (mock == "aptos") {
@@ -150,6 +152,7 @@ export default function LandingPage() {
       });
       console.log(data.transactionHash);
       setDigest("Transaction successful");
+      setBridgePopup(true);
     } catch (e) {
       console.error(e);
       setDigest("Transaction reverted");
@@ -435,8 +438,8 @@ export default function LandingPage() {
                 label="Network"
                 onChange={handleChange}
               >
-                <MenuItem value={"holesky"}>Eth Holesky</MenuItem>
-                <MenuItem value={"movement"}>Movement Testnet</MenuItem>
+                <MenuItem value={"holesky"}>Ethereum Holesky</MenuItem>
+                <MenuItem value={"movement"}>Movement Bardock</MenuItem>
                 <MenuItem value={"aptos"}>Aptos Move</MenuItem>
                 <MenuItem value={"evm"}>MEVM</MenuItem>
                 <MenuItem value={"sui"}>Sui Move</MenuItem>
@@ -477,10 +480,7 @@ export default function LandingPage() {
           <div>
             {mock == "holesky" && (
               <p style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
-                MOVE token on Ethereum Holesky Testnet.{" "}
-                <Link href="https://bridge.movementnetwork.xyz" target="_blank">
-                  Bridge it.
-                </Link>{" "}
+                MOVE token on Ethereum Holesky Testnet. You need 0.1 HoleskyETH to claim.
               </p>
             )}
             {mock == "evm" && (
@@ -538,6 +538,7 @@ export default function LandingPage() {
                   "&:hover": {backgroundColor: "#C4B8A5"},
                 }}
                 onClick={handleMint}
+                // onClick={() => setBridgePopup(true)}
               >
                 Claim
               </Button>
@@ -552,6 +553,30 @@ export default function LandingPage() {
                 {digest}
               </Alert>
             )}
+            <Modal
+              open={bridgePopup}
+              onClose={() => setBridgePopup(false)}
+              aria-labelledby="parent-modal-title"
+              aria-describedby="parent-modal-description"
+            >
+              <Box sx={{ ...blockStyle, position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
+                          bgcolor: 'background.paper',
+                          border: '2px solid #000',
+                          boxShadow: 24,
+                          p: 4}}>
+                <h2 id="parent-modal-title">Success</h2>
+                <p id="parent-modal-description">
+                  You have successfully minted MOVE on Holesky. <br />
+                  <Link href="https://bridge.movementnetwork.xyz" target="_blank">
+                  Bridge it
+                </Link>{" "}
+                   now to Movement.
+                </p>
+              </Box>
+            </Modal>
           </div>
         </div>
       </Box>
