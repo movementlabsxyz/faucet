@@ -54,10 +54,10 @@ const CHAIN = {
     url: "https://holesky.gateway.tenderly.co",
     language: "evm",
   },
-  movement: {
+  bardock: {
     network: "testnet",
-    url: "https://testnet.movementnetwork.xyz",
-    faucetUrl: "https://faucet.testnet.movementnetwork.xyz",
+    url: "https://testnet.bardock.movementnetwork.xyz",
+    faucetUrl: "https://faucet.testnet.bardock.movementnetwork.xyz",
     language: "aptos",
   },
   aptos: {
@@ -94,7 +94,7 @@ const CHAIN = {
 };
 
 export default function LandingPage() {
-  const [network, setNetwork] = useState("movement");
+  const [network, setNetwork] = useState("bardock");
   const [mock, setMock] = useState("holesky");
   const [token, setToken] = useState("MOVE");
   const {data: hash, writeContractAsync} = useWriteContract();
@@ -358,7 +358,7 @@ export default function LandingPage() {
                   label="Network"
                   onChange={handleNetwork}
                 >
-                  <MenuItem value={"movement"}>Movement</MenuItem>
+                  <MenuItem value={"bardock"}>Movement Bardock</MenuItem>
                   <MenuItem value={"aptos"}>Aptos Move</MenuItem>
                   <MenuItem value={"mevm"}>MEVM</MenuItem>
                   <MenuItem value={"sui"}>Sui Move</MenuItem>
@@ -367,9 +367,9 @@ export default function LandingPage() {
               </div>
           </div>
           <Chain
-            name="movement"
+            name="bardock"
             eventName="movement_apt_request"
-            language={CHAIN.movement.language}
+            language={CHAIN.bardock.language}
             amount={10}
             isEvm={false}
             network={network}
@@ -439,7 +439,7 @@ export default function LandingPage() {
                 onChange={handleChange}
               >
                 <MenuItem value={"holesky"}>Ethereum Holesky</MenuItem>
-                <MenuItem value={"movement"}>Movement Bardock</MenuItem>
+                <MenuItem value={"bardock"}>Movement Bardock</MenuItem>
                 <MenuItem value={"aptos"}>Aptos Move</MenuItem>
                 <MenuItem value={"evm"}>MEVM</MenuItem>
                 <MenuItem value={"sui"}>Sui Move</MenuItem>
@@ -507,7 +507,7 @@ export default function LandingPage() {
               }}
             >
               {mock == "holesky" && <w3m-button />}
-              {(mock == "aptos" || mock == "movement") && (
+              {(mock == "aptos" || mock == "bardock") && (
                 <WalletConnector
                   networkSupport={"testnet"}
                   handleNavigate={() =>

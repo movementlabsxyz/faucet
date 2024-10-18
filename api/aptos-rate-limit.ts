@@ -135,8 +135,8 @@ export default async function handler(request: any, response: any) {
     const aptos = new Aptos(
       new AptosConfig({
         network: Network.TESTNET,
-        fullnode: network == "movement" ? "https://testnet.movementnetwork.xyz/v1" : "https://aptos.testnet.suzuka.movementlabs.xyz/v1",
-        faucet: network == "movement" ? "https://faucet.testnet.movementnetwork.xyz" : "https://faucet.testnet.suzuka.movementlabs.xyz",
+        fullnode: network == "bardock" ? "https://testnet.bardock.movementnetwork.xyz/v1" : "https://aptos.testnet.suzuka.movementlabs.xyz/v1",
+        faucet: network == "bardock" ? "https://faucet.testnet.bardock.movementnetwork.xyz" : "https://faucet.testnet.suzuka.movementlabs.xyz",
         faucetConfig: {HEADERS: HEADERS},
       }),
     );
