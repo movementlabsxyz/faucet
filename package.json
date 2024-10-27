@@ -14,6 +14,7 @@
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
     "@google-cloud/recaptcha-enterprise": "^5.10.0",
+    "@marsidev/react-turnstile": "^1.0.2",
     "@martianwallet/aptos-wallet-adapter": "^0.0.4",
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.16",
