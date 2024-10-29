@@ -1,19 +1,15 @@
-import React, {useState, useEffect, useMemo} from "react";
+import React, {useState, useEffect} from "react";
 import {
   aptosRequestFaucet,
-  requestFaucet,
   mevmRequestFaucet,
   suiRequestFaucet,
 } from "../../api";
-import {AptosClient, FaucetClient, CoinClient} from "aptos";
-import {Aptos, AptosConfig, TypeArgument} from "@aptos-labs/ts-sdk";
+import {TypeArgument} from "@aptos-labs/ts-sdk";
 import {CircularProgress, Alert, useTheme, useMediaQuery} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 
 import Chain from "../../components/Chain";
 import {
-  ToggleButton,
-  ToggleButtonGroup,
   Button,
   Select,
   FormControl,
@@ -57,13 +53,19 @@ const CHAIN = {
   bardock: {
     network: "testnet",
     url: "https://testnet.bardock.movementnetwork.xyz",
-    faucetUrl: "https://faucet.testnet.bardock.movementnetwork.xyz",
+    faucetUrl: "https://fund.testnet.bardock.movementnetwork.xyz",
+    language: "aptos",
+  },
+  porto: {
+    network: "testnet",
+    url: "https://testnet.porto.movementnetwork.xyz",
+    faucetUrl: "https://fund.testnet.porto.movementnetwork.xyz",
     language: "aptos",
   },
   aptos: {
     network: "testnet",
     url: "https://aptos.testnet.suzuka.movementlabs.xyz/v1",
-    faucetUrl: "https://faucet.testnet.suzuka.movementlabs.xyz",
+    faucetUrl: "https://fund.testnet.suzuka.movementlabs.xyz",
     language: "aptos",
   },
   m1: {
@@ -364,7 +366,8 @@ export default function LandingPage() {
               <InputLabel>Network</InputLabel>
               <Select value={network} label="Network" onChange={handleNetwork}>
                 <MenuItem value={"bardock"}>Movement Bardock</MenuItem>
-                <MenuItem value={"aptos"}>Aptos Move</MenuItem>
+                <MenuItem value={"porto"}>Movement Porto</MenuItem>
+                {/* <MenuItem value={"aptos"}>Movement Suzuka</MenuItem> */}
                 <MenuItem value={"mevm"}>MEVM</MenuItem>
                 <MenuItem value={"sui"}>Sui Move</MenuItem>
               </Select>
@@ -381,9 +384,9 @@ export default function LandingPage() {
           faucetRequest={aptosFaucetRequest}
         />
         <Chain
-          name="aptos"
+          name="porto"
           eventName="movement_apt_request"
-          language={CHAIN.aptos.language}
+          language={CHAIN.porto.language}
           amount={10}
           isEvm={false}
           network={network}
@@ -444,7 +447,7 @@ export default function LandingPage() {
             >
               <MenuItem value={"holesky"}>Ethereum Holesky</MenuItem>
               <MenuItem value={"bardock"}>Movement Bardock</MenuItem>
-              <MenuItem value={"aptos"}>Aptos Move</MenuItem>
+              <MenuItem value={"porto"}>Movement Porto</MenuItem>
               <MenuItem value={"evm"}>MEVM</MenuItem>
               <MenuItem value={"sui"}>Sui Move</MenuItem>
             </Select>
@@ -498,9 +501,9 @@ export default function LandingPage() {
               USDC, USDT, ETH and BTC on MEVM Testnet.{" "}
             </p>
           )}
-          {mock == "aptos" && (
+          {mock == "porto" && (
             <p style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
-              USDC, USDT, ETH and BTC on Suzuka Testnet.{" "}
+              USDC, USDT, ETH and BTC on Porto Testnet.{" "}
             </p>
           )}
           {mock == "sui" && (
@@ -517,11 +520,11 @@ export default function LandingPage() {
             }}
           >
             {mock == "holesky" && <w3m-button />}
-            {(mock == "aptos" || mock == "bardock") && (
+            {(mock == "porto" || mock == "bardock") && (
               <WalletConnector
                 networkSupport={"testnet"}
                 handleNavigate={() =>
-                  `https://explorer.movementlabs.xyz/account/${account?.address}`
+                  `https://explorer.movementlabs.xyz/account/${account?.address}?network=${mock}+testnet`
                 }
                 modalMaxWidth="sm"
               />
@@ -548,7 +551,6 @@ export default function LandingPage() {
                 "&:hover": {backgroundColor: "#C4B8A5"},
               }}
               onClick={handleMint}
-              // onClick={() => setBridgePopup(true)}
             >
               Claim
             </Button>

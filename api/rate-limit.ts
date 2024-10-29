@@ -80,7 +80,7 @@ export default async function handler(request: any, response: any) {
       new AptosConfig({
         network: Network.TESTNET,
         fullnode: network == "bardock" ? "https://testnet.bardock.movementnetwork.xyz/v1" : "https://aptos.testnet.suzuka.movementlabs.xyz/v1",
-        faucet: network == "bardock" ? "https://faucet.testnet.bardock.movementnetwork.xyz" : "https://faucet.testnet.suzuka.movementlabs.xyz",
+        faucet: network == "bardock" ? "https://fund.testnet.bardock.movementnetwork.xyz" : "https://fund.testnet.suzuka.movementlabs.xyz",
         faucetConfig: {HEADERS: HEADERS},
       }),
     );
