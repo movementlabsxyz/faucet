@@ -1,12 +1,11 @@
 import {Ratelimit} from "@upstash/ratelimit";
 import {kv} from "@vercel/kv";
 import {IncomingMessage} from "http";
-import {RecaptchaEnterpriseServiceClient} from "@google-cloud/recaptcha-enterprise";
 import {Aptos, AptosConfig, Network} from "@aptos-labs/ts-sdk";
 
 const ratelimit = new Ratelimit({
   redis: kv,
-  // 3 requests from the same IP in 24 hours
+  // 2 requests from the same IP in 24 hours
   limiter: Ratelimit.slidingWindow(2, "60 s"),
 });
 
@@ -28,18 +27,17 @@ function ips(req: any) {
 
 export default async function handler(request: any, response: any) {
   // You could alternatively limit based on user ID or similar
-  const {token, address, network} = request.body;
-  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
-  const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`;
-
+  const {token, address } = request.body;
+  const secretKey = process.env.TURNSTILE_SECRET_KEY;
+  const verificationUrl = `https://challenges.cloudflare.com/turnstile/v0/siteverify?secret=${secretKey}&response=${token}`;
   if (!secretKey || !process.env.FAUCET_AUTH_TOKEN) {
     console.log(`secret key not set`);
     return request.status(500).json({error: "reCAPTCHA secret key not set"});
   }
-  const ip = ips(request) ?? "127.0.0.1";
-
+  const ip = ips(request)?.[0] ?? "127.0.0.1";
+​
   const {success, pending, limit, reset, remaining} = await ratelimit.limit(
-    ip[0],
+    ip,
   );
   const {success : addressSuccess, pending: addressPending, limit: addressLimit, reset: addressReset, remaining: addressRemaining} = await ratelimit.limit(
     address,
@@ -55,9 +53,20 @@ export default async function handler(request: any, response: any) {
     return response.status(429).json({success: false, error: "Address rate limited"});
   }
   
-  const verification = await fetch(verificationUrl, {method: "POST"});
+  const result = await fetch(verificationUrl, {
+    body: JSON.stringify({
+      secret: secretKey,
+      response: token,
+      remoteip: ip
+    }),
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
   try {
-    const data = await verification.json();
+    const data = await result.json();
+    console.log(data);
     if (data.success == false) {
       return response
         .status(400)
@@ -88,9 +97,9 @@ export default async function handler(request: any, response: any) {
 
     return response
       .status(200)
-      .json({success: true, hash: fund.hash, limit: 1});
-    } catch (error) {
-      console.log(error);
-      return response.status(500).json({success: false, error: "Sorry but we ran into an issue.  Please try again in a few minutes."});
-    }
+      .json({success: true, hash: fund.hash, limit: limit});
+  } catch (error) {
+    console.log(error);
+    return response.status(500).json({success: false, error: "Sorry but we ran into an issue.  Please try again in a few minutes."});
+  }
 }
