@@ -267,8 +267,8 @@ export default function LandingPage() {
     token: string,
     network: string,
   ) => {
-    return mevmRequestFaucet(CHAIN.mevm.url,address, token);
-    // return mevmRequestFaucet(address, token, CHAIN);
+    // return mevmRequestFaucet(CHAIN.mevm.url,address, token);
+    return mevmRequestFaucet(address, token, CHAIN);
   };
 
   useEffect(() => {
@@ -399,10 +399,11 @@ export default function LandingPage() {
               label="Network"
               onChange={handleChange}
             >
-              <MenuItem value={"holesky"}>Ethereum Holesky</MenuItem>
-              <MenuItem value={"bardock"}>Movement Bardock</MenuItem>
               <MenuItem value={"porto"}>Movement Porto</MenuItem>
+              <MenuItem value={"bardock"}>Movement Bardock</MenuItem>
+              <MenuItem value={"holesky"}>Ethereum Holesky</MenuItem>
               <MenuItem value={"evm"}>MEVM</MenuItem>
+
             </Select>
           </FormControl>
           {mock == "holesky" ? (

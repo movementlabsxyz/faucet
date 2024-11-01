@@ -321,74 +321,74 @@ export async function movementRequestFaucet(
   }
 }
 
-// export async function mevmRequestFaucet(
-//   address: string,
-//   token: string,
-//   config: any,
-// ) {
-//   try {
-//     const response = await fetch("/api/rate-limit", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({
-//         token: token,
-//         address: address,
-//         network: "mevm",
-//         config: config
-//       }),
-//     });
-//     // Check if the response is an HTML page
-//     const contentType = response.headers.get("content-type");
-//     if (!contentType || !contentType.includes("application/json")) {
-//       const text = await response.text();
-//       throw new Error(`Expected JSON but received: ${text}`);
-//     }
-//     console.log(typeof response);
-//     console.log(response);
-//     const fundAccountData = await response.json();
-//     console.log("Limit:", fundAccountData.limit);
-//     if (response.status == 200) {
-//       return {success: fundAccountData.hash};
-//     } else {
-//       return {error: fundAccountData.error};
-//     }
-//   } catch (error: any) {
-//     console.error("Error funding account", error.message);
-//     return {error: error.message || "Undentified error"};
-//   }
-// }
-
 export async function mevmRequestFaucet(
-  mevmUrl: string,
   address: string,
   token: string,
-): Promise<any> {
-
-  const requestData = {
-    jsonrpc: "2.0",
-    id: 1,
-    method: "eth_batch_faucet",
-    params: [
-      address
-    ]
-  };
-
-  const res = await axios.post(mevmUrl, requestData, {
-    headers: {
-      "Content-Type": "application/json",
-      "Token": token
+  config: any,
+) {
+  try {
+    const response = await fetch("/api/rate-limit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: token,
+        address: address,
+        network: "mevm",
+        config: config
+      }),
+    });
+    // Check if the response is an HTML page
+    const contentType = response.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      const text = await response.text();
+      throw new Error(`Expected JSON but received: ${text}`);
     }
-  });
-
-  if(res.status !== 200) {
-    return {error: res.data};
-  }else{
-    if(res.data.error){
-      return {error: res.data.error.message};
-    }else{
-      return {success:res.data};
+    console.log(typeof response);
+    console.log(response);
+    const fundAccountData = await response.json();
+    console.log("Limit:", fundAccountData.limit);
+    if (response.status == 200) {
+      return {success: fundAccountData.hash};
+    } else {
+      return {error: fundAccountData.error};
     }
+  } catch (error: any) {
+    console.error("Error funding account", error.message);
+    return {error: error.message || "Undentified error"};
   }
 }
+
+// export async function mevmRequestFaucet(
+//   mevmUrl: string,
+//   address: string,
+//   token: string,
+// ): Promise<any> {
+
+//   const requestData = {
+//     jsonrpc: "2.0",
+//     id: 1,
+//     method: "eth_batch_faucet",
+//     params: [
+//       address
+//     ]
+//   };
+
+//   const res = await axios.post(mevmUrl, requestData, {
+//     headers: {
+//       "Content-Type": "application/json",
+//       "Token": token
+//     }
+//   });
+
+//   if(res.status !== 200) {
+//     return {error: res.data};
+//   }else{
+//     if(res.data.error){
+//       return {error: res.data.error.message};
+//     }else{
+//       return {success:res.data};
+//     }
+//   }
+// }
