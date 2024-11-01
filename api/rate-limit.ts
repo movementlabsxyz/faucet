@@ -1,13 +1,12 @@
 import {Ratelimit} from "@upstash/ratelimit";
 import {kv} from "@vercel/kv";
 import {IncomingMessage} from "http";
-import {RecaptchaEnterpriseServiceClient} from "@google-cloud/recaptcha-enterprise";
 import {Aptos, AptosConfig, Network} from "@aptos-labs/ts-sdk";
 
 const ratelimit = new Ratelimit({
   redis: kv,
   // 3 requests from the same IP in 24 hours
-  limiter: Ratelimit.slidingWindow(10, "86400 s"),
+  limiter: Ratelimit.slidingWindow(2, "60 s"),
 });
 
 type ExtendedIncomingMessage = IncomingMessage & {
@@ -28,15 +27,15 @@ function ips(req: any) {
 
 export default async function handler(request: any, response: any) {
   // You could alternatively limit based on user ID or similar
-  const {token, address, network} = request.body;
+  const {token, address, network, config} = request.body;
   const secretKey = process.env.TURNSTILE_SECRET_KEY;
   const verificationUrl = `https://challenges.cloudflare.com/turnstile/v0/siteverify?secret=${secretKey}&response=${token}`;
   if (!secretKey || !process.env.FAUCET_AUTH_TOKEN) {
     console.log(`secret key not set`);
-    return request.status(500).json({error: "reCAPTCHA secret key not set"});
+    return request.status(500).json({error: "faucet auth token or secret key not set"});
   }
   const ip = ips(request)?.[0] ?? "127.0.0.1";
-​
+​ 
   const {success, pending, limit, reset, remaining} = await ratelimit.limit(
     ip,
   );
@@ -67,28 +66,18 @@ export default async function handler(request: any, response: any) {
   });
   try {
     const data = await result.json();
-    console.log(data);
     if (data.success == false) {
       return response
         .status(400)
-        .json({success: false, error: "Invalid reCAPTCHA token"});
+        .json({success: false, error: "Invalid Turnstile verification token"});
     }
-    const HEADERS = {
-      authorization: `Bearer ${process.env.FAUCET_AUTH_TOKEN}`,
-    };
-    const aptos = new Aptos(
-      new AptosConfig({
-        network: Network.TESTNET,
-        fullnode: network == "bardock" ? "https://testnet.bardock.movementnetwork.xyz/v1" : "https://aptos.testnet.porto.movementlabs.xyz/v1",
-        faucet: network == "bardock" ? "https://fund.testnet.bardock.movementnetwork.xyz" : "https://fund.testnet.porto.movementlabs.xyz",
-        faucetConfig: {HEADERS: HEADERS},
-      }),
-    );
+    let fund;
+    if (network == "mevm") {
+      fund = await mevmRequest(address, token, config);
+    }
 
-    const fund = await aptos.fundAccount({
-      accountAddress: address,
-      amount: 1000000000,
-    });
+    fund = await movementRequest(address, network, config);
+
     if (!fund.success) {
       console.log(`failed to fund account`);
       return response
@@ -103,4 +92,56 @@ export default async function handler(request: any, response: any) {
     console.log(error);
     return response.status(500).json({success: false, error: "Sorry but we ran into an issue.  Please try again in a few minutes."});
   }
+}
+
+async function movementRequest(address: string, network: string, config: any) {
+
+  const HEADERS = {
+    authorization: `Bearer ${process.env.FAUCET_AUTH_TOKEN}`,
+  };
+
+  const aptos = new Aptos(
+    new AptosConfig({
+      network: Network.TESTNET,
+      fullnode: config[network].url,
+      faucet: config[network].faucetUrl,
+      faucetConfig: {HEADERS: HEADERS},
+    }),
+  );
+
+  const fund = await aptos.fundAccount({
+    accountAddress: address,
+    amount: 1000000000,
+  });
+  return fund;
+}
+
+
+async function mevmRequest(
+  address: string,
+  token: string,
+  config: any
+): Promise<any> {
+  const requestData = {
+    jsonrpc: "2.0",
+    id: 1,
+    method: "eth_batch_faucet",
+    params: [address],
+  };
+  const res = await fetch(config["mevm"].url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Token": token
+    },
+    body: JSON.stringify(requestData)
+  });
+  const data = await res.json();
+  if (res.status !== 200) {
+    return {success: false, error: data.error};
+  }
+  if (data.error) {
+    return {success: false, error: data.error.message};
+  }
+  return {success: true};
 }

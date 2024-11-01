@@ -1,8 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {
-  aptosRequestFaucet,
+  movementRequestFaucet,
   mevmRequestFaucet,
-  suiRequestFaucet,
 } from "../../api";
 import {TypeArgument} from "@aptos-labs/ts-sdk";
 import {CircularProgress, Alert, useTheme, useMediaQuery} from "@mui/material";
@@ -21,7 +20,6 @@ import Box from "@mui/material/Box";
 import "./hover.css";
 import {
   InputTransactionData,
-  useWallet,
 } from "@aptos-labs/wallet-adapter-react";
 import {WalletConnector} from "../../components/wallet/WalletConnector";
 import {
@@ -52,7 +50,7 @@ const CHAIN = {
   },
   bardock: {
     network: "testnet",
-    url: "https://testnet.bardock.movementnetwork.xyz",
+    url: "https://testnet.bardock.movementnetwork.xyz/v1",
     faucetUrl: "https://fund.testnet.bardock.movementnetwork.xyz",
     language: "aptos",
   },
@@ -62,41 +60,15 @@ const CHAIN = {
     faucetUrl: "https://fund.testnet.porto.movementnetwork.xyz",
     language: "aptos",
   },
-  aptos: {
-    network: "testnet",
-    url: "https://aptos.testnet.suzuka.movementlabs.xyz/v1",
-    faucetUrl: "https://fund.testnet.suzuka.movementlabs.xyz",
-    language: "aptos",
-  },
-  m1: {
-    network: "devnet",
-    url: "https://aptos.devnet.m1.movementlabs.xyz",
-    language: "aptos",
-  },
-  mevmM1: {
-    network: "devnet",
-    url: "https://mevm.devnet.m1.movementlabs.xyz",
-    language: "evm",
-  },
-  m2: {
-    network: "devnet",
-    url: "https://sui.devnet.m2.movementlabs.xyz/faucet/web",
-    language: "sui",
-  },
   mevm: {
     network: "devnet",
     url: "https://mevm.devnet.imola.movementlabs.xyz",
     language: "evm",
   },
-  sui: {
-    network: "devnet",
-    url: "https://faucet.devnet.baku.movementlabs.xyz/faucet/web",
-    language: "sui",
-  },
 };
 
 export default function LandingPage() {
-  const [network, setNetwork] = useState("bardock");
+  const [network, setNetwork] = useState("porto");
   const [mock, setMock] = useState("holesky");
   const [token, setToken] = useState("MOVE");
   const {data: hash, writeContractAsync} = useWriteContract();
@@ -282,20 +254,12 @@ export default function LandingPage() {
     setToken(e.target.value);
   };
 
-  const aptosFaucetRequest = async (
+  const movementFaucetRequest = async (
     address: string,
     token: string,
     network: string,
   ) => {
-    return aptosRequestFaucet(address, token, network);
-  };
-
-  const suiFaucetRequest = async (
-    address: string,
-    token: string,
-    network: string,
-  ) => {
-    return suiRequestFaucet(CHAIN.sui.url, address, token);
+    return movementRequestFaucet(address, token, network, CHAIN);
   };
 
   const handleM1evmFaucetRequest = async (
@@ -303,7 +267,8 @@ export default function LandingPage() {
     token: string,
     network: string,
   ) => {
-    return mevmRequestFaucet(CHAIN.mevm.url, address, token);
+    return mevmRequestFaucet(CHAIN.mevm.url,address, token);
+    // return mevmRequestFaucet(address, token, CHAIN);
   };
 
   useEffect(() => {
@@ -365,24 +330,22 @@ export default function LandingPage() {
             <FormControl fullWidth style={{margin: "1rem", width: "220px"}}>
               <InputLabel>Network</InputLabel>
               <Select value={network} label="Network" onChange={handleNetwork}>
-                <MenuItem value={"bardock"}>Movement Bardock</MenuItem>
+                {/* <MenuItem value={"bardock"}>Movement Bardock</MenuItem> */}
                 <MenuItem value={"porto"}>Movement Porto</MenuItem>
-                {/* <MenuItem value={"aptos"}>Movement Suzuka</MenuItem> */}
                 <MenuItem value={"mevm"}>MEVM</MenuItem>
-                <MenuItem value={"sui"}>Sui Move</MenuItem>
               </Select>
             </FormControl>
           </div>
         </div>
-        <Chain
+        {/* <Chain
           name="bardock"
           eventName="movement_apt_request"
           language={CHAIN.bardock.language}
           amount={10}
           isEvm={false}
           network={network}
-          faucetRequest={aptosFaucetRequest}
-        />
+          faucetRequest={movementFaucetRequest}
+        /> */}
         <Chain
           name="porto"
           eventName="movement_apt_request"
@@ -390,7 +353,7 @@ export default function LandingPage() {
           amount={10}
           isEvm={false}
           network={network}
-          faucetRequest={aptosFaucetRequest}
+          faucetRequest={movementFaucetRequest}
         />
         <Chain
           name="MEVM"
@@ -400,15 +363,6 @@ export default function LandingPage() {
           isEvm={true}
           network={network}
           faucetRequest={handleM1evmFaucetRequest}
-        />
-        <Chain
-          name="Sui"
-          eventName="sui_sui_request"
-          language={CHAIN.sui.language}
-          amount={1}
-          isEvm={false}
-          network={network}
-          faucetRequest={suiFaucetRequest}
         />
         <div
           style={{
@@ -449,7 +403,6 @@ export default function LandingPage() {
               <MenuItem value={"bardock"}>Movement Bardock</MenuItem>
               <MenuItem value={"porto"}>Movement Porto</MenuItem>
               <MenuItem value={"evm"}>MEVM</MenuItem>
-              <MenuItem value={"sui"}>Sui Move</MenuItem>
             </Select>
           </FormControl>
           {mock == "holesky" ? (
@@ -479,7 +432,6 @@ export default function LandingPage() {
                 <MenuItem value={"USDT"}>USDT</MenuItem>
                 <MenuItem value={"WBTC"}>WBTC</MenuItem>
                 <MenuItem value={"WETH"}>WETH</MenuItem>
-                {mock != "sui" && <MenuItem value={"ALL"}>ALL</MenuItem>}
               </Select>
             </FormControl>
           )}
@@ -506,11 +458,6 @@ export default function LandingPage() {
               USDC, USDT, ETH and BTC on Porto Testnet.{" "}
             </p>
           )}
-          {mock == "sui" && (
-            <p style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
-              USDC, USDT, ETH and BTC on Sui Testnet.{" "}
-            </p>
-          )}
 
           <div
             style={{
@@ -524,7 +471,7 @@ export default function LandingPage() {
               <WalletConnector
                 networkSupport={"testnet"}
                 handleNavigate={() =>
-                  `https://explorer.movementlabs.xyz/account/${account?.address}?network=${mock}+testnet`
+                  `https://explorer.movementnetwork.xyz/account/${account?.address}?network=${mock}+testnet`
                 }
                 modalMaxWidth="sm"
               />

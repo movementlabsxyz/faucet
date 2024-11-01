@@ -45,8 +45,7 @@ export default function Chains({
 
   useEffect(() => {
     if (turnstileRef.current) {
-      // If you need to do anything with the recaptchaRef, you can do it here
-      console.log("ReCAPTCHA is ready");
+      console.log("Turnstile is ready");
     }
   }, []);
 
@@ -58,10 +57,10 @@ export default function Chains({
     setLoading(true);
 
     if (turnstileRef.current === null)
-      return console.log("recaptchaRef is null");
+      return console.log("turnstileRef is null");
     const turnstileValue = turnstileRef?.current?.getResponse();
     if (!turnstileValue) {
-      setErrorMessage("Please complete the captcha.");
+      setErrorMessage("Please wait for Turnstile verification.");
     } else {
       let status = false;
       const res = await faucetRequest(address, token, name);
