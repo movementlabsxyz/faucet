@@ -1,23 +1,22 @@
-import { AptosClient, Types } from "aptos";
-import { OCTA } from "../constants";
-import { isNumeric } from "../pages/utils";
-import { sortTransactions } from "../utils";
-import { withResponseError } from "./client";
+import {AptosClient, Types} from "aptos";
+import {OCTA} from "../constants";
+import {isNumeric} from "../pages/utils";
+import {sortTransactions} from "../utils";
+import {withResponseError} from "./client";
 import axios from "axios";
 
-
 export async function getTransactions(
-  requestParameters: { start?: number; limit?: number },
+  requestParameters: {start?: number; limit?: number},
   nodeUrl: string,
 ): Promise<Types.Transaction[]> {
   const client = new AptosClient(nodeUrl);
-  const { start, limit } = requestParameters;
+  const {start, limit} = requestParameters;
   let bigStart;
   if (start !== undefined) {
     bigStart = BigInt(start);
   }
   const transactions = await withResponseError(
-    client.getTransactions({ start: bigStart, limit }),
+    client.getTransactions({start: bigStart, limit}),
   );
 
   // Sort in descending order
@@ -27,17 +26,17 @@ export async function getTransactions(
 }
 
 export async function getAccountTransactions(
-  requestParameters: { address: string; start?: number; limit?: number },
+  requestParameters: {address: string; start?: number; limit?: number},
   nodeUrl: string,
 ): Promise<Types.Transaction[]> {
   const client = new AptosClient(nodeUrl);
-  const { address, start, limit } = requestParameters;
+  const {address, start, limit} = requestParameters;
   let bigStart;
   if (start !== undefined) {
     bigStart = BigInt(start);
   }
   const transactions = await withResponseError(
-    client.getAccountTransactions(address, { start: bigStart, limit }),
+    client.getAccountTransactions(address, {start: bigStart, limit}),
   );
 
   // Sort in descending order
@@ -47,10 +46,10 @@ export async function getAccountTransactions(
 }
 
 export function getTransaction(
-  requestParameters: { txnHashOrVersion: string | number },
+  requestParameters: {txnHashOrVersion: string | number},
   nodeUrl: string,
 ): Promise<Types.Transaction> {
-  const { txnHashOrVersion } = requestParameters;
+  const {txnHashOrVersion} = requestParameters;
   if (typeof txnHashOrVersion === "number" || isNumeric(txnHashOrVersion)) {
     const version =
       typeof txnHashOrVersion === "number"
@@ -91,26 +90,26 @@ export function getLedgerInfoWithoutResponseError(
 }
 
 export function getAccount(
-  requestParameters: { address: string },
+  requestParameters: {address: string},
   nodeUrl: string,
 ): Promise<Types.AccountData> {
   const client = new AptosClient(nodeUrl);
-  const { address } = requestParameters;
+  const {address} = requestParameters;
   return withResponseError(client.getAccount(address));
 }
 
 export function getAccountResources(
-  requestParameters: { address: string; ledgerVersion?: number },
+  requestParameters: {address: string; ledgerVersion?: number},
   nodeUrl: string,
 ): Promise<Types.MoveResource[]> {
   const client = new AptosClient(nodeUrl);
-  const { address, ledgerVersion } = requestParameters;
+  const {address, ledgerVersion} = requestParameters;
   let ledgerVersionBig;
   if (ledgerVersion !== undefined) {
     ledgerVersionBig = BigInt(ledgerVersion);
   }
   return withResponseError(
-    client.getAccountResources(address, { ledgerVersion: ledgerVersionBig }),
+    client.getAccountResources(address, {ledgerVersion: ledgerVersionBig}),
   );
 }
 
@@ -123,7 +122,7 @@ export function getAccountResource(
   nodeUrl: string,
 ): Promise<Types.MoveResource> {
   const client = new AptosClient(nodeUrl);
-  const { address, resourceType, ledgerVersion } = requestParameters;
+  const {address, resourceType, ledgerVersion} = requestParameters;
   let ledgerVersionBig;
   if (ledgerVersion !== undefined) {
     ledgerVersionBig = BigInt(ledgerVersion);
@@ -136,17 +135,17 @@ export function getAccountResource(
 }
 
 export function getAccountModules(
-  requestParameters: { address: string; ledgerVersion?: number },
+  requestParameters: {address: string; ledgerVersion?: number},
   nodeUrl: string,
 ): Promise<Types.MoveModuleBytecode[]> {
   const client = new AptosClient(nodeUrl);
-  const { address, ledgerVersion } = requestParameters;
+  const {address, ledgerVersion} = requestParameters;
   let ledgerVersionBig;
   if (ledgerVersion !== undefined) {
     ledgerVersionBig = BigInt(ledgerVersion);
   }
   return withResponseError(
-    client.getAccountModules(address, { ledgerVersion: ledgerVersionBig }),
+    client.getAccountModules(address, {ledgerVersion: ledgerVersionBig}),
   );
 }
 
@@ -159,7 +158,7 @@ export function getAccountModule(
   nodeUrl: string,
 ): Promise<Types.MoveModuleBytecode> {
   const client = new AptosClient(nodeUrl);
-  const { address, moduleName, ledgerVersion } = requestParameters;
+  const {address, moduleName, ledgerVersion} = requestParameters;
   let ledgerVersionBig;
   if (ledgerVersion !== undefined) {
     ledgerVersionBig = BigInt(ledgerVersion);
@@ -180,44 +179,30 @@ export function view(
 }
 
 export function getTableItem(
-  requestParameters: { tableHandle: string; data: Types.TableItemRequest },
+  requestParameters: {tableHandle: string; data: Types.TableItemRequest},
   nodeUrl: string,
 ): Promise<any> {
   const client = new AptosClient(nodeUrl);
-  const { tableHandle, data } = requestParameters;
+  const {tableHandle, data} = requestParameters;
   return withResponseError(client.getTableItem(tableHandle, data));
 }
 
 export function getBlockByHeight(
-  requestParameters: { height: number; withTransactions: boolean },
+  requestParameters: {height: number; withTransactions: boolean},
   nodeUrl: string,
 ): Promise<Types.Block> {
-  const { height, withTransactions } = requestParameters;
+  const {height, withTransactions} = requestParameters;
   const client = new AptosClient(nodeUrl);
   return withResponseError(client.getBlockByHeight(height, withTransactions));
 }
 
 export function getBlockByVersion(
-  requestParameters: { version: number; withTransactions: boolean },
+  requestParameters: {version: number; withTransactions: boolean},
   nodeUrl: string,
 ): Promise<Types.Block> {
-  const { version, withTransactions } = requestParameters;
+  const {version, withTransactions} = requestParameters;
   const client = new AptosClient(nodeUrl);
   return withResponseError(client.getBlockByVersion(version, withTransactions));
-}
-
-export async function getRecentBlocks(
-  currentBlockHeight: number,
-  count: number,
-  nodeUrl: string,
-): Promise<Types.Block[]> {
-  const client = new AptosClient(nodeUrl);
-  const blocks = [];
-  for (let i = 0; i < count; i++) {
-    const block = await client.getBlockByHeight(currentBlockHeight - i, false);
-    blocks.push(block);
-  }
-  return blocks;
 }
 
 export async function getStake(
@@ -296,63 +281,84 @@ export async function getValidatorState(
   return withResponseError(client.view(payload));
 }
 
-export async function requestFaucet(
-  aptosClient: AptosClient,
-  faucetUrl: string,
-  pubkey: string,
-  token:string
-): Promise<any> {
-
-  const url = `${faucetUrl}/batch_mint?address=${pubkey}`;
-  let txns = [];
-  const headers = {
-    'Token': token,
-  };
+export async function movementRequestFaucet(
+  address: string,
+  token: string,
+  network: string,
+  config: any,
+) {
   try {
-    const response = await axios.get(url,{headers});
-    if (response.status === 200) {
-      if (response.data.error_message) {
-        return {error: response.data.error_message};
-      }
-      return {success:response.data};
-    } else {
-      throw new Error(`Faucet issue: ${response.status}`);
+    const response = await fetch("/api/rate-limit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: token,
+        address: address,
+        network: network,
+        config: config,
+      }),
+    });
+    // Check if the response is an HTML page
+    const contentType = response.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      const text = await response.text();
+      throw new Error(`Expected JSON but received: ${text}`);
     }
-  } catch (error) {
-    console.error("Failed to fund account with faucet:", error);
-    throw error;
+    console.log(typeof response);
+    console.log(response);
+    const fundAccountData = await response.json();
+    console.log("Limit:", fundAccountData.limit);
+    if (response.status == 200) {
+      return {success: fundAccountData.hash};
+    } else {
+      return {error: fundAccountData.error};
+    }
+  } catch (error: any) {
+    console.error("Error funding account", error.message);
+    return {error: error.message || "Undentified error"};
   }
 }
 
-export async function aptosRequestFaucet(address : string, captchaValue: string, network: string) {
-  try {
-    const response = await fetch('/api/rate-limit', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ token: captchaValue, address: address, network: network }),
-    });
-    // Check if the response is an HTML page
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-        const text = await response.text();
-        throw new Error(`Expected JSON but received: ${text}`);
-    }
-    console.log(typeof response)
-    console.log(response)
-    const fundAccountData = await response.json();
-    console.log('Limit:', fundAccountData.limit);
-    if (response.status == 200) {
-        return {success: fundAccountData.hash};
-    } else {
-        return {error: fundAccountData.error};
-    }
-} catch (error : any) {
-    console.error('Error funding account', error.message);
-    return {error: error.message || "Undentified error"};
-}
-}
+// export async function mevmRequestFaucet(
+//   address: string,
+//   token: string,
+//   config: any,
+// ) {
+//   try {
+//     const response = await fetch("/api/rate-limit", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({
+//         token: token,
+//         address: address,
+//         network: "mevm",
+//         config: config
+//       }),
+//     });
+//     // Check if the response is an HTML page
+//     const contentType = response.headers.get("content-type");
+//     if (!contentType || !contentType.includes("application/json")) {
+//       const text = await response.text();
+//       throw new Error(`Expected JSON but received: ${text}`);
+//     }
+//     console.log(typeof response);
+//     console.log(response);
+//     const fundAccountData = await response.json();
+//     console.log("Limit:", fundAccountData.limit);
+//     if (response.status == 200) {
+//       return {success: fundAccountData.hash};
+//     } else {
+//       return {error: fundAccountData.error};
+//     }
+//   } catch (error: any) {
+//     console.error("Error funding account", error.message);
+//     return {error: error.message || "Undentified error"};
+//   }
+// }
 
 export async function mevmRequestFaucet(
   mevmUrl: string,
@@ -384,40 +390,5 @@ export async function mevmRequestFaucet(
     }else{
       return {success:res.data};
     }
-  }
-}
-
-export async function suiRequestFaucet(
-  suiUrl: string,
-  address: string,
-  token: string,
-): Promise<any> {
-
-  const requestData = {
-    FixedAmountRequest: {
-      recipient: address
-    }
-  };
-  const myHeaders = new Headers();
-  myHeaders.append("Token", token);
-  myHeaders.append("Content-Type", "application/json");
-  const requestOptions:any = {
-    method: "POST",
-    headers: myHeaders,
-    body: JSON.stringify(requestData),
-    redirect: "follow"
-  };
-
-  try{
-    const res:any = await fetch(suiUrl, requestOptions) .then((response) => response.text());
-    const res1 = JSON.parse(res);
-
-    if (res1.code == 200) {
-      return {success:res1};
-    }else{
-      return {error:res1.message?.message||res1.message};
-    }
-  }catch(e){
-    return {error: String(e)};
   }
 }

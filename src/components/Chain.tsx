@@ -8,7 +8,8 @@ import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
 import {Switch, useTheme} from "@mui/material";
-import ReCAPTCHA from "react-google-recaptcha";
+import { Turnstile } from '@marsidev/react-turnstile'
+import type { TurnstileInstance } from '@marsidev/react-turnstile'
 
 export default function Chains({
   name,
@@ -23,7 +24,7 @@ export default function Chains({
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const recaptchaRef = useRef<ReCAPTCHA>(null);
+  const turnstileRef = useRef<TurnstileInstance | null>(null)
   const [token, setToken] = useState<string | null>(null);
   const theme = useTheme();
   const [isDark, setIsDark] = useState(theme.palette.mode === "dark");
@@ -43,9 +44,8 @@ export default function Chains({
   }, [success, errorMessage]);
 
   useEffect(() => {
-    if (recaptchaRef.current) {
-      // If you need to do anything with the recaptchaRef, you can do it here
-      console.log("ReCAPTCHA is ready");
+    if (turnstileRef.current) {
+      console.log("Turnstile is ready");
     }
   }, []);
 
@@ -56,11 +56,11 @@ export default function Chains({
   const handleRequest = async () => {
     setLoading(true);
 
-    if (recaptchaRef.current === null)
-      return console.log("recaptchaRef is null");
-    const captchaValue = recaptchaRef?.current.getValue();
-    if (!captchaValue) {
-      setErrorMessage("Please complete the captcha.");
+    if (turnstileRef.current === null)
+      return console.log("turnstileRef is null");
+    const turnstileValue = turnstileRef?.current?.getResponse();
+    if (!turnstileValue) {
+      setErrorMessage("Please wait for Turnstile verification.");
     } else {
       let status = false;
       const res = await faucetRequest(address, token, name);
@@ -76,7 +76,7 @@ export default function Chains({
         status = true;
       }
     }
-    recaptchaRef.current?.reset();
+    turnstileRef.current?.reset();
     setToken(null);
     setLoading(false);
   };
@@ -161,17 +161,10 @@ export default function Chains({
               Get MOVE
             </Button>
             <div>
-              <ReCAPTCHA
-                ref={recaptchaRef}
-                sitekey={
-                  language == "aptos"
-                    ? process.env.REACT_APP_RECAPTCHA_APTOS_PUBLIC_KEY ?? ""
-                    : "6LdPgxMqAAAAAByFdD5V8PiPKYZS4mSZWUUcZW6B"
-                }
-                // size="invisible"
-                hl="en"
-                onChange={onChangeRe}
-                theme="dark"
+              <Turnstile
+                ref={turnstileRef as RefObject<any>}
+                siteKey={process.env.REACT_APP_TURNSTILE_SITE_KEY ?? ""}
+                onSuccess={setToken}
               />
             </div>
             {success && (

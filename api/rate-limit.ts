@@ -1,13 +1,12 @@
 import {Ratelimit} from "@upstash/ratelimit";
 import {kv} from "@vercel/kv";
 import {IncomingMessage} from "http";
-import {RecaptchaEnterpriseServiceClient} from "@google-cloud/recaptcha-enterprise";
 import {Aptos, AptosConfig, Network} from "@aptos-labs/ts-sdk";
 
 const ratelimit = new Ratelimit({
   redis: kv,
   // 3 requests from the same IP in 24 hours
-  limiter: Ratelimit.slidingWindow(2, "86400 s"),
+  limiter: Ratelimit.slidingWindow(2, "60 s"),
 });
 
 type ExtendedIncomingMessage = IncomingMessage & {
@@ -26,85 +25,19 @@ function ips(req: any) {
   return getXForwardedFor(req)?.split(/\s*,\s*/);
 }
 
-// TODO: Use createAssessment instead.
-async function createAssessment(
-  // TODO: Replace the token and reCAPTCHA action variables before running the sample.
-  projectID: string,
-  recaptchaKey: string,
-  recaptchaAction: string,
-  token: string,
-) {
-  // Create the reCAPTCHA client.
-  // TODO: Cache the client generation code (recommended) or call client.close() before exiting the method.
-  const client = new RecaptchaEnterpriseServiceClient();
-  const projectPath = client.projectPath(projectID);
-
-  // Build the assessment request.
-  const request = {
-    assessment: {
-      event: {
-        token: token,
-        siteKey: recaptchaKey,
-      },
-    },
-    parent: projectPath,
-  };
-  console.log("creating assessment");
-  const [response] = await client.createAssessment(request);
-  console.log("response", response);
-  if (!response.tokenProperties) return null;
-  // Check if the token is valid.
-  if (!response.tokenProperties.valid) {
-    console.log(
-      `The CreateAssessment call failed because the token was: ${response.tokenProperties.invalidReason}`,
-    );
-    return null;
-  }
-
-  // Check if the expected action was executed.
-  // The `action` property is set by user client in the grecaptcha.enterprise.execute() method.
-  if (response.tokenProperties.action === recaptchaAction) {
-    // Get the risk score and the reason(s).
-    // For more information on interpreting the assessment, see:
-    // https://cloud.google.com/recaptcha-enterprise/docs/interpret-assessment
-    if (!response.riskAnalysis) return null;
-    console.log(`The reCAPTCHA score is: ${response.riskAnalysis.score}`);
-    response.riskAnalysis.reasons?.forEach((reason) => {
-      console.log(reason);
-    });
-
-    return response.riskAnalysis.score;
-  } else {
-    console.log(
-      "The action attribute in your reCAPTCHA tag does not match the action you are expecting to score",
-    );
-    return null;
-  }
-}
-
 export default async function handler(request: any, response: any) {
   // You could alternatively limit based on user ID or similar
-  const {token, address, network} = request.body;
-  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
-  const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`;
-
+  const {token, address, network, config} = request.body;
+  const secretKey = process.env.TURNSTILE_SECRET_KEY;
+  const verificationUrl = `https://challenges.cloudflare.com/turnstile/v0/siteverify?secret=${secretKey}&response=${token}`;
   if (!secretKey || !process.env.FAUCET_AUTH_TOKEN) {
     console.log(`secret key not set`);
-    return request.status(500).json({error: "reCAPTCHA secret key not set"});
+    return request.status(500).json({error: "faucet auth token or secret key not set"});
   }
-  const ip = ips(request) ?? "127.0.0.1";
-
-  // const score = await createAssessment("movement-faucet-1722352143785", "6LdVjR0qAAAAAFSjzYqyRFsnUDn-iRrzQmv0nnp3", "", token);
-  // console.log('score', score)
-  // if (score === (null || undefined)) {
-  //   response.status(400).json({ error: 'Invalid reCAPTCHA token' });
-  // } else if (score != null && score < 0.5) {
-  //   response.status(400).json({ error: 'reCAPTCHA score too low' });
-  // } else {
-  //   response.status(success ? 200 : 429).json({ success, pending, limit, reset, remaining });
-  // }
+  const ip = ips(request)?.[0] ?? "127.0.0.1";
+​ 
   const {success, pending, limit, reset, remaining} = await ratelimit.limit(
-    ip[0],
+    ip,
   );
   const {success : addressSuccess, pending: addressPending, limit: addressLimit, reset: addressReset, remaining: addressRemaining} = await ratelimit.limit(
     address,
@@ -120,30 +53,31 @@ export default async function handler(request: any, response: any) {
     return response.status(429).json({success: false, error: "Address rate limited"});
   }
   
-  const verification = await fetch(verificationUrl, {method: "POST"});
+  const result = await fetch(verificationUrl, {
+    body: JSON.stringify({
+      secret: secretKey,
+      response: token,
+      remoteip: ip
+    }),
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
   try {
-    const data = await verification.json();
+    const data = await result.json();
     if (data.success == false) {
       return response
         .status(400)
-        .json({success: false, error: "Invalid reCAPTCHA token"});
+        .json({success: false, error: "Invalid Turnstile verification token"});
     }
-    const HEADERS = {
-      authorization: `Bearer ${process.env.FAUCET_AUTH_TOKEN}`,
-    };
-    const aptos = new Aptos(
-      new AptosConfig({
-        network: Network.TESTNET,
-        fullnode: network == "movement" ? "https://testnet.movementnetwork.xyz/v1" : "https://aptos.testnet.suzuka.movementlabs.xyz/v1",
-        faucet: network == "movement" ? "https://faucet.testnet.movementnetwork.xyz" : "https://faucet.testnet.suzuka.movementlabs.xyz",
-        faucetConfig: {HEADERS: HEADERS},
-      }),
-    );
+    let fund;
+    if (network == "mevm") {
+      fund = await mevmRequest(address, token, config);
+    }
 
-    const fund = await aptos.fundAccount({
-      accountAddress: address,
-      amount: 1000000000,
-    });
+    fund = await movementRequest(address, network, config);
+
     if (!fund.success) {
       console.log(`failed to fund account`);
       return response
@@ -158,4 +92,56 @@ export default async function handler(request: any, response: any) {
     console.log(error);
     return response.status(500).json({success: false, error: "Sorry but we ran into an issue.  Please try again in a few minutes."});
   }
+}
+
+async function movementRequest(address: string, network: string, config: any) {
+
+  const HEADERS = {
+    authorization: `Bearer ${process.env.FAUCET_AUTH_TOKEN}`,
+  };
+
+  const aptos = new Aptos(
+    new AptosConfig({
+      network: Network.TESTNET,
+      fullnode: config[network].url,
+      faucet: config[network].faucetUrl,
+      faucetConfig: {HEADERS: HEADERS},
+    }),
+  );
+
+  const fund = await aptos.fundAccount({
+    accountAddress: address,
+    amount: 1000000000,
+  });
+  return fund;
+}
+
+
+async function mevmRequest(
+  address: string,
+  token: string,
+  config: any
+): Promise<any> {
+  const requestData = {
+    jsonrpc: "2.0",
+    id: 1,
+    method: "eth_batch_faucet",
+    params: [address],
+  };
+  const res = await fetch(config["mevm"].url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Token": token
+    },
+    body: JSON.stringify(requestData)
+  });
+  const data = await res.json();
+  if (res.status !== 200) {
+    return {success: false, error: data.error};
+  }
+  if (data.error) {
+    return {success: false, error: data.error.message};
+  }
+  return {success: true};
 }

@@ -56,7 +56,7 @@ export default function WalletButton({
         ) : (
           <>
             <AccountBalanceWalletOutlinedIcon sx={{ marginRight: 1 }} />
-            <Typography noWrap>Connect Wallet</Typography>
+            <Typography noWrap>Connect</Typography>
           </>
         )}
       </Button>

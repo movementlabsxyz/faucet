@@ -7,6 +7,7 @@
     "@apollo/client": "^3.7.10",
     "@aptos-labs/aptos-names-connector": "^0.0.2",
     "@aptos-labs/ts-sdk": "^1.20.0",
+    "@aptos-labs/wallet-adapter-core": "^4.19.0",
     "@aptos-labs/wallet-adapter-mui-design": "^0.3.2",
     "@aptos-labs/wallet-adapter-react": "3.5.6",
     "@blocto/aptos-wallet-adapter-plugin": "^0.1.4",
@@ -14,6 +15,7 @@
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
     "@google-cloud/recaptcha-enterprise": "^5.10.0",
+    "@marsidev/react-turnstile": "^1.0.2",
     "@martianwallet/aptos-wallet-adapter": "^0.0.4",
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.16",
@@ -40,6 +42,7 @@
     "@vercel/edge": "^1.1.2",
     "@vercel/functions": "^1.4.0",
     "@vercel/kv": "^2.0.0",
+    "@wagmi/core": "^2.13.8",
     "@web3modal/wagmi": "^5.0.7",
     "@welldone-studio/aptos-wallet-adapter": "^0.1.2",
     "aptos": "^1.8.3",
@@ -81,7 +84,7 @@
     "typescript": "^5.0.2",
     "vercel": "^35.2.2",
     "viem": "^2.17.5",
-    "wagmi": "^2.11.3"
+    "wagmi": "2.11.3"
   },
   "scripts": {
     "start": "react-scripts start",
