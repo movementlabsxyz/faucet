@@ -56,7 +56,7 @@ const CHAIN = {
   },
   porto: {
     network: "testnet",
-    url: "https://testnet.porto.movementnetwork.xyz",
+    url: "https://testnet.porto.movementnetwork.xyz/v1",
     faucetUrl: "https://fund.testnet.porto.movementnetwork.xyz",
     language: "aptos",
   },
