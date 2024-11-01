@@ -86,7 +86,7 @@ export default function Footer() {
             >
               © {new Date().getFullYear()}{" "}
               <Box component="span" sx={{whiteSpace: "nowrap"}}>
-                Movement Labs
+                Movement Network Foundation
               </Box>
             </Typography>
             <Stack

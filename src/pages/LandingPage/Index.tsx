@@ -69,8 +69,8 @@ const CHAIN = {
 
 export default function LandingPage() {
   const [network, setNetwork] = useState("porto");
-  const [mock, setMock] = useState("holesky");
-  const [token, setToken] = useState("MOVE");
+  const [mock, setMock] = useState("porto");
+  const [token, setToken] = useState("USDC");
   const {data: hash, writeContractAsync} = useWriteContract();
   const {submitTransaction} = useSubmitTransaction();
   const account = useCurrentAccount();
