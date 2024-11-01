@@ -94,7 +94,7 @@ export default function LandingPage() {
     let res;
     if (mock == "holesky") {
       res = handleL1Faucet();
-    } else if (mock == "aptos") {
+    } else if (mock == "porto" || mock == "bardock") {
       res = aptosMint();
     } else if (mock == "evm") {
       res = evmMint();
