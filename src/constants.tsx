@@ -3,7 +3,8 @@
  */
 export const networks = {
   mainnet: "https://mainnet.movementnetwork.xyz/",
-  testnet: "https://testnet.suzuka.movementlabs.xyz",
+  "porto testnet": "https://testnet.porto.movementlabs.xyz",
+  "bardock testnet": "https://testnet.bardock.movementlabs.xyz",
   devnet: "https://devnet.imola.movementlabs.xyz",
   local: "locahost:30731",
   previewnet: "https://previewnet.movementnetwork.xyz",
@@ -31,7 +32,7 @@ for (const key of Object.keys(networks)) {
   }
 }
 
-export const defaultNetworkName: NetworkName = "testnet" as const;
+export const defaultNetworkName: NetworkName = "porto testnet" as const;
 
 if (!(defaultNetworkName in networks)) {
   throw `defaultNetworkName '${defaultNetworkName}' not in Networks!`;
