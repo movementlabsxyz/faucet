@@ -105,7 +105,7 @@ ReactDOM.render(
     <StatsigProvider
       sdkKey={
         process.env.REACT_APP_STATSIG_SDK_KEY ||
-        "client-gQ2Zhz3hNYRf6CSVaczkQcZfK0yUBv5ln42yCDzTwbr"
+        "client-78XrPWGisrqq4IRQyYWuenLEe4oMaUdSqRcsCYbMeqj"
       }
       waitForInitialization={true}
       options={{
