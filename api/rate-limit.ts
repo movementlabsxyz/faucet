@@ -6,7 +6,7 @@ import {Aptos, AptosConfig, Network} from "@aptos-labs/ts-sdk";
 const ratelimit = new Ratelimit({
   redis: kv,
   // 3 requests from the same IP in 24 hours
-  limiter: Ratelimit.slidingWindow(2, "60 s"),
+  limiter: Ratelimit.slidingWindow(2, "86400 s"),
 });
 
 type ExtendedIncomingMessage = IncomingMessage & {
