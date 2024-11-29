@@ -99,7 +99,7 @@ export default function Chains({
 
   return (
     name?.toLowerCase() == network?.toLowerCase() && (
-      <Container sx={{position: "relative"}}>
+      <Box  sx={{position: "relative"}}>
         <Box
           sx={{
             fontFamily: "TWKEverett-Regular",
@@ -109,17 +109,27 @@ export default function Chains({
             justifyContent: "center",
             height: "100%",
             poisition: "relative",
-            padding: "2rem",
+            paddingTop: "2rem",
           }}
         >
-          <form name={name} onSubmit={handleFormSubmit}>
+            <form
+              name={name}
+              onSubmit={handleFormSubmit}
+              style={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column', // правильный синтаксис для flex-direction
+                alignItems: 'center',
+              }}
+            >
             <TextField
               label={language.toUpperCase() + " Address"}
               variant="outlined"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               sx={{
-                width: 300,
+                maxWidth: window.innerWidth < 600 ? "100%" : "300",
+                width: '100%',
                 marginBottom: 2,
                 fontFamily: "TWKEverett-Regular",
               }}
@@ -133,7 +143,6 @@ export default function Chains({
                   : ""
               }
             />
-            <br />
 
             {loading && (
               <CircularProgress
@@ -150,7 +159,8 @@ export default function Chains({
               variant="contained"
               sx={{
                 fontFamily: "TWKEverett-Regular",
-                width: 300,
+                maxWidth: window.innerWidth < 600 ? "100%" : "300",
+                width: '100%',
                 borderRadius: 0,
                 color: "black",
                 backgroundColor: "#EDEAE6",
@@ -160,13 +170,16 @@ export default function Chains({
               {/*  */}
               Get MOVE
             </Button>
-            <div>
+            <Box 
+              sx={{
+                marginTop: "1rem",
+              }}>
               <Turnstile
                 ref={turnstileRef as RefObject<any>}
                 siteKey={process.env.REACT_APP_TURNSTILE_SITE_KEY ?? ""}
                 onSuccess={setToken}
               />
-            </div>
+            </Box>
             {success && (
               <Alert severity="success" sx={{width: 300, marginBottom: 2}}>
                 Funded account {_amount} MOVE
@@ -179,7 +192,7 @@ export default function Chains({
             )}
           </form>
         </Box>
-      </Container>
+      </Box >
     )
   );
 }

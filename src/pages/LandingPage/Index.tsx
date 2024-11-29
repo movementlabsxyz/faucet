@@ -17,6 +17,7 @@ import {
   Modal,
 } from "@mui/material";
 import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
 import "./hover.css";
 import {
   InputTransactionData,
@@ -35,6 +36,7 @@ import {Transaction} from "@mysten/sui/transactions";
 import useSubmitTransaction from "../../api/hooks/useSubmitTransaction";
 import {Link} from "@mui/material";
 import {config} from "../../index";
+import { Translate } from "@mui/icons-material";
 
 const aptosFaucetAddress =
   "0x275f508689de8756169d1ee02d889c777de1cebda3a7bbcce63ba8a27c563c6f";
@@ -298,11 +300,12 @@ export default function LandingPage() {
   };
   const blockStyle = {
     backgroundColor: "rgba(237, 234, 230, 0.01)",
-    padding: "3rem",
+    padding: window.innerWidth < 600 ? "2rem 2rem" : "3rem 2rem",
     margin: "2rem",
     borderRadius: "2px",
     boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.2)",
-    width: "500px",
+    maxWidth: "500px",
+    width: "100%",
   };
   return (
     <Box
@@ -318,16 +321,17 @@ export default function LandingPage() {
       }}
     >
       <div style={blockStyle}>
-        <div
+        <Box
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
+            flexWrap: "wrap",
           }}
         >
           <h1 style={{textAlign: "left"}}>Faucets</h1>
-          <div className="network">
-            <FormControl fullWidth style={{margin: "1rem", width: "220px"}}>
+          <div className="network" style={{maxWidth: "220px", width: "100%",}}>
+            <FormControl fullWidth>
               <InputLabel>Network</InputLabel>
               <Select value={network} label="Network" onChange={handleNetwork}>
                 {/* <MenuItem value={"bardock"}>Movement Bardock</MenuItem> */}
@@ -336,7 +340,7 @@ export default function LandingPage() {
               </Select>
             </FormControl>
           </div>
-        </div>
+        </Box>
         {/* <Chain
           name="bardock"
           eventName="movement_apt_request"
@@ -373,12 +377,13 @@ export default function LandingPage() {
         ></div>
       </div>
       <div style={blockStyle}>
-        <div>
+        <Box sx={{
+                marginTop: 4,
+              }}>
           <h2 style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
             Tokens
           </h2>
-        </div>
-        <div>
+        
           <p
             style={{
               fontFamily: "TWKEverett-Regular",
@@ -388,9 +393,13 @@ export default function LandingPage() {
           >
             Daily rate limit.
           </p>
-        </div>
-        <div style={{display: "flex"}}>
-          <FormControl fullWidth style={{margin: "1rem", width: "220px"}}>
+        </Box>
+        <Box sx={{
+            display: "flex", 
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+          }}>
+          <FormControl fullWidth style={{ maxWidth: "220px", width: "100%", marginBottom: "2rem",}}>
             <InputLabel id="demo-simple-select-label">Network</InputLabel>
             <Select
               labelId="demo-simple-select-label"
@@ -407,7 +416,7 @@ export default function LandingPage() {
             </Select>
           </FormControl>
           {mock == "holesky" ? (
-            <FormControl fullWidth style={{margin: "1rem", width: "100px"}}>
+            <FormControl fullWidth style={{maxWidth: "100px", width: "100%", marginBottom: "2rem",}}>
               <InputLabel id="token-label">Token</InputLabel>
               <Select
                 labelId="token-label"
@@ -420,7 +429,7 @@ export default function LandingPage() {
               </Select>
             </FormControl>
           ) : (
-            <FormControl fullWidth style={{margin: "1rem", width: "100px"}}>
+            <FormControl fullWidth style={{maxWidth: "100px", width: "100%", marginBottom: "0rem",}}>
               <InputLabel id="token-label">Token</InputLabel>
               <Select
                 labelId="token-label"
@@ -436,8 +445,8 @@ export default function LandingPage() {
               </Select>
             </FormControl>
           )}
-        </div>
-        <div>
+        </Box>
+        <Box>
           {mock == "holesky" && (
             <p style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
               MOVE token on Ethereum Holesky Testnet. Costs 0.1 HoleskyETH to
@@ -463,8 +472,9 @@ export default function LandingPage() {
           <div
             style={{
               display: "flex",
-              justifyContent: "space-between",
-              padding: "2rem",
+              justifyContent: "space-between", 
+              paddingTop: "2rem 0",
+              flexWrap: "wrap",
             }}
           >
             {mock == "holesky" && <w3m-button />}
@@ -479,37 +489,44 @@ export default function LandingPage() {
             )}
             {mock == "evm" && <w3m-button />}
             {mock == "sui" && <ConnectButton />}
-            {loading && (
-              <CircularProgress
-                sx={{
-                  position: "absolute",
-                  left: "60%",
-                  fontFamily: "TWKEverett-Regular",
-                }}
-              />
-            )}
+           
             <Button
               sx={{
                 fontFamily: "TWKEverett-Regular",
-                width: 150,
+                maxWidth: window.innerWidth < 600 ? "100%" : "150px",
+                marginTop: window.innerWidth < 600 ? "1rem" : "0",
+                width: "100%",
+                minHeight: "40px",
                 borderRadius: 0,
-                marginLeft: "2rem",
                 color: "black",
                 backgroundColor: "#EDEAE6",
+                position: "relative",
                 "&:hover": {backgroundColor: "#C4B8A5"},
               }}
               onClick={handleMint}
             >
-              Claim
+            
+              
+              {loading ? (
+                <CircularProgress
+                  size={24}
+                  sx={{
+                    position: "absolute",
+                    
+                  }}
+                />
+              ) : (
+                "Claim"
+              )}
             </Button>
           </div>
           {success && (
-            <Alert severity="success" sx={{width: 300, marginBottom: 2}}>
+            <Alert severity="success" sx={{Maxwidth: 300, width: "100%", marginBottom: 2}}>
               Minted {token}
             </Alert>
           )}
           {digest && (
-            <Alert severity="error" sx={{width: 300, marginBottom: 2}}>
+            <Alert severity="error" sx={{Maxwidth: 300, width: "100%", marginBottom: 2}}>
               {digest}
             </Alert>
           )}
@@ -542,7 +559,7 @@ export default function LandingPage() {
               </p>
             </Box>
           </Modal>
-        </div>
+        </Box>
       </div>
     </Box>
   );
