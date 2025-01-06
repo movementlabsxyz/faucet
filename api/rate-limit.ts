@@ -1,5 +1,5 @@
 import {Ratelimit} from "@upstash/ratelimit";
-import {kv} from "@vercel/kv";
+import { redis as kv } from "../src/lib/redisClient";
 import {IncomingMessage} from "http";
 import {Aptos, AptosConfig, Network} from "@aptos-labs/ts-sdk";
 
@@ -7,6 +7,7 @@ const ratelimit = new Ratelimit({
   redis: kv,
   // 3 requests from the same IP in 24 hours
   limiter: Ratelimit.slidingWindow(2, "3600 s"),
+  prefix: "faucet-drop",
 });
 
 type ExtendedIncomingMessage = IncomingMessage & {
