@@ -332,7 +332,6 @@ export default function LandingPage() {
               <Select value={network} label="Network" onChange={handleNetwork}>
                 {/* <MenuItem value={"bardock"}>Movement Bardock</MenuItem> */}
                 <MenuItem value={"porto"}>Movement Porto</MenuItem>
-                <MenuItem value={"mevm"}>MEVM</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -355,7 +354,7 @@ export default function LandingPage() {
           network={network}
           faucetRequest={movementFaucetRequest}
         />
-        <Chain
+        {/* <Chain
           name="MEVM"
           eventName="m1_evm_request"
           language={CHAIN.mevm.language}
@@ -363,7 +362,7 @@ export default function LandingPage() {
           isEvm={true}
           network={network}
           faucetRequest={handleM1evmFaucetRequest}
-        />
+        /> */}
         <div
           style={{
             display: "flex",
@@ -402,7 +401,7 @@ export default function LandingPage() {
               <MenuItem value={"porto"}>Movement Porto</MenuItem>
               <MenuItem value={"bardock"}>Movement Bardock</MenuItem>
               <MenuItem value={"holesky"}>Ethereum Holesky</MenuItem>
-              <MenuItem value={"evm"}>MEVM</MenuItem>
+              {/* <MenuItem value={"evm"}>MEVM</MenuItem> */}
 
             </Select>
           </FormControl>
