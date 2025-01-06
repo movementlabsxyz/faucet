@@ -1,7 +1,13 @@
 import {Ratelimit} from "@upstash/ratelimit";
-import { redis as kv } from "../src/lib/redisClient";
 import {IncomingMessage} from "http";
 import {Aptos, AptosConfig, Network} from "@aptos-labs/ts-sdk";
+import { Redis } from '@upstash/redis'
+
+const kv = new Redis({
+    url: process.env.PROD_KV_KV_REST_API_URL!,
+    token: process.env.PROD_KV_KV_REST_API_TOKEN!,
+})
+
 
 const ratelimit = new Ratelimit({
   redis: kv,
