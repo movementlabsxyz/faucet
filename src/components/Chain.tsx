@@ -118,7 +118,7 @@ export default function Chains({
               style={{
                 width: '100%',
                 display: 'flex',
-                flexDirection: 'column', // правильный синтаксис для flex-direction
+                flexDirection: 'column',
                 alignItems: 'center',
               }}
             >
