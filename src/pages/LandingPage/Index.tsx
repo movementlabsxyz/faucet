@@ -330,13 +330,13 @@ export default function LandingPage() {
             <FormControl fullWidth style={{margin: "1rem", width: "220px"}}>
               <InputLabel>Network</InputLabel>
               <Select value={network} label="Network" onChange={handleNetwork}>
-                {/* <MenuItem value={"bardock"}>Movement Bardock</MenuItem> */}
+                <MenuItem value={"bardock"}>Movement Bardock</MenuItem>
                 <MenuItem value={"porto"}>Movement Porto</MenuItem>
               </Select>
             </FormControl>
           </div>
         </div>
-        {/* <Chain
+        <Chain
           name="bardock"
           eventName="movement_apt_request"
           language={CHAIN.bardock.language}
@@ -344,7 +344,7 @@ export default function LandingPage() {
           isEvm={false}
           network={network}
           faucetRequest={movementFaucetRequest}
-        /> */}
+        />
         <Chain
           name="porto"
           eventName="movement_apt_request"
