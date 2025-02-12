@@ -51,7 +51,7 @@ const CHAIN = {
   bardock: {
     network: "testnet",
     url: "https://testnet.bardock.movementnetwork.xyz/v1",
-    faucetUrl: "https://fund.testnet.bardock.movementnetwork.xyz",
+    faucetUrl: "https://faucet.testnet.bardock.movementnetwork.xyz",
     language: "aptos",
   },
   porto: {
