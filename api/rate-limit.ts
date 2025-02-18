@@ -95,6 +95,15 @@ export default async function handler(request: any, response: any) {
       fund = await movementRequest(address, network, config);
     } catch (error) {
       console.log(error);
+      const timeoutPattern = /Transaction [0-9a-fA-F]+ timed out in pending state after 20 seconds/;
+    if (timeoutPattern.test(error.message)) {
+        ratelimit.resetUsedTokens(ip);
+        return response.status(500).json({
+          success: false,
+          error:
+            "Slow faucet request. Check if your address received funds on explorer.",
+        })
+    }
       return response.status(500).json({
         success: false,
         error:

@@ -68,8 +68,8 @@ const CHAIN = {
 };
 
 export default function LandingPage() {
-  const [network, setNetwork] = useState("porto");
-  const [mock, setMock] = useState("porto");
+  const [network, setNetwork] = useState("bardock");
+  const [mock, setMock] = useState("bardock");
   const [token, setToken] = useState("USDC");
   const {data: hash, writeContractAsync} = useWriteContract();
   const {submitTransaction} = useSubmitTransaction();
@@ -331,7 +331,7 @@ export default function LandingPage() {
               <InputLabel>Network</InputLabel>
               <Select value={network} label="Network" onChange={handleNetwork}>
                 <MenuItem value={"bardock"}>Movement Bardock</MenuItem>
-                <MenuItem value={"porto"}>Movement Porto</MenuItem>
+                {/* <MenuItem value={"porto"}>Movement Porto</MenuItem> */}
               </Select>
             </FormControl>
           </div>
@@ -345,7 +345,7 @@ export default function LandingPage() {
           network={network}
           faucetRequest={movementFaucetRequest}
         />
-        <Chain
+        {/* <Chain
           name="porto"
           eventName="movement_apt_request"
           language={CHAIN.porto.language}
@@ -353,7 +353,7 @@ export default function LandingPage() {
           isEvm={false}
           network={network}
           faucetRequest={movementFaucetRequest}
-        />
+        /> */}
         {/* <Chain
           name="MEVM"
           eventName="m1_evm_request"
@@ -398,7 +398,7 @@ export default function LandingPage() {
               label="Network"
               onChange={handleChange}
             >
-              <MenuItem value={"porto"}>Movement Porto</MenuItem>
+              {/* <MenuItem value={"porto"}>Movement Porto</MenuItem> */}
               <MenuItem value={"bardock"}>Movement Bardock</MenuItem>
               <MenuItem value={"holesky"}>Ethereum Holesky</MenuItem>
               {/* <MenuItem value={"evm"}>MEVM</MenuItem> */}
