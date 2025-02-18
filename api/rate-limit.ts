@@ -12,7 +12,7 @@ const kv = new Redis({
 const ratelimit = new Ratelimit({
   redis: kv,
   // 3 requests from the same IP in 24 hours
-  limiter: Ratelimit.slidingWindow(2, "3600 s"),
+  limiter: Ratelimit.slidingWindow(3, "3600 s"),
   prefix: "faucet-drop",
 });
 
@@ -53,7 +53,7 @@ export default async function handler(request: any, response: any) {
   } = await ratelimit.limit(address);
 
   if (!success) {
-    console.log(`ip rate limit`);
+    console.log(`ip rate limit. pending: ${pending}, limit: ${limit}, reset: ${reset}, remaining: ${remaining}`);
     return response
       .status(429)
       .json({success: false, error: "IP rate limited"});
