@@ -96,7 +96,8 @@ export default async function handler(request: any, response: any) {
     } catch (error) {
       console.log(error);
       const timeoutPattern = /Transaction [0-9a-fA-F]+ timed out in pending state after 20 seconds/;
-    if (timeoutPattern.test(error.message)) {
+      const sequencePattern = /API error Error(SequenceNumberTooOld):/;
+    if (timeoutPattern.test(error.message) || sequencePattern.test(error.message)) {
         ratelimit.resetUsedTokens(ip);
     }
       return response.status(500).json({
