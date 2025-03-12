@@ -137,6 +137,7 @@ async function movementRequest(address: string, network: string, config: any) {
   const fund = await aptos.fundAccount({
     accountAddress: address,
     amount: 1000000000,
+    options: {timeoutSecs: 120},
   });
   return fund;
 }
