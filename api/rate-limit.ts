@@ -95,6 +95,11 @@ export default async function handler(request: any, response: any) {
       fund = await movementRequest(address, network, config);
     } catch (error) {
       console.log(error);
+      const timeoutPattern = /Transaction [0-9a-fA-F]+ timed out in pending state after 20 seconds/;
+      const sequencePattern = /API error Error(SequenceNumberTooOld):/;
+    if (timeoutPattern.test(error.message) || sequencePattern.test(error.message)) {
+        ratelimit.resetUsedTokens(ip);
+    }
       return response.status(500).json({
         success: false,
         error:
