@@ -52,13 +52,13 @@ const CHAIN = {
     network: "testnet",
     url: "https://testnet.bardock.movementnetwork.xyz/v1",
     faucetUrl: "https://faucet.testnet.bardock.movementnetwork.xyz",
-    language: "move",
+    language: "movement",
   },
   porto: {
     network: "testnet",
     url: "https://testnet.porto.movementnetwork.xyz/v1",
     faucetUrl: "https://fund.testnet.porto.movementnetwork.xyz",
-    language: "move",
+    language: "movement",
   },
   mevm: {
     network: "devnet",
