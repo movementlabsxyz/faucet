@@ -36,7 +36,7 @@ import useSubmitTransaction from "../../api/hooks/useSubmitTransaction";
 import {Link} from "@mui/material";
 import {config} from "../../index";
 
-const aptosFaucetAddress =
+const moveFaucetAddress =
   "0x275f508689de8756169d1ee02d889c777de1cebda3a7bbcce63ba8a27c563c6f";
 const PACKAGE_ID =
   "0x8ac626e474c33520a815175649fefcbb272678c8c37a7b024e7171fa45d47711";
@@ -52,13 +52,13 @@ const CHAIN = {
     network: "testnet",
     url: "https://testnet.bardock.movementnetwork.xyz/v1",
     faucetUrl: "https://faucet.testnet.bardock.movementnetwork.xyz",
-    language: "aptos",
+    language: "move",
   },
   porto: {
     network: "testnet",
     url: "https://testnet.porto.movementnetwork.xyz/v1",
     faucetUrl: "https://fund.testnet.porto.movementnetwork.xyz",
-    language: "aptos",
+    language: "move",
   },
   mevm: {
     network: "devnet",
@@ -95,7 +95,7 @@ export default function LandingPage() {
     if (mock == "holesky") {
       res = handleL1Faucet();
     } else if (mock == "porto" || mock == "bardock") {
-      res = aptosMint();
+      res = moveMint();
     } else if (mock == "evm") {
       res = evmMint();
     } else if (mock == "sui") {
@@ -135,17 +135,17 @@ export default function LandingPage() {
     }
   };
 
-  async function aptosMint() {
-    console.log("minting aptos");
+  async function moveMint() {
+    console.log("minting move");
     if (token === "ALL") {
       const payload: InputTransactionData = {
         data: {
-          function: `${aptosFaucetAddress}::faucet::mintAll`,
+          function: `${moveFaucetAddress}::faucet::mintAll`,
           typeArguments: [
-            `${aptosFaucetAddress}::tokens::USDT` as TypeArgument,
-            `${aptosFaucetAddress}::tokens::USDC` as TypeArgument,
-            `${aptosFaucetAddress}::tokens::WBTC` as TypeArgument,
-            `${aptosFaucetAddress}::tokens::WETH` as TypeArgument,
+            `${moveFaucetAddress}::tokens::USDT` as TypeArgument,
+            `${moveFaucetAddress}::tokens::USDC` as TypeArgument,
+            `${moveFaucetAddress}::tokens::WBTC` as TypeArgument,
+            `${moveFaucetAddress}::tokens::WETH` as TypeArgument,
           ],
           functionArguments: [],
         },
@@ -155,9 +155,9 @@ export default function LandingPage() {
     } else {
       const payload: InputTransactionData = {
         data: {
-          function: `${aptosFaucetAddress}::faucet::mint`,
+          function: `${moveFaucetAddress}::faucet::mint`,
           typeArguments: [
-            `${aptosFaucetAddress}::tokens::${token}` as TypeArgument,
+            `${moveFaucetAddress}::tokens::${token}` as TypeArgument,
           ],
           functionArguments: [],
         },
