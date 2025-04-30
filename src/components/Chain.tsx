@@ -133,8 +133,9 @@ export default function Chains({
               <CircularProgress
                 sx={{
                   position: "absolute",
-                  left: "50%",
+                  left: "45%",
                   fontFamily: "TWKEverett-Regular",
+                  zIndex: 10,
                 }}
               />
             )}
