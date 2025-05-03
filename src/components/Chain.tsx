@@ -1,15 +1,13 @@
 import React, {useEffect, useRef} from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import {useState, RefObject} from "react";
+import {useState, RefObject } from "react";
 
 import TextField from "@mui/material/TextField";
 import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
-import {Switch, useTheme} from "@mui/material";
-import { Turnstile } from '@marsidev/react-turnstile'
-import type { TurnstileInstance } from '@marsidev/react-turnstile'
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 
 export default function Chains({
   name,
@@ -24,13 +22,12 @@ export default function Chains({
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const turnstileRef = useRef<TurnstileInstance | null>(null)
+  const hcaptchaRef = useRef<HCaptcha | null>(null)
   const [token, setToken] = useState<string | null>(null);
-  const theme = useTheme();
-  const [isDark, setIsDark] = useState(theme.palette.mode === "dark");
-  useEffect(() => {
-    setIsDark(theme.palette.mode === "dark");
-  }, [theme]);
+
+  const onLoad = () => {
+    hcaptchaRef?.current?.execute();
+  };
   // decay the success state
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -44,23 +41,19 @@ export default function Chains({
   }, [success, errorMessage]);
 
   useEffect(() => {
-    if (turnstileRef.current) {
-      console.log("Turnstile is ready");
+    if (hcaptchaRef.current) {
+      console.log("Hcaptcha is ready");
     }
   }, []);
-
-  const onChangeRe = (value: string | null) => {
-    setToken(value);
-  };
 
   const handleRequest = async () => {
     setLoading(true);
 
-    if (turnstileRef.current === null)
-      return console.log("turnstileRef is null");
-    const turnstileValue = turnstileRef?.current?.getResponse();
-    if (!turnstileValue) {
-      setErrorMessage("Please wait for Turnstile verification.");
+    if (hcaptchaRef.current === null)
+      return console.log("hcaptchaRef is null");
+    const hcaptchaValue = hcaptchaRef?.current?.getResponse();
+    if (!hcaptchaValue) {
+      setErrorMessage("Please complete hcaptcha verification.");
     } else {
       let status = false;
       const res = await faucetRequest(address, token, name);
@@ -76,7 +69,8 @@ export default function Chains({
         status = true;
       }
     }
-    turnstileRef.current?.reset();
+
+    hcaptchaRef.current.resetCaptcha();
     setToken(null);
     setLoading(false);
   };
@@ -139,8 +133,9 @@ export default function Chains({
               <CircularProgress
                 sx={{
                   position: "absolute",
-                  left: "50%",
+                  left: "45%",
                   fontFamily: "TWKEverett-Regular",
+                  zIndex: 10,
                 }}
               />
             )}
@@ -161,10 +156,11 @@ export default function Chains({
               Get MOVE
             </Button>
             <div>
-              <Turnstile
-                ref={turnstileRef as RefObject<any>}
-                siteKey={process.env.REACT_APP_TURNSTILE_SITE_KEY ?? ""}
-                onSuccess={setToken}
+              <HCaptcha
+                sitekey={process.env.REACT_APP_HCAPTCHA_SITE_KEY ?? ""}
+                onLoad={onLoad}
+                onVerify={setToken}
+                ref={hcaptchaRef as RefObject<any>}
               />
             </div>
             {success && (
