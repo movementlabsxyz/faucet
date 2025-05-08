@@ -26,7 +26,7 @@ export default function Chains({
   const [token, setToken] = useState<string | null>(null);
 
   const onLoad = () => {
-    hcaptchaRef?.current?.execute();
+    // hcaptchaRef?.current?.execute();
   };
   // decay the success state
   useEffect(() => {
