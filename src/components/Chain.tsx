@@ -58,6 +58,7 @@ export default function Chains({
       setErrorMessage("Please complete hcaptcha verification.");
     } else {
       let status = false;
+      console.log(address, token, name);
       const res = await faucetRequest(address, token, name);
       console.log(res);
       if (res.error) {
