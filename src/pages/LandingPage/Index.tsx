@@ -81,9 +81,26 @@ export default function LandingPage() {
   const {chains, switchChainAsync} = useSwitchChain();
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
+  const [mintFunction, setMintFunction] = useState<
+    (() => Promise<boolean>) | null
+  >(null);
 
   const handleMint = async () => {
     setLoading(true);
+    if (mock == "bardock" && token === "MOVE") {
+      if (mintFunction) {
+        const success = await mintFunction();
+        if (success) {
+          setSuccess(true);
+        } else {
+          setErrorMessage("Failed to mint token.");
+        }
+      } else {
+        setErrorMessage("Mint function not initialized");
+      }
+      setLoading(false);
+      return;
+    }
 
     let status = false;
     let res;
@@ -100,10 +117,8 @@ export default function LandingPage() {
     if (response == null) {
       setErrorMessage("Failed to mint token.");
     } else if (response) {
-      {
-        setSuccess(true);
-        status = true;
-      }
+      setSuccess(true);
+      status = true;
     }
     setLoading(false);
   };
@@ -299,6 +314,7 @@ export default function LandingPage() {
     boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.2)",
     width: "500px",
   };
+
   return (
     <Box
       sx={{
@@ -392,6 +408,7 @@ export default function LandingPage() {
               isEvm={false}
               network={network}
               faucetRequest={movementFaucetRequest}
+              setMintFunction={setMintFunction}
             />
           )}
           {mock == "bardock" && token !== "MOVE" && (

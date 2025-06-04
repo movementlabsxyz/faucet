@@ -1,15 +1,15 @@
 import React, {useEffect, useRef} from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import {useState, RefObject } from "react";
+import {useState, RefObject} from "react";
 
 import TextField from "@mui/material/TextField";
 import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
-import HCaptcha from '@hcaptcha/react-hcaptcha';
-import { useCurrentAccount } from "@mysten/dapp-kit";
-import { useWallet } from "@aptos-labs/wallet-adapter-react";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
+import {useCurrentAccount} from "@mysten/dapp-kit";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
 
 export default function Chains({
   name,
@@ -19,13 +19,14 @@ export default function Chains({
   isEvm,
   network,
   faucetRequest,
+  setMintFunction,
 }: any) {
-  const { account } = useWallet();
+  const {account} = useWallet();
   const address = account?.address;
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const hcaptchaRef = useRef<HCaptcha | null>(null)
+  const hcaptchaRef = useRef<HCaptcha | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
   const onLoad = () => {
@@ -49,40 +50,49 @@ export default function Chains({
     }
   }, []);
 
-  const handleRequest = async () => {
-    setLoading(true);
+  const createMintFunction = () => {
+    return async () => {
+      if (hcaptchaRef.current === null) {
+        setErrorMessage("Captcha not initialized");
+        return false;
+      }
 
-    if (hcaptchaRef.current === null)
-      return console.log("hcaptchaRef is null");
-    const hcaptchaValue = hcaptchaRef?.current?.getResponse();
-    if (!hcaptchaValue) {
-      setErrorMessage("Please complete hcaptcha verification.");
-    } else {
+      const hcaptchaValue = hcaptchaRef.current.getResponse();
+      if (!hcaptchaValue) {
+        setErrorMessage("Please complete captcha verification.");
+        return false;
+      }
+
+      setLoading(true);
       let status = false;
-      console.log(account,address, token, name);
+      console.log(account, address, token, name);
       const res = await faucetRequest(address, token, name);
       console.log(res);
+
       if (res.error) {
         try {
-            setErrorMessage(res.error || "Failed to fund account.");
+          setErrorMessage(res.error || "Failed to fund account.");
         } catch (e) {
-            setErrorMessage("Unexpected error.");
+          setErrorMessage("Unexpected error.");
         }
+        status = false;
       } else if (res) {
         setSuccess(true);
         status = true;
       }
+
+      hcaptchaRef.current.resetCaptcha();
+      setToken(null);
+      setLoading(false);
+      return status;
+    };
+  };
+
+  useEffect(() => {
+    if (setMintFunction) {
+      setMintFunction(createMintFunction());
     }
-
-    hcaptchaRef.current.resetCaptcha();
-    setToken(null);
-    setLoading(false);
-  };
-
-  const handleFormSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    handleRequest(); // Use the wrapper method
-  };
+  }, [address, token, name]);
 
   const isValidHex = (str: string, fractal: boolean = false) => {
     const regex = isEvm
@@ -110,8 +120,7 @@ export default function Chains({
             padding: "2rem",
           }}
         >
-          <form name={name} onSubmit={handleFormSubmit}>
-
+          <form name={name}>
             {loading && (
               <CircularProgress
                 sx={{
@@ -122,22 +131,6 @@ export default function Chains({
                 }}
               />
             )}
-
-            <Button
-              onClick={handleRequest}
-              variant="contained"
-              sx={{
-                fontFamily: "TWKEverett-Regular",
-                width: 300,
-                borderRadius: 0,
-                color: "black",
-                backgroundColor: "#EDEAE6",
-                "&:hover": {backgroundColor: "#C4B8A5"},
-              }}
-            >
-              {/*  */}
-              Get MOVE
-            </Button>
             <div>
               <HCaptcha
                 sitekey={process.env.REACT_APP_HCAPTCHA_SITE_KEY ?? ""}
