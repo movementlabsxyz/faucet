@@ -90,9 +90,11 @@ export default function Chains({
 
   useEffect(() => {
     if (setMintFunction) {
-      setMintFunction(createMintFunction());
+      // Only create the function, don't execute it
+      const mintFn = createMintFunction();
+      setMintFunction(() => mintFn);
     }
-  }, [address, token, name]);
+  }, [setMintFunction]); // Only depend on setMintFunction
 
   const isValidHex = (str: string, fractal: boolean = false) => {
     const regex = isEvm
@@ -120,35 +122,34 @@ export default function Chains({
             padding: "2rem",
           }}
         >
-
-            {loading && (
-              <CircularProgress
-                sx={{
-                  position: "absolute",
-                  left: "45%",
-                  fontFamily: "TWKEverett-Regular",
-                  zIndex: 10,
-                }}
-              />
-            )}
-            <div>
-              <HCaptcha
-                sitekey={process.env.REACT_APP_HCAPTCHA_SITE_KEY ?? ""}
-                onLoad={onLoad}
-                onVerify={setToken}
-                ref={hcaptchaRef as RefObject<any>}
-              />
-            </div>
-            {success && (
-              <Alert severity="success" sx={{width: 300, marginBottom: 2}}>
-                Funded account {_amount} MOVE
-              </Alert>
-            )}
-            {errorMessage && (
-              <Alert severity="error" sx={{width: 300, marginBottom: 2}}>
-                {errorMessage}
-              </Alert>
-            )}
+          {loading && (
+            <CircularProgress
+              sx={{
+                position: "absolute",
+                left: "45%",
+                fontFamily: "TWKEverett-Regular",
+                zIndex: 10,
+              }}
+            />
+          )}
+          <div>
+            <HCaptcha
+              sitekey={process.env.REACT_APP_HCAPTCHA_SITE_KEY ?? ""}
+              onLoad={onLoad}
+              onVerify={setToken}
+              ref={hcaptchaRef as RefObject<any>}
+            />
+          </div>
+          {success && (
+            <Alert severity="success" sx={{width: 300, marginBottom: 2}}>
+              Funded account {_amount} MOVE
+            </Alert>
+          )}
+          {errorMessage && (
+            <Alert severity="error" sx={{width: 300, marginBottom: 2}}>
+              {errorMessage}
+            </Alert>
+          )}
         </Box>
       </Container>
     )
