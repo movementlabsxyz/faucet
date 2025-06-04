@@ -120,7 +120,7 @@ export default function Chains({
             padding: "2rem",
           }}
         >
-          <form name={name}>
+
             {loading && (
               <CircularProgress
                 sx={{
@@ -149,7 +149,6 @@ export default function Chains({
                 {errorMessage}
               </Alert>
             )}
-          </form>
         </Box>
       </Container>
     )
