@@ -94,7 +94,7 @@ export default function Chains({
       const mintFn = createMintFunction();
       setMintFunction(() => mintFn);
     }
-  }, [setMintFunction]); // Only depend on setMintFunction
+  }, [address, token, name]);
 
   const isValidHex = (str: string, fractal: boolean = false) => {
     const regex = isEvm
