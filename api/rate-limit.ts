@@ -112,6 +112,7 @@ export default async function handler(request: any, response: any) {
   let fund;
 
   try {
+    console.log(address, network, config);
     fund = await movementRequest(address, network, config);
   } catch (error) {
     console.log(error);

@@ -9,6 +9,7 @@ import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { useCurrentAccount } from "@mysten/dapp-kit";
+import { useWallet } from "@aptos-labs/wallet-adapter-react";
 
 export default function Chains({
   name,
@@ -19,7 +20,7 @@ export default function Chains({
   network,
   faucetRequest,
 }: any) {
-  const account = useCurrentAccount();
+  const { account } = useWallet();
   const address = account?.address;
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -58,7 +59,7 @@ export default function Chains({
       setErrorMessage("Please complete hcaptcha verification.");
     } else {
       let status = false;
-      console.log(address, token, name);
+      console.log(account,address, token, name);
       const res = await faucetRequest(address, token, name);
       console.log(res);
       if (res.error) {
