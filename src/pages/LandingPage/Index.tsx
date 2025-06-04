@@ -1,8 +1,5 @@
 import React, {useState, useEffect} from "react";
-import {
-  movementRequestFaucet,
-  mevmRequestFaucet,
-} from "../../api";
+import {movementRequestFaucet, mevmRequestFaucet} from "../../api";
 import {TypeArgument} from "@aptos-labs/ts-sdk";
 import {CircularProgress, Alert, useTheme, useMediaQuery} from "@mui/material";
 import {useNavigate} from "react-router-dom";
@@ -18,9 +15,7 @@ import {
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import "./hover.css";
-import {
-  InputTransactionData,
-} from "@aptos-labs/wallet-adapter-react";
+import {InputTransactionData} from "@aptos-labs/wallet-adapter-react";
 import {WalletConnector} from "../../components/wallet/WalletConnector";
 import {
   ConnectButton,
@@ -85,7 +80,7 @@ export default function LandingPage() {
   const chain = useChainId();
   const {chains, switchChainAsync} = useSwitchChain();
   const theme = useTheme();
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
 
   const handleMint = async () => {
     setLoading(true);
@@ -314,63 +309,8 @@ export default function LandingPage() {
         justifyContent: "center",
         height: "100%",
         position: "relative",
-
       }}
     >
-      <div style={blockStyle}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <h1 style={{textAlign: "left"}}>Faucets</h1>
-          <div className="network">
-            <FormControl fullWidth style={{margin: "1rem", width: "220px"}}>
-              <InputLabel>Network</InputLabel>
-              <Select value={network} label="Network" onChange={handleNetwork}>
-                <MenuItem value={"bardock"}>Movement Bardock</MenuItem>
-                {/* <MenuItem value={"porto"}>Movement Porto</MenuItem> */}
-              </Select>
-            </FormControl>
-          </div>
-        </div>
-        <Chain
-          name="bardock"
-          eventName="movement_apt_request"
-          language={CHAIN.bardock.language}
-          amount={10}
-          isEvm={false}
-          network={network}
-          faucetRequest={movementFaucetRequest}
-        />
-        {/* <Chain
-          name="porto"
-          eventName="movement_apt_request"
-          language={CHAIN.porto.language}
-          amount={10}
-          isEvm={false}
-          network={network}
-          faucetRequest={movementFaucetRequest}
-        /> */}
-        {/* <Chain
-          name="MEVM"
-          eventName="m1_evm_request"
-          language={CHAIN.mevm.language}
-          amount={1}
-          isEvm={true}
-          network={network}
-          faucetRequest={handleM1evmFaucetRequest}
-        /> */}
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "center",
-          }}
-        ></div>
-      </div>
       <div style={blockStyle}>
         <div>
           <h2 style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
@@ -402,7 +342,6 @@ export default function LandingPage() {
               <MenuItem value={"bardock"}>Movement Bardock</MenuItem>
               <MenuItem value={"holesky"}>Ethereum Holesky</MenuItem>
               {/* <MenuItem value={"evm"}>MEVM</MenuItem> */}
-
             </Select>
           </FormControl>
           {mock == "holesky" ? (
@@ -428,6 +367,7 @@ export default function LandingPage() {
                 label="Token"
                 onChange={handleTokenChange}
               >
+                <MenuItem value={"MOVE"}>MOVE</MenuItem>
                 <MenuItem value={"USDC"}>USDC</MenuItem>
                 <MenuItem value={"USDT"}>USDT</MenuItem>
                 <MenuItem value={"WBTC"}>WBTC</MenuItem>
@@ -443,7 +383,18 @@ export default function LandingPage() {
               claim.
             </p>
           )}
-          {mock == "bardock" && (
+          {mock == "bardock" && token === "MOVE" && (
+            <Chain
+              name="bardock"
+              eventName="movement_apt_request"
+              language={CHAIN.bardock.language}
+              amount={10}
+              isEvm={false}
+              network={network}
+              faucetRequest={movementFaucetRequest}
+            />
+          )}
+          {mock == "bardock" && token !== "MOVE" && (
             <p style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
               USDC, USDT, ETH and BTC on Bardock Testnet.{" "}
             </p>

@@ -8,6 +8,7 @@ import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
 import HCaptcha from '@hcaptcha/react-hcaptcha';
+import { useCurrentAccount } from "@mysten/dapp-kit";
 
 export default function Chains({
   name,
@@ -18,7 +19,8 @@ export default function Chains({
   network,
   faucetRequest,
 }: any) {
-  const [address, setAddress] = useState("");
+  const account = useCurrentAccount();
+  const address = account?.address;
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -107,27 +109,6 @@ export default function Chains({
           }}
         >
           <form name={name} onSubmit={handleFormSubmit}>
-            <TextField
-              label={language.toUpperCase() + " Address"}
-              variant="outlined"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              sx={{
-                width: 300,
-                marginBottom: 2,
-                fontFamily: "TWKEverett-Regular",
-              }}
-              disabled={loading}
-              error={!isValidHex(address, true) && address !== ""}
-              helperText={
-                !isValidHex(address, true) && address !== ""
-                  ? `Invalid address. Should be of the form: 0xab12... and be ${
-                      isEvm ? "20" : "32"
-                    } bytes in length`
-                  : ""
-              }
-            />
-            <br />
 
             {loading && (
               <CircularProgress
