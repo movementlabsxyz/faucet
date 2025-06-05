@@ -65,7 +65,6 @@ export default function Chains({
 
       setLoading(true);
       let status = false;
-      console.log(account, address, token, name);
       const res = await faucetRequest(address, token, name);
       console.log(res);
 
@@ -90,7 +89,6 @@ export default function Chains({
 
   useEffect(() => {
     if (setMintFunction) {
-      // Only create the function, don't execute it
       const mintFn = createMintFunction();
       setMintFunction(() => mintFn);
     }

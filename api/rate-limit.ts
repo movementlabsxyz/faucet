@@ -12,7 +12,7 @@ const kv = new Redis({
 const ratelimit = new Ratelimit({
   redis: kv,
   // 3 requests from the same IP in 24 hours
-  limiter: Ratelimit.slidingWindow(3000, "3600 s"),
+  limiter: Ratelimit.slidingWindow(3, "3600 s"),
   prefix: "faucet-drop",
 });
 
@@ -112,7 +112,6 @@ export default async function handler(request: any, response: any) {
   let fund;
 
   try {
-    console.log(address, network, config);
     fund = await movementRequest(address, network, config);
   } catch (error) {
     console.log(error);

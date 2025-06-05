@@ -65,7 +65,7 @@ const CHAIN = {
 export default function LandingPage() {
   const [network, setNetwork] = useState("bardock");
   const [mock, setMock] = useState("bardock");
-  const [token, setToken] = useState("USDC");
+  const [token, setToken] = useState("MOVE");
   const {data: hash, writeContractAsync} = useWriteContract();
   const {submitTransaction} = useSubmitTransaction();
   const account = useCurrentAccount();
