@@ -322,7 +322,7 @@ export default function LandingPage() {
     fontFamily: "TWKEverett-Regular",
   };
   const blockStyle = {
-    backgroundColor: "rgba(237, 234, 230, 0.01)",
+    backgroundColor: "rgba(22,24,23,0.8)",
     padding: "3rem",
     margin: "2rem",
     borderRadius: "2px",
@@ -561,7 +561,13 @@ export default function LandingPage() {
             </Button>
           </div>
           {loading && (
-            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <CircularProgress
                 sx={{
                   fontFamily: "TWKEverett-Regular",
