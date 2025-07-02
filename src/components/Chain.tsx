@@ -120,7 +120,7 @@ export default function Chains({
             padding: "2rem",
           }}
         >
-          {loading && (
+          {/* {loading && (
             <CircularProgress
               sx={{
                 position: "absolute",
@@ -129,7 +129,7 @@ export default function Chains({
                 zIndex: 10,
               }}
             />
-          )}
+          )} */}
           <div>
             <HCaptcha
               sitekey={process.env.REACT_APP_HCAPTCHA_SITE_KEY ?? ""}

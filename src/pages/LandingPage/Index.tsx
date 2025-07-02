@@ -1,8 +1,17 @@
 import React, {useState, useEffect} from "react";
 import {movementRequestFaucet, mevmRequestFaucet} from "../../api";
 import {TypeArgument} from "@aptos-labs/ts-sdk";
-import {CircularProgress, Alert, useTheme, useMediaQuery} from "@mui/material";
+import {AccountBalanceWalletOutlined as AccountBalanceWalletOutlinedIcon} from "@mui/icons-material";
+import {
+  CircularProgress,
+  Alert,
+  useTheme,
+  useMediaQuery,
+  Avatar,
+} from "@mui/material";
 import {useNavigate} from "react-router-dom";
+import {useWeb3Modal} from "@web3modal/wagmi/react";
+import {useAccount} from "wagmi";
 
 import Chain from "../../components/Chain";
 import {
@@ -12,10 +21,14 @@ import {
   InputLabel,
   MenuItem,
   Modal,
+  Typography,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import "./hover.css";
-import {InputTransactionData} from "@aptos-labs/wallet-adapter-react";
+import {
+  InputTransactionData,
+  truncateAddress,
+} from "@aptos-labs/wallet-adapter-react";
 import {WalletConnector} from "../../components/wallet/WalletConnector";
 import {
   ConnectButton,
@@ -84,6 +97,8 @@ export default function LandingPage() {
   const [mintFunction, setMintFunction] = useState<
     (() => Promise<boolean>) | null
   >(null);
+  const {open} = useWeb3Modal();
+  const {address, isConnected, connector} = useAccount();
 
   const handleMint = async () => {
     setLoading(true);
@@ -393,6 +408,7 @@ export default function LandingPage() {
           )}
         </div>
         <div>
+          {/* chain specific descriptor text */}
           {mock == "holesky" && (
             <p style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
               MOVE token on Ethereum Holesky Testnet. Costs 0.1 HoleskyETH to
@@ -427,6 +443,7 @@ export default function LandingPage() {
             </p>
           )}
 
+          {/* connect wallet buttons */}
           <div
             style={{
               display: "flex",
@@ -434,7 +451,34 @@ export default function LandingPage() {
               padding: "2rem",
             }}
           >
-            {mock == "holesky" && <w3m-button />}
+            {mock == "holesky" && (
+              <Button
+                size="large"
+                variant="contained"
+                onClick={() => open()}
+                className="wallet-button"
+                disabled={loading}
+                sx={{borderRadius: "10px"}}
+              >
+                {isConnected ? (
+                  <>
+                    <Avatar
+                      alt={connector?.name}
+                      src={connector?.icon}
+                      sx={{width: 24, height: 24}}
+                    />
+                    <Typography noWrap ml={2}>
+                      {address ? truncateAddress(address) : "Unknown"}
+                    </Typography>
+                  </>
+                ) : (
+                  <>
+                    <AccountBalanceWalletOutlinedIcon sx={{marginRight: 1}} />
+                    <Typography noWrap>Connect</Typography>
+                  </>
+                )}
+              </Button>
+            )}
             {(mock == "porto" || mock == "bardock") && (
               <WalletConnector
                 networkSupport={"testnet"}
@@ -444,8 +488,77 @@ export default function LandingPage() {
                 modalMaxWidth="sm"
               />
             )}
-            {mock == "evm" && <w3m-button />}
+            {mock == "evm" && (
+              <Button
+                size="large"
+                variant="contained"
+                onClick={() => open()}
+                className="wallet-button"
+                disabled={loading}
+                sx={{borderRadius: "10px"}}
+              >
+                {isConnected ? (
+                  <>
+                    <Avatar
+                      alt={connector?.name}
+                      src={connector?.icon}
+                      sx={{width: 24, height: 24}}
+                    />
+                    <Typography noWrap ml={2}>
+                      {address ? truncateAddress(address) : "Unknown"}
+                    </Typography>
+                  </>
+                ) : (
+                  <>
+                    <AccountBalanceWalletOutlinedIcon sx={{marginRight: 1}} />
+                    <Typography noWrap>Connect</Typography>
+                  </>
+                )}
+              </Button>
+            )}
             {mock == "sui" && <ConnectButton />}
+
+            {/* Claim button */}
+            <Button
+              disabled={loading}
+              sx={{
+                fontFamily: "TWKEverett-Regular",
+                width: 150,
+                borderRadius: 0,
+                marginLeft: "2rem",
+                color: "black",
+                backgroundColor: "#EDEAE6",
+                "&:hover": {backgroundColor: "#C4B8A5"},
+                position: "relative",
+                "&:before": {
+                  content: "''",
+                  position: "absolute",
+                  bottom: "5px",
+                  left: "5px",
+                  backgroundImage:
+                    'url(\'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="29" height="21" viewBox="0 0 29 21" fill="none"><line x1="20.7866" y1="11.0709" x2="15.8956" y2="11.0709" stroke="black" stroke-width="0.733645"/><line x1="17.9745" y1="13.1494" x2="17.9745" y2="8.25845" stroke="black" stroke-width="0.733645"/><line x1="20.7866" y1="18.4076" x2="15.8956" y2="18.4076" stroke="black" stroke-width="0.733645"/><line x1="17.9745" y1="20.4861" x2="17.9745" y2="15.5951" stroke="black" stroke-width="0.733645"/><line x1="28.856" y1="18.4073" x2="23.965" y2="18.4073" stroke="black" stroke-width="0.733645"/><line x1="26.0439" y1="20.4858" x2="26.0439" y2="15.5949" stroke="black" stroke-width="0.733645"/><line x1="12.7162" y1="11.0709" x2="7.82522" y2="11.0709" stroke="black" stroke-width="0.733645"/><line x1="9.90411" y1="13.1494" x2="9.90411" y2="8.25845" stroke="black" stroke-width="0.733645"/><line x1="12.7162" y1="3.7345" x2="7.82522" y2="3.7345" stroke="black" stroke-width="0.733645"/><line x1="9.90411" y1="5.81299" x2="9.90411" y2="0.922025" stroke="black" stroke-width="0.733645"/><line x1="12.7162" y1="18.4076" x2="7.82522" y2="18.4076" stroke="black" stroke-width="0.733645"/><line x1="9.90411" y1="20.4861" x2="9.90411" y2="15.5951" stroke="black" stroke-width="0.733645"/><line x1="4.89111" y1="11.0709" x2="0.000149695" y2="11.0709" stroke="black" stroke-width="0.733645"/><line x1="2.07904" y1="13.1494" x2="2.07904" y2="8.25845" stroke="black" stroke-width="0.733645"/><line x1="4.89111" y1="3.7345" x2="0.000149695" y2="3.7345" stroke="black" stroke-width="0.733645"/><line x1="2.07904" y1="5.81299" x2="2.07904" y2="0.922025" stroke="black" stroke-width="0.733645"/><line x1="4.89111" y1="18.4076" x2="0.000149695" y2="18.4076" stroke="black" stroke-width="0.733645"/><line x1="2.07904" y1="20.4861" x2="2.07904" y2="15.5951" stroke="black" stroke-width="0.733645"/></svg>\')',
+                  backgroundSize: "contain",
+                  pointerEvents: "none",
+                  width: "29px",
+                  height: "21px",
+                },
+                "&:after": {
+                  content: "''",
+                  position: "absolute",
+                  top: "5px",
+                  right: "5px",
+                  backgroundImage:
+                    'url(\'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="29" height="20" viewBox="0 0 29 20" fill="none"><line x1="8.0694" y1="9.41516" x2="12.9604" y2="9.41516" stroke="black" stroke-width="0.733645"/><line x1="10.8815" y1="7.33667" x2="10.8815" y2="12.2276" stroke="black" stroke-width="0.733645"/><line x1="8.0694" y1="2.07849" x2="12.9604" y2="2.07849" stroke="black" stroke-width="0.733645"/><line x1="10.8815" y1="3.64429e-08" x2="10.8815" y2="4.89096" stroke="black" stroke-width="0.733645"/><line x1="-3.04972e-05" y1="2.07873" x2="4.89093" y2="2.07873" stroke="black" stroke-width="0.733645"/><line x1="2.81204" y1="0.000244177" x2="2.81204" y2="4.89121" stroke="black" stroke-width="0.733645"/><line x1="16.1398" y1="9.41516" x2="21.0308" y2="9.41516" stroke="black" stroke-width="0.733645"/><line x1="18.9519" y1="7.33667" x2="18.9519" y2="12.2276" stroke="black" stroke-width="0.733645"/><line x1="16.1398" y1="16.7516" x2="21.0308" y2="16.7516" stroke="black" stroke-width="0.733645"/><line x1="18.9519" y1="14.6731" x2="18.9519" y2="19.5641" stroke="black" stroke-width="0.733645"/><line x1="16.1398" y1="2.07849" x2="21.0308" y2="2.07849" stroke="black" stroke-width="0.733645"/><line x1="18.9519" y1="3.64429e-08" x2="18.9519" y2="4.89096" stroke="black" stroke-width="0.733645"/><line x1="23.9649" y1="9.41516" x2="28.8559" y2="9.41516" stroke="black" stroke-width="0.733645"/><line x1="26.777" y1="7.33667" x2="26.777" y2="12.2276" stroke="black" stroke-width="0.733645"/><line x1="23.9649" y1="16.7516" x2="28.8559" y2="16.7516" stroke="black" stroke-width="0.733645"/><line x1="26.777" y1="14.6731" x2="26.777" y2="19.5641" stroke="black" stroke-width="0.733645"/><line x1="23.9649" y1="2.07849" x2="28.8559" y2="2.07849" stroke="black" stroke-width="0.733645"/><line x1="26.777" y1="3.64429e-08" x2="26.777" y2="4.89096" stroke="black" stroke-width="0.733645"/></svg>\')',
+                  backgroundSize: "contain",
+                  pointerEvents: "none",
+                  height: "19.564px",
+                  width: "28.856px",
+                },
+              }}
+              onClick={handleMint}
+            >
+              Claim
+            </Button>
             {loading && (
               <CircularProgress
                 sx={{
@@ -455,20 +568,6 @@ export default function LandingPage() {
                 }}
               />
             )}
-            <Button
-              sx={{
-                fontFamily: "TWKEverett-Regular",
-                width: 150,
-                borderRadius: 0,
-                marginLeft: "2rem",
-                color: "black",
-                backgroundColor: "#EDEAE6",
-                "&:hover": {backgroundColor: "#C4B8A5"},
-              }}
-              onClick={handleMint}
-            >
-              Claim
-            </Button>
           </div>
           {success && (
             <Alert severity="success" sx={{width: 300, marginBottom: 2}}>
