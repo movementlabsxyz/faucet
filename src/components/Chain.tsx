@@ -138,7 +138,7 @@ export default function Chains({
               ref={hcaptchaRef as RefObject<any>}
             />
           </div>
-          {success && (
+          {/* {success && (
             <Alert severity="success" sx={{width: 300, marginBottom: 2}}>
               Funded account {_amount} MOVE
             </Alert>
@@ -147,7 +147,7 @@ export default function Chains({
             <Alert severity="error" sx={{width: 300, marginBottom: 2}}>
               {errorMessage}
             </Alert>
-          )}
+          )} */}
         </Box>
       </Container>
     )
