@@ -559,16 +559,16 @@ export default function LandingPage() {
             >
               Claim
             </Button>
-            {loading && (
+          </div>
+          {loading && (
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
               <CircularProgress
                 sx={{
-                  position: "absolute",
-                  left: "60%",
                   fontFamily: "TWKEverett-Regular",
                 }}
               />
-            )}
-          </div>
+            </div>
+          )}
           {success && (
             <Alert severity="success" sx={{width: 300, marginBottom: 2}}>
               Minted {token}
