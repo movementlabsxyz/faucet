@@ -18,29 +18,36 @@ export default function ExplorerLayout({children}: LayoutProps) {
       <CssBaseline />
       <GlobalStateProvider>
         {/* <GraphqlClientProvider> */}
-          <Box
-            component="main"
+        <Box
+          component="main"
+          sx={{
+            minHeight: "100vh",
+            backgroundColor: "transparent",
+            backgroundAttachment: "fixed",
+            backgroundImage: "url('/background3.webp')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            flexGrow: 1,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Header />
+          <Container
+            maxWidth="xl"
             sx={{
-              minHeight: "100vh",
-              backgroundColor: "transparent",
-              flexGrow: 1,
-              display: "flex",
+              flexGrow: 4,
+              paddingTop: "2rem",
+              display: "flex", // Make the Container a flex container
               flexDirection: "column",
+              justifyContent: "center", // Center the content vertically
             }}
           >
-            <Header />
-            <Container maxWidth="xl" 
-            sx={{
-              flexGrow: 4, 
-              paddingTop: "2rem",
-              display: "flex",       // Make the Container a flex container
-              flexDirection: "column",
-              justifyContent: "center" // Center the content vertically
-            }}>
-              {children}
-            </Container>
-            <Footer />
-          </Box>
+            {children}
+          </Container>
+          <Footer />
+        </Box>
         {/* </GraphqlClientProvider> */}
       </GlobalStateProvider>
     </ProvideColorMode>

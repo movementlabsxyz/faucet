@@ -1,13 +1,15 @@
 import React, {useEffect, useRef} from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import {useState, RefObject } from "react";
+import {useState, RefObject} from "react";
 
 import TextField from "@mui/material/TextField";
 import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
-import HCaptcha from '@hcaptcha/react-hcaptcha';
+import HCaptcha from "@hcaptcha/react-hcaptcha";
+import {useCurrentAccount} from "@mysten/dapp-kit";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
 
 export default function Chains({
   name,
@@ -17,12 +19,14 @@ export default function Chains({
   isEvm,
   network,
   faucetRequest,
+  setMintFunction,
 }: any) {
-  const [address, setAddress] = useState("");
+  const {account} = useWallet();
+  const address = account?.address;
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const hcaptchaRef = useRef<HCaptcha | null>(null)
+  const hcaptchaRef = useRef<HCaptcha | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
   const onLoad = () => {
@@ -46,39 +50,49 @@ export default function Chains({
     }
   }, []);
 
-  const handleRequest = async () => {
-    setLoading(true);
+  const createMintFunction = () => {
+    return async () => {
+      if (hcaptchaRef.current === null) {
+        setErrorMessage("Captcha not initialized");
+        return false;
+      }
 
-    if (hcaptchaRef.current === null)
-      return console.log("hcaptchaRef is null");
-    const hcaptchaValue = hcaptchaRef?.current?.getResponse();
-    if (!hcaptchaValue) {
-      setErrorMessage("Please complete hcaptcha verification.");
-    } else {
+      const hcaptchaValue = hcaptchaRef.current.getResponse();
+      if (!hcaptchaValue) {
+        setErrorMessage("Please complete captcha verification.");
+        return false;
+      }
+
+      setLoading(true);
       let status = false;
       const res = await faucetRequest(address, token, name);
       console.log(res);
+
       if (res.error) {
         try {
-            setErrorMessage(res.error || "Failed to fund account.");
+          setErrorMessage(res.error || "Failed to fund account.");
         } catch (e) {
-            setErrorMessage("Unexpected error.");
+          setErrorMessage("Unexpected error.");
         }
+        status = false;
       } else if (res) {
         setSuccess(true);
         status = true;
       }
+
+      hcaptchaRef.current.resetCaptcha();
+      setToken(null);
+      setLoading(false);
+      return status;
+    };
+  };
+
+  useEffect(() => {
+    if (setMintFunction) {
+      const mintFn = createMintFunction();
+      setMintFunction(() => mintFn);
     }
-
-    hcaptchaRef.current.resetCaptcha();
-    setToken(null);
-    setLoading(false);
-  };
-
-  const handleFormSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    handleRequest(); // Use the wrapper method
-  };
+  }, [address, token, name]);
 
   const isValidHex = (str: string, fractal: boolean = false) => {
     const regex = isEvm
@@ -106,74 +120,34 @@ export default function Chains({
             padding: "2rem",
           }}
         >
-          <form name={name} onSubmit={handleFormSubmit}>
-            <TextField
-              label={language.toUpperCase() + " Address"}
-              variant="outlined"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
+          {/* {loading && (
+            <CircularProgress
               sx={{
-                width: 300,
-                marginBottom: 2,
+                position: "absolute",
+                left: "45%",
                 fontFamily: "TWKEverett-Regular",
+                zIndex: 10,
               }}
-              disabled={loading}
-              error={!isValidHex(address, true) && address !== ""}
-              helperText={
-                !isValidHex(address, true) && address !== ""
-                  ? `Invalid address. Should be of the form: 0xab12... and be ${
-                      isEvm ? "20" : "32"
-                    } bytes in length`
-                  : ""
-              }
             />
-            <br />
-
-            {loading && (
-              <CircularProgress
-                sx={{
-                  position: "absolute",
-                  left: "45%",
-                  fontFamily: "TWKEverett-Regular",
-                  zIndex: 10,
-                }}
-              />
-            )}
-
-            <Button
-              onClick={handleRequest}
-              variant="contained"
-              sx={{
-                fontFamily: "TWKEverett-Regular",
-                width: 300,
-                borderRadius: 0,
-                color: "black",
-                backgroundColor: "#EDEAE6",
-                "&:hover": {backgroundColor: "#C4B8A5"},
-              }}
-            >
-              {/*  */}
-              Get MOVE
-            </Button>
-            <div>
-              <HCaptcha
-                sitekey={process.env.REACT_APP_HCAPTCHA_SITE_KEY ?? ""}
-                onLoad={onLoad}
-                onVerify={setToken}
-                ref={hcaptchaRef as RefObject<any>}
-              />
-            </div>
-            {success && (
-              <Alert severity="success" sx={{width: 300, marginBottom: 2}}>
-                Funded account {_amount} MOVE
-              </Alert>
-            )}
-            {errorMessage && (
-              <Alert severity="error" sx={{width: 300, marginBottom: 2}}>
-                {errorMessage}
-              </Alert>
-            )}
-          </form>
+          )} */}
+          <div>
+            <HCaptcha
+              sitekey={process.env.REACT_APP_HCAPTCHA_SITE_KEY ?? ""}
+              onLoad={onLoad}
+              onVerify={setToken}
+              ref={hcaptchaRef as RefObject<any>}
+            />
+          </div>
+          {/* {success && (
+            <Alert severity="success" sx={{width: 300, marginBottom: 2}}>
+              Funded account {_amount} MOVE
+            </Alert>
+          )}
+          {errorMessage && (
+            <Alert severity="error" sx={{width: 300, marginBottom: 2}}>
+              {errorMessage}
+            </Alert>
+          )} */}
         </Box>
       </Container>
     )
