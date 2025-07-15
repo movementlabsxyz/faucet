@@ -38,7 +38,7 @@ export default function Footer() {
   return (
     <Box
       sx={{
-        background: theme.palette.mode === "dark" ? grey[900] : "white",
+        // background: theme.palette.mode === "dark" ? grey[900] : "white",
         color: theme.palette.mode === "dark" ? grey[100] : "rgba(18,22,21,1)",
         mt: 8,
       }}
