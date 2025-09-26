@@ -50,8 +50,8 @@ const CHAIN = {
   },
   bardock: {
     network: "testnet",
-    url: "https://testnet.bardock.movementnetwork.xyz/v1",
-    faucetUrl: "https://faucet.testnet.bardock.movementnetwork.xyz",
+    url: "https://testnet.movementnetwork.xyz/v1",
+    faucetUrl: "https://faucet.testnet.movementnetwork.xyz",
     language: "movement",
   },
   porto: {
