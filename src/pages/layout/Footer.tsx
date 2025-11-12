@@ -5,7 +5,7 @@ import Grid from "@mui/material/Unstable_Grid2";
 
 import {ReactComponent as GithubLogo} from "../../assets/github.svg";
 import {ReactComponent as DiscordLogo} from "../../assets/discord.svg";
-import {ReactComponent as TwitterLogo} from "../../assets/twitter.svg";
+import {ReactComponent as XLogo} from "../../assets/x.svg";
 import {ReactComponent as MediumLogo} from "../../assets/medium.svg";
 import {ReactComponent as LinkedInLogo} from "../../assets/linkedin.svg";
 import {grey} from "../../themes/colors/aptosColorPalette";
@@ -22,7 +22,7 @@ const socialLinks = [
     url: "https://discord.gg/movementlabsxyz",
     icon: DiscordLogo,
   },
-  {title: "Twitter", url: "https://twitter.com/movementlabsxyz/", icon: TwitterLogo},
+  {title: "X", url: "https://x.com/movementlabsxyz/", icon: XLogo},
   {title: "Medium", url: "https://medium.com/@movementlabsxyz", icon: MediumLogo},
   {
     title: "LinkedIn",
