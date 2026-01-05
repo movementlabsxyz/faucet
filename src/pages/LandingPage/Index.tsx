@@ -48,28 +48,17 @@ const CHAIN = {
     url: "https://holesky.gateway.tenderly.co",
     language: "evm",
   },
-  bardock: {
+  testnet: {
     network: "testnet",
     url: "https://testnet.movementnetwork.xyz/v1",
     faucetUrl: "https://faucet.testnet.movementnetwork.xyz",
     language: "movement",
-  },
-  porto: {
-    network: "testnet",
-    url: "https://testnet.porto.movementnetwork.xyz/v1",
-    faucetUrl: "https://fund.testnet.porto.movementnetwork.xyz",
-    language: "movement",
-  },
-  mevm: {
-    network: "devnet",
-    url: "https://mevm.devnet.imola.movementlabs.xyz",
-    language: "evm",
-  },
+  }
 };
 
 export default function LandingPage() {
-  const [network, setNetwork] = useState("bardock");
-  const [mock, setMock] = useState("bardock");
+  const [network, setNetwork] = useState("testnet");
+  const [mock, setMock] = useState("testnet");
   const [token, setToken] = useState("USDC");
   const {data: hash, writeContractAsync} = useWriteContract();
   const {submitTransaction} = useSubmitTransaction();
@@ -94,7 +83,7 @@ export default function LandingPage() {
     let res;
     if (mock == "holesky") {
       res = handleL1Faucet();
-    } else if (mock == "porto" || mock == "bardock") {
+    } else if (mock == "testnet") {
       res = moveMint();
     } else if (mock == "evm") {
       res = evmMint();
@@ -330,16 +319,16 @@ export default function LandingPage() {
             <FormControl fullWidth style={{margin: "1rem", width: "220px"}}>
               <InputLabel>Network</InputLabel>
               <Select value={network} label="Network" onChange={handleNetwork}>
-                <MenuItem value={"bardock"}>Movement Bardock</MenuItem>
+                <MenuItem value={"testnet"}>Movement Testnet</MenuItem>
                 {/* <MenuItem value={"porto"}>Movement Porto</MenuItem> */}
               </Select>
             </FormControl>
           </div>
         </div>
         <Chain
-          name="bardock"
+          name="testnet"
           eventName="movement_apt_request"
-          language={CHAIN.bardock.language}
+          language={CHAIN.testnet.language}
           amount={10}
           isEvm={false}
           network={network}
@@ -399,7 +388,7 @@ export default function LandingPage() {
               onChange={handleChange}
             >
               {/* <MenuItem value={"porto"}>Movement Porto</MenuItem> */}
-              <MenuItem value={"bardock"}>Movement Bardock</MenuItem>
+              <MenuItem value={"testnet"}>Movement Testnet</MenuItem>
               <MenuItem value={"holesky"}>Ethereum Holesky</MenuItem>
               {/* <MenuItem value={"evm"}>MEVM</MenuItem> */}
 
@@ -443,9 +432,9 @@ export default function LandingPage() {
               claim.
             </p>
           )}
-          {mock == "bardock" && (
+          {mock == "testnet" && (
             <p style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
-              USDC, USDT, ETH and BTC on Bardock Testnet.{" "}
+              USDC, USDT, ETH and BTC on Movement Testnet.{" "}
             </p>
           )}
           {mock == "evm" && (
@@ -467,11 +456,11 @@ export default function LandingPage() {
             }}
           >
             {mock == "holesky" && <w3m-button />}
-            {(mock == "porto" || mock == "bardock") && (
+            {(mock == "testnet") && (
               <WalletConnector
                 networkSupport={"testnet"}
                 handleNavigate={() =>
-                  `https://explorer.movementnetwork.xyz/account/${account?.address}?network=${mock}+testnet`
+                  `https://explorer.movementnetwork.xyz/account/${account?.address}?network=bardock+${mock}`
                 }
                 modalMaxWidth="sm"
               />
