@@ -37,7 +37,7 @@ import {Link} from "@mui/material";
 import {config} from "../../index";
 
 const moveFaucetAddress =
-  "0x275f508689de8756169d1ee02d889c777de1cebda3a7bbcce63ba8a27c563c6f";
+  "0xa6cc575a28e9c97d1cec569392fe6f698c593990e7029ef49fed6740a36a31b0";
 const PACKAGE_ID =
   "0x8ac626e474c33520a815175649fefcbb272678c8c37a7b024e7171fa45d47711";
 const moveL1FaucetAddress = "0x8Ef16FFDe7fc18F2E6d4Ca338AA0F318fd61e848";
