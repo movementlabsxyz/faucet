@@ -45,7 +45,7 @@ import {Link} from "@mui/material";
 import {config} from "../../index";
 
 const moveFaucetAddress =
-  "0x275f508689de8756169d1ee02d889c777de1cebda3a7bbcce63ba8a27c563c6f";
+  "0c21a293402b1782ec2a849cf398de018f413331426196f8564405406d1aee7d";
 const PACKAGE_ID =
   "0x8ac626e474c33520a815175649fefcbb272678c8c37a7b024e7171fa45d47711";
 const moveL1FaucetAddress = "0x8Ef16FFDe7fc18F2E6d4Ca338AA0F318fd61e848";
@@ -56,28 +56,17 @@ const CHAIN = {
     url: "https://holesky.gateway.tenderly.co",
     language: "evm",
   },
-  bardock: {
+  testnet: {
     network: "testnet",
-    url: "https://testnet.bardock.movementnetwork.xyz/v1",
-    faucetUrl: "https://faucet.testnet.bardock.movementnetwork.xyz",
+    url: "https://testnet.movementnetwork.xyz/v1",
+    faucetUrl: "https://faucet.testnet.movementnetwork.xyz",
     language: "movement",
-  },
-  porto: {
-    network: "testnet",
-    url: "https://testnet.porto.movementnetwork.xyz/v1",
-    faucetUrl: "https://fund.testnet.porto.movementnetwork.xyz",
-    language: "movement",
-  },
-  mevm: {
-    network: "devnet",
-    url: "https://mevm.devnet.imola.movementlabs.xyz",
-    language: "evm",
-  },
+  }
 };
 
 export default function LandingPage() {
-  const [network, setNetwork] = useState("bardock");
-  const [mock, setMock] = useState("bardock");
+  const [network, setNetwork] = useState("testnet");
+  const [mock, setMock] = useState("testnet");
   const [token, setToken] = useState("MOVE");
   const {data: hash, writeContractAsync} = useWriteContract();
   const {submitTransaction} = useSubmitTransaction();
@@ -121,7 +110,7 @@ export default function LandingPage() {
     let res;
     if (mock == "holesky") {
       res = handleL1Faucet();
-    } else if (mock == "porto" || mock == "bardock") {
+    } else if (mock == "testnet") {
       res = moveMint();
     } else if (mock == "evm") {
       res = evmMint();
@@ -371,7 +360,7 @@ export default function LandingPage() {
               onChange={handleChange}
             >
               {/* <MenuItem value={"porto"}>Movement Porto</MenuItem> */}
-              <MenuItem value={"bardock"}>Movement Bardock</MenuItem>
+              <MenuItem value={"testnet"}>Movement Testnet</MenuItem>
               <MenuItem value={"holesky"}>Ethereum Holesky</MenuItem>
               {/* <MenuItem value={"evm"}>MEVM</MenuItem> */}
             </Select>
@@ -416,20 +405,20 @@ export default function LandingPage() {
               claim.
             </p>
           )}
-          {mock == "bardock" && token === "MOVE" && (
+          {mock == "testnet" && token === "MOVE" && (
             <Chain
-              name="bardock"
+              name="testnet"
               eventName="movement_apt_request"
-              language={CHAIN.bardock.language}
+              language={CHAIN.testnet.language}
               amount={10}
               isEvm={false}
               network={network}
               faucetRequest={movementFaucetRequest}
             />
           )}
-          {mock == "bardock" && token !== "MOVE" && (
+          {mock == "testnet" && token !== "MOVE" && (
             <p style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
-              USDC, USDT, ETH and BTC on Bardock Testnet.{" "}
+              USDC, USDT, ETH and BTC on Movement Testnet.{" "}
             </p>
           )}
           {mock == "evm" && (
@@ -437,7 +426,7 @@ export default function LandingPage() {
               USDC, USDT, ETH and BTC on MEVM Testnet.{" "}
             </p>
           )}
-          {mock == "porto" && (
+          {mock == "testnet" && (
             <p style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
               USDC, USDT, ETH and BTC on Porto Testnet.{" "}
             </p>
@@ -480,11 +469,11 @@ export default function LandingPage() {
               </Button>
             )}
             {/* hide wallet connector for move token, since we mint to an address */}
-            {(mock == "porto" || (mock == "bardock" && token !== "MOVE")) && (
+            {(mock == "testnet" && token !== "MOVE") && (
               <WalletConnector
                 networkSupport={"testnet"}
                 handleNavigate={() =>
-                  `https://explorer.movementnetwork.xyz/account/${account?.address}?network=${mock}+testnet`
+                  `https://explorer.movementnetwork.xyz/account/${account?.address}?network=bardock+${mock}`
                 }
                 modalMaxWidth="sm"
               />
