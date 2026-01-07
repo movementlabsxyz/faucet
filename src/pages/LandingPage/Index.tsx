@@ -50,6 +50,13 @@ const PACKAGE_ID =
   "0x8ac626e474c33520a815175649fefcbb272678c8c37a7b024e7171fa45d47711";
 const moveL1FaucetAddress = "0x8Ef16FFDe7fc18F2E6d4Ca338AA0F318fd61e848";
 
+const tokenMetadataAddresses = {
+  WETH: "0x7eb1210794c2fdf636c5c9a5796b5122bf932458e3dd1737cf830d79954f5fdb",
+  WBTC: "0x8ce6b84c59f727d3ebd0b0e73172f46571e9f6515453d1c15887826a9478443c",
+  USDT: "0x927595491037804b410c090a4c152c27af24d647863fc00b4a42904073d2d9de",
+  USDC: "0x45142fb00dde90b950183d8ac2815597892f665c254c3f42b5768bc6ae4c8489",
+};
+
 const CHAIN = {
   holesky: {
     network: "testnet",
@@ -155,13 +162,13 @@ export default function LandingPage() {
       const payload: InputTransactionData = {
         data: {
           function: `${moveFaucetAddress}::faucet::mintAll`,
-          typeArguments: [
-            `${moveFaucetAddress}::tokens::USDT` as TypeArgument,
-            `${moveFaucetAddress}::tokens::USDC` as TypeArgument,
-            `${moveFaucetAddress}::tokens::WBTC` as TypeArgument,
-            `${moveFaucetAddress}::tokens::WETH` as TypeArgument,
+          typeArguments: [],
+          functionArguments: [
+            tokenMetadataAddresses.USDT,
+            tokenMetadataAddresses.USDC,
+            tokenMetadataAddresses.WBTC,
+            tokenMetadataAddresses.WETH,
           ],
-          functionArguments: [],
         },
       };
       const response = await submitTransaction(payload);
@@ -170,10 +177,10 @@ export default function LandingPage() {
       const payload: InputTransactionData = {
         data: {
           function: `${moveFaucetAddress}::faucet::mint`,
-          typeArguments: [
-            `${moveFaucetAddress}::tokens::${token}` as TypeArgument,
+          typeArguments: [],
+          functionArguments: [
+            tokenMetadataAddresses[token as keyof typeof tokenMetadataAddresses],
           ],
-          functionArguments: [],
         },
       };
       const response = await submitTransaction(payload);
@@ -359,10 +366,8 @@ export default function LandingPage() {
               label="Network"
               onChange={handleChange}
             >
-              {/* <MenuItem value={"porto"}>Movement Porto</MenuItem> */}
               <MenuItem value={"testnet"}>Movement Testnet</MenuItem>
               <MenuItem value={"holesky"}>Ethereum Holesky</MenuItem>
-              {/* <MenuItem value={"evm"}>MEVM</MenuItem> */}
             </Select>
           </FormControl>
           {mock == "holesky" ? (
@@ -424,11 +429,6 @@ export default function LandingPage() {
           {mock == "evm" && (
             <p style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
               USDC, USDT, ETH and BTC on MEVM Testnet.{" "}
-            </p>
-          )}
-          {mock == "testnet" && (
-            <p style={{fontFamily: "TWKEverett-Regular", textAlign: "left"}}>
-              USDC, USDT, ETH and BTC on Porto Testnet.{" "}
             </p>
           )}
 
