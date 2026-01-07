@@ -320,8 +320,8 @@ export default function LandingPage() {
   };
   const blockStyle = {
     backgroundColor: "rgba(22,24,23,0.8)",
-    padding: "3rem",
-    margin: "2rem",
+    maxWidth: "95vw",
+    padding: "2rem",
     borderRadius: "2px",
     boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.2)",
     width: "500px",
@@ -331,6 +331,7 @@ export default function LandingPage() {
     <Box
       sx={{
         fontFamily: "TWKEverett-Regular",
+        maxWidth: "100vw",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -356,7 +357,7 @@ export default function LandingPage() {
             Daily rate limit.
           </p>
         </div>
-        <div style={{display: "flex"}}>
+        <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center"}}>
           <FormControl fullWidth style={{margin: "1rem", width: "220px"}}>
             <InputLabel id="demo-simple-select-label">Network</InputLabel>
             <Select
@@ -370,37 +371,26 @@ export default function LandingPage() {
               <MenuItem value={"holesky"}>Ethereum Holesky</MenuItem>
             </Select>
           </FormControl>
-          {mock == "holesky" ? (
-            <FormControl fullWidth style={{margin: "1rem", width: "100px"}}>
-              <InputLabel id="token-label">Token</InputLabel>
-              <Select
-                labelId="token-label"
-                id="token-select"
-                value={token}
-                label="Token"
-                onChange={handleTokenChange}
-              >
-                <MenuItem value={"MOVE"}>MOVE</MenuItem>
-              </Select>
-            </FormControl>
-          ) : (
-            <FormControl fullWidth style={{margin: "1rem", width: "100px"}}>
-              <InputLabel id="token-label">Token</InputLabel>
-              <Select
-                labelId="token-label"
-                id="token-select"
-                value={token}
-                label="Token"
-                onChange={handleTokenChange}
-              >
-                <MenuItem value={"MOVE"}>MOVE</MenuItem>
-                <MenuItem value={"USDC"}>USDC</MenuItem>
-                <MenuItem value={"USDT"}>USDT</MenuItem>
-                <MenuItem value={"WBTC"}>WBTC</MenuItem>
-                <MenuItem value={"WETH"}>WETH</MenuItem>
-              </Select>
-            </FormControl>
-          )}
+          <FormControl fullWidth style={{margin: "1rem", width: "100px"}}>
+            <InputLabel id="token-label">Token</InputLabel>
+            <Select
+              labelId="token-label"
+              id="token-select"
+              value={token}
+              label="Token"
+              style={{ minWidth: "90px" }}
+              onChange={handleTokenChange}
+            >
+              {(mock == "holesky"
+                ? ["MOVE"]
+                : ["MOVE", "USDC", "USDT", "WBTC", "WETH"]
+              ).map((tokenOption) => (
+                <MenuItem key={tokenOption} value={tokenOption}>
+                  {tokenOption}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </div>
         <div>
           {/* chain specific descriptor text */}
@@ -433,7 +423,7 @@ export default function LandingPage() {
           )}
 
           {/* connect wallet buttons */}
-          <div
+          {( !(mock == "testnet" && token === "MOVE") && <div
             style={{
               display: "flex",
               justifyContent: "space-between",
@@ -506,7 +496,6 @@ export default function LandingPage() {
                 )}
               </Button>
             )}
-            {mock == "sui" && <ConnectButton />}
 
             {/* Claim button */}
             {/* hide wallet connector for move token, since we mint to an address */}
@@ -553,6 +542,7 @@ export default function LandingPage() {
               </Button>
             )}
           </div>
+          )}
           {loading && (
             <div
               style={{
