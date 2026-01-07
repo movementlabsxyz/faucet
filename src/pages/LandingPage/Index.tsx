@@ -427,7 +427,7 @@ export default function LandingPage() {
             style={{
               display: "flex",
               justifyContent: "space-between",
-              padding: "2rem",
+              padding: "1rem",
             }}
           >
             {mock == "holesky" && (
