@@ -510,7 +510,7 @@ export default function LandingPage() {
 
             {/* Claim button */}
             {/* hide wallet connector for move token, since we mint to an address */}
-            {!(mock == "bardock" && token == "MOVE") && (
+            {!(mock == "testnet" && token == "MOVE") && (
               <Button
                 disabled={loading}
                 sx={{
