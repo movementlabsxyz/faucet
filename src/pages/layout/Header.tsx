@@ -3,12 +3,9 @@ import Toolbar from "@mui/material/Toolbar";
 import MuiAppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
 import NetworkSelect from "./NetworkSelect";
-import {useColorMode} from "../../context";
 import {useMediaQuery, useTheme} from "@mui/material";
 import {ReactComponent as LogoIconW} from "../../assets/svg/logo_txt_w.svg";
 import {ReactComponent as LogoIconB} from "../../assets/svg/logo_txt_b.svg";
-import {ReactComponent as IconLight} from "../../assets/svg/icon_light.svg";
-import {ReactComponent as IconDark} from "../../assets/svg/icon_dark.svg";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Nav from "./Nav";
@@ -37,7 +34,6 @@ export default function Header() {
     }
   };
 
-  const {toggleColorMode} = useColorMode();
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
 
@@ -139,24 +135,6 @@ export default function Header() {
 
             {/*<Nav />*/}
             {/* <NetworkSelect /> */}
-            <Button
-              onClick={toggleColorMode}
-              sx={{
-                
-                width: "30px",
-                height: "30px",
-                display: "flex",
-                alignItems: "center",
-                justifyItems: "center",
-                padding: "0",
-                minWidth: "30px",
-                marginLeft: "1rem",
-                color: "inherit",
-                "&:hover": {background: "transparent", opacity: "0.8"},
-              }}
-            >
-              {theme.palette.mode === "light" ? <IconLight /> : <IconDark />}
-            </Button>
             {/*<NavMobile />*/}
             {!isOnMobile && (
               <Box sx={{

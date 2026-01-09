@@ -16,17 +16,16 @@ import logow from "../../assets/svg/logow.svg";
 import {Link} from "../../routing";
 
 const socialLinks = [
-  {title: "Git", url: "https://github.com/movementlabsxyz", icon: GithubLogo},
+  {title: "Git", url: "https://github.com/moveindustries", icon: GithubLogo},
   {
     title: "Discord",
-    url: "https://discord.gg/movementlabsxyz",
+    url: "https://discord.com/invite/moveindustries",
     icon: DiscordLogo,
   },
-  {title: "Twitter", url: "https://twitter.com/movementlabsxyz/", icon: TwitterLogo},
-  {title: "Medium", url: "https://medium.com/@movementlabsxyz", icon: MediumLogo},
+  {title: "Twitter", url: "https://twitter.com/movement_xyz/", icon: TwitterLogo},
   {
     title: "LinkedIn",
-    url: "https://www.linkedin.com/company/movementlabsxyz/",
+    url: "https://www.linkedin.com/company/move-industries-blockchain",
     icon: LinkedInLogo,
   },
 ];
